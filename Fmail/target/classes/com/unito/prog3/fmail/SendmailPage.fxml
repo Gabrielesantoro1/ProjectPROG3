@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.ClientController">
+   <children>
+      <TextField fx:id="Text" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
+      <ButtonBar layoutX="410.0" layoutY="14.0" prefHeight="40.0" prefWidth="0.0" AnchorPane.rightAnchor="10.0">
+        <buttons>
+            <Button  mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" text="Invia" />
+        </buttons>
+      </ButtonBar>
+      <TextField fx:id="Receiver" layoutX="14.0" layoutY="30.0" prefHeight="25.0" prefWidth="220.0" AnchorPane.leftAnchor="10.0" />
+      <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Destinatario/i" AnchorPane.leftAnchor="10.0" />
+      <TextField fx:id="Object" layoutX="244.0" layoutY="30.0" prefHeight="25.0" prefWidth="186.0" />
+      <Text layoutX="244.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Oggetto" />
+   </children>
+</AnchorPane>
