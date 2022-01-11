@@ -15,12 +15,12 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
             System.out.println(socket.isBound());
             System.out.println(socket.getInetAddress());
             ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("ST1");
-            while(true) {
+            while(true){
                 Object in = input.readObject();
                 System.out.println("ST2 " + input.readObject().toString());
                 if(in instanceof String name){
-                    ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                     if (server.existAccount(name)){
                         System.out.println("Client " + name + " is now connected");
                         output.writeObject(true);
