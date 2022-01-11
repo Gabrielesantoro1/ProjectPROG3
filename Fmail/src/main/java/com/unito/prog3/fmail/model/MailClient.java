@@ -33,7 +33,7 @@ public class MailClient {
     public void getConnection() {
         Socket client_socket = null;
         try {
-            client_socket = new Socket(local, Support.port);
+            client_socket = new Socket(this.local, Support.port);
             System.out.println("C1");
             try {
                 ObjectOutputStream out = new ObjectOutputStream(client_socket.getOutputStream());
