@@ -7,26 +7,27 @@ import com.unito.prog3.fmail.support.Support;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println(socket.isBound());
-            System.out.println(socket.getInetAddress());
             ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("ST1");
+            Object in = null;
             while(true){
-                Object in = input.readObject();
-                System.out.println("ST2 " + input.readObject().toString());
+                System.out.println("ST1.1");
+                in = input.readObject();//TODO:Dopo che prende il primo valore riprova dinuovo e vede che é chiusa
                 if(in instanceof String name){
+                    System.out.println("ST2");
                     if (server.existAccount(name)){
+                        Objects.requireNonNull(output).writeObject("true");
                         System.out.println("Client " + name + " is now connected");
-                        output.writeObject(true);
                     } else {
-                        System.out.println("Client tried to connect unsuccessfully");
-                        output.writeObject(false);
+                        output.writeObject("false");
+                        System.out.println("An unknown client tried to connect unsuccessfully");
                     }
                 }
             }
