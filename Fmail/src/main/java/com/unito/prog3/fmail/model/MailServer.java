@@ -5,8 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableStringValue;
 
-import java.io.File;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.constant.Constable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,8 +43,32 @@ public class MailServer{
         }
     }
 
-    /*Metodo per fare backup email arrivate già esistente*/
+    /**
+     * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one.
+     * @param email_to_write Object Email to write
+     */
+    public void saveEmailInLocal(Email email_to_write){
+        String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\received";
+        String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\sent";
 
+        try{
+            File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
+            File sent = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
+            if(rcvd.createNewFile() && sent.createNewFile()){
+                String what_write =  email_to_write.getId()+"\n"+email_to_write.getFrom()+"\n"+email_to_write.getTo()+"\n"+email_to_write.getObject()+"\n"+email_to_write.getText()+"\n"+email_to_write.getDate().toString();
+                BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
+                buffer.write(what_write);
+                buffer.flush();
+
+                buffer = new BufferedWriter(new FileWriter(sent));
+                buffer.write(what_write);
+                buffer.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory");
+    }
 
     /*Metodo per caricare nelle mailbox email da backup già esistente*/
 
