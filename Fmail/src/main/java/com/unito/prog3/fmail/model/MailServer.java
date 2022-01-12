@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableStringValue;
 import java.io.*;
 import java.lang.constant.Constable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,7 +75,7 @@ public class MailServer{
      * The function scrolls through all the folders of each account saved locally and for each account and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding to each account.
      * @throws IOException
      */
-    public void loadEmailFromLocal() throws IOException {
+    public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
         for (File account : Objects.requireNonNull(file.listFiles())){
             for(File lists : Objects.requireNonNull(account.listFiles())){
