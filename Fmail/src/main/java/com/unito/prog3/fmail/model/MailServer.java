@@ -96,7 +96,6 @@ public class MailServer{
                             }
                         }
 
-
                     case "sent":
                         for (File email: Objects.requireNonNull(lists.listFiles())){
                             if(!email.isDirectory()){

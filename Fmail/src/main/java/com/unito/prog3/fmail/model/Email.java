@@ -10,6 +10,8 @@ public class Email implements Serializable {
     private String text;
     private Date date;
 
+    public Email(){}
+
     /**
      *   This constructor is used by Client because it doesn't know the current id counter.
      */

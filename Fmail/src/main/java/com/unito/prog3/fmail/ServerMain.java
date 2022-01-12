@@ -40,15 +40,10 @@ public class ServerMain extends Application {
 
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
-            System.out.println("S0");
             while (true) {
-                System.out.println("S1");
                 Socket incoming = server_socket.accept();
-                System.out.println("S2");
                 Runnable connectionHandle = new ThreadConnectionHandle(server,incoming);
-                System.out.println("S3");
                 exc.execute(connectionHandle);
-                System.out.println("S4");
             }
         }catch (IOException e) {
             e.printStackTrace();

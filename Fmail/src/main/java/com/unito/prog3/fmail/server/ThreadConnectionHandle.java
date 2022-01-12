@@ -7,6 +7,9 @@ import com.unito.prog3.fmail.support.Support;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.channels.AsynchronousChannel;
+import java.nio.channels.AsynchronousServerSocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
@@ -19,29 +22,20 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
             try{
                 input = new ObjectInputStream(socket.getInputStream());
                 output = new ObjectOutputStream(socket.getOutputStream());
-                //System.out.println("ST1");
-                Object in = null;
-                    //System.out.println("ST1.1");
-                    in = input.readObject();
-                    if (in instanceof String name) {
-                        //System.out.println("ST2");
-                        if (server.existAccount(name)) {
-                            Objects.requireNonNull(output).writeObject("true");
-                            System.out.println("Client " + name + " is now connected");
-                            waitforData();
-                        } else {
-                            output.writeObject("false");
-                            System.out.println("An unknown client tried to connect unsuccessfully");
-                        }
+
+                Object in;
+                in = input.readObject();
+                if (in instanceof String name) {
+                    if (server.existAccount(name)) {
+                        Objects.requireNonNull(output).writeObject("true");
+                        System.out.println("Client " + name + " is now connected");
+                    } else {
+                        output.writeObject("false");
+                        System.out.println("An unknown client tried to connect unsuccessfully");
                     }
-            }finally {output.flush();input.close();output.close();input.close();socket.close();}
+                }
+                            }finally {output.flush();input.close();output.close();input.close();socket.close();}
         } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
-    }
-
-    private void waitforData() {
-        while (true) {
-
-        }
     }
 
 }
