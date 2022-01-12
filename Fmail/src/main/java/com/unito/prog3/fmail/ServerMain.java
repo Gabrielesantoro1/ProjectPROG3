@@ -40,6 +40,7 @@ public class ServerMain extends Application {
 
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
+            System.out.println("S0");
             while (true) {
                 System.out.println("S1");
                 Socket incoming = server_socket.accept();
@@ -52,6 +53,7 @@ public class ServerMain extends Application {
         }catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }
 

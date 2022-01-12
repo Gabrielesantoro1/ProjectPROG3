@@ -30,30 +30,35 @@ public class MailClient {
         this.mailbox = mailbox;
     }
 
-    public void getConnection() {
+    public Boolean getConnection() {
         Socket client_socket = null;
+        ObjectOutputStream out = null;
+        ObjectInputStream input = null;
+        boolean connection_established = false;
         try {
             client_socket = new Socket(this.local, Support.port);
             System.out.println("C1");
             try {
-                ObjectOutputStream out = new ObjectOutputStream(client_socket.getOutputStream());
-                ObjectInputStream input = new ObjectInputStream(client_socket.getInputStream());
+                out = new ObjectOutputStream(client_socket.getOutputStream());
+                input = new ObjectInputStream(client_socket.getInputStream());
                 System.out.println("C2");
-                out.writeObject(this.getMailbox().getAccount_name());
+                Objects.requireNonNull(out).writeObject(this.mailbox.getAccount_name());
+                out.flush();
+                out.close();
                 System.out.println("C3");
-                Boolean done = false;
-                while(!done) {
-                    Boolean connection_established = (Boolean) input.readObject();
-                    System.out.println("C4 " + input.readObject().toString());
-                    System.out.println("Connection established: " + connection_established);
-                    done = true;
+                Object output = input.readObject();
+                if(output.equals("true")){
+                    connection_established = true;
                 }
+                System.out.println("Connection established: " + connection_established);
                 System.out.println("C5");
-            } finally {
-                client_socket.close();
+            } catch (IOException | ClassNotFoundException e) {
+                e.getStackTrace();
             }
-        }catch (IOException | ClassNotFoundException e){
-            e.getStackTrace();}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return connection_established;
     }
 
     public Mailbox getMailbox() {return mailbox;}

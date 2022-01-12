@@ -27,8 +27,12 @@ public class ClientController implements Initializable {
     public void getConnectionAction(){
         if(Support.match_account(account_name.getText())){
             MailClient client = new MailClient(new Mailbox(account_name.getText()));
-            client.getConnection();
-            System.out.println("Client connected");
+            if(client.getConnection()){
+                System.out.println("Client connected");
+            }else{
+                Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
+                emailnotregistreder.showAndWait();
+            }
         }else{
             System.out.println("Email not correct");
             Alert emailnotmatch = new Alert(Alert.AlertType.NONE, "L'email inserita ha un formato non corretto, riprova", ButtonType.OK);
@@ -38,7 +42,6 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
     }
 }
 
