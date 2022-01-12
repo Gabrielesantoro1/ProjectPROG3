@@ -70,8 +70,69 @@ public class MailServer{
         System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory");
     }
 
-    /*Metodo per caricare nelle mailbox email da backup già esistente*/
+    /**
+     * The function scrolls through all the folders of each account saved locally and for each account and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding to each account.
+     * @throws IOException
+     */
+    public void loadEmailFromLocal() throws IOException {
+        File file = new File(Support.PATH_NAME_DIR);
+        for (File account : Objects.requireNonNull(file.listFiles())){
+            for(File lists : Objects.requireNonNull(account.listFiles())){
+                switch (lists.getName()){
+                    case "deleted":
+                        for (File email: Objects.requireNonNull(lists.listFiles())){
+                            if(!email.isDirectory()){
+                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                                String line = reader.readLine();
+                                ArrayList<String> email_string_array = new ArrayList<>();
+                                while(line != null){
+                                    email_string_array.add(line);
+                                    line = reader.readLine();
+                                }
+                                String account_name = account.getName();
+                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_del(email_to_load);
+                            }
+                        }
 
+
+                    case "sent":
+                        for (File email: Objects.requireNonNull(lists.listFiles())){
+                            if(!email.isDirectory()){
+                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                                String line = reader.readLine();
+                                ArrayList<String> email_string_array = new ArrayList<>();
+                                while(line != null){
+                                    email_string_array.add(line);
+                                    line = reader.readLine();
+                                }
+                                String account_name = account.getName();
+                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_sent(email_to_load);
+                            }
+                        }
+                        break;
+
+                    case "received":
+                        for (File email: Objects.requireNonNull(lists.listFiles())){
+                            if(!email.isDirectory()){
+                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                                String line = reader.readLine();
+                                ArrayList<String> email_string_array = new ArrayList<>();
+                                while(line != null){
+                                    email_string_array.add(line);
+                                    line = reader.readLine();
+                                }
+                                String account_name = account.getName();
+                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_rcvd(email_to_load);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+    }
 
     public Boolean existAccount(String account_name){
         boolean exist = false;
@@ -84,6 +145,15 @@ public class MailServer{
     }
 
     private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}
+
+    private int getindexbyname(String account){
+        for (int i = 0; i< mailboxes.size(); i++){
+            if(account.equals(mailboxes.get(i).getAccount_name())){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public void removeMailBox(Mailbox mailbox){this.mailboxes.remove(mailbox);}
 
