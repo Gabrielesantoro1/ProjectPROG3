@@ -10,29 +10,37 @@ import java.net.Socket;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
+
     @Override
     public void run() {
+        ObjectInputStream input = null;
+        ObjectOutputStream output = null;
         try {
-            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("ST1");
-            Object in = null;
-            while(true){
-                System.out.println("ST1.1");
-                in = input.readObject();//TODO:Dopo che prende il primo valore riprova dinuovo e vede che é chiusa
-                if(in instanceof String name){
-                    System.out.println("ST2");
-                    if (server.existAccount(name)){
-                        Objects.requireNonNull(output).writeObject("true");
-                        System.out.println("Client " + name + " is now connected");
-                    } else {
-                        output.writeObject("false");
-                        System.out.println("An unknown client tried to connect unsuccessfully");
+            try{
+                input = new ObjectInputStream(socket.getInputStream());
+                output = new ObjectOutputStream(socket.getOutputStream());
+                //System.out.println("ST1");
+                Object in = null;
+                    //System.out.println("ST1.1");
+                    in = input.readObject();
+                    if (in instanceof String name) {
+                        //System.out.println("ST2");
+                        if (server.existAccount(name)) {
+                            Objects.requireNonNull(output).writeObject("true");
+                            System.out.println("Client " + name + " is now connected");
+                            waitforData();
+                        } else {
+                            output.writeObject("false");
+                            System.out.println("An unknown client tried to connect unsuccessfully");
+                        }
                     }
-                }
-            }
-        }catch(IOException | ClassNotFoundException e){
-            e.printStackTrace();
+            }finally {output.flush();input.close();output.close();input.close();socket.close();}
+        } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
+    }
+
+    private void waitforData() {
+        while (true) {
+
         }
     }
 

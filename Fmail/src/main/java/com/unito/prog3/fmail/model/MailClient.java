@@ -24,41 +24,35 @@ public class MailClient {
     public MailClient(Mailbox mailbox){
         try{
             local = InetAddress.getLocalHost();
-        }catch (UnknownHostException e){
-            e.printStackTrace();
-        }
+        }catch (UnknownHostException e){e.printStackTrace();}
         this.mailbox = mailbox;
     }
 
     public Boolean getConnection() {
-        Socket client_socket = null;
+        boolean connection_established = false;
         ObjectOutputStream out = null;
         ObjectInputStream input = null;
-        boolean connection_established = false;
         try {
-            client_socket = new Socket(this.local, Support.port);
-            System.out.println("C1");
+            Socket client_socket = new Socket(this.local, Support.port);
+            //System.out.println("C1");
             try {
                 out = new ObjectOutputStream(client_socket.getOutputStream());
                 input = new ObjectInputStream(client_socket.getInputStream());
-                System.out.println("C2");
+                //System.out.println("C2");
+
                 Objects.requireNonNull(out).writeObject(this.mailbox.getAccount_name());
-                out.flush();
-                out.close();
-                System.out.println("C3");
+                //System.out.println("C3");
+
                 Object output = input.readObject();
-                if(output.equals("true")){
+                if (output.equals("true"))
                     connection_established = true;
-                }
                 System.out.println("Connection established: " + connection_established);
-                System.out.println("C5");
-            } catch (IOException | ClassNotFoundException e) {
-                e.getStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return connection_established;
+                //System.out.println("C5");
+                return connection_established;
+
+            }finally {client_socket.close(); out.close(); out.flush();}
+        }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
+    return connection_established;
     }
 
     public Mailbox getMailbox() {return mailbox;}
