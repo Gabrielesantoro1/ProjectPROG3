@@ -24,8 +24,8 @@
                   </TableView>
                   <ButtonBar layoutY="-5.0" prefHeight="38.0" prefWidth="163.0" AnchorPane.rightAnchor="5.0">
                     <buttons>
-                      <Button mnemonicParsing="false" onAction="#openSendMailPage" text="Scrivi" />
-                        <Button mnemonicParsing="false" onAction="#refreshEmails_rcvd" text="Aggiorna" />
+                      <Button mnemonicParsing="false" text="Scrivi" />
+                        <Button mnemonicParsing="false" text="Aggiorna" />
                     </buttons>
                   </ButtonBar>
                   <TextField id="account_name_text" layoutY="4.0" AnchorPane.leftAnchor="6.0" />
@@ -45,7 +45,7 @@
                   </TableView>
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="5.0">
                      <buttons>
-                        <Button mnemonicParsing="false" onAction="#refreshEmails_sent" text="Aggiorna" />
+                        <Button mnemonicParsing="false" text="Aggiorna" />
                      </buttons>
                   </ButtonBar>
                </children></AnchorPane>
@@ -57,7 +57,7 @@
                <children>
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="0.0">
                      <buttons>
-                        <Button mnemonicParsing="false" onAction="#refreshEmails_del" text="Aggiorna" />
+                        <Button mnemonicParsing="false" text="Aggiorna" />
                         <Button mnemonicParsing="false" text="Elimina definitivamente" />
                      </buttons>
                   </ButtonBar>

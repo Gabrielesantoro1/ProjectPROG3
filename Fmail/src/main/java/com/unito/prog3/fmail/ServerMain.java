@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +30,7 @@ public class ServerMain extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         ExecutorService exc = Executors.newFixedThreadPool(10);
 
         MailServer server = new MailServer();
@@ -37,7 +38,7 @@ public class ServerMain extends Application {
         server.addMailBox(Support.danieleSer);
         server.addMailBox(Support.gabriele);
         server.create_dirs();
-
+        server.loadEmailFromLocal();
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
             while (true) {

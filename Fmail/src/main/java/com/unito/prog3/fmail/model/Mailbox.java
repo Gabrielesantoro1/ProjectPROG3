@@ -23,10 +23,10 @@ public class Mailbox {
 
     @Override
     public String toString() {
-        return  "\n    account_name" + account_name +
-                "\n    mail_rcvd=" + mail_rcvd +
-                "\n    mail_sent=" + mail_sent +
-                "\n    mail_del=" + mail_del +
+        return  "\n       account_name: " + account_name +
+                "\n         mail_rcvd = " + mail_rcvd +
+                "\n         mail_sent = " + mail_sent +
+                "\n         mail_del = " + mail_del +
                 '}';
     }
 

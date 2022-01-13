@@ -24,11 +24,15 @@ public class ClientController implements Initializable {
     TextField account_name;
 
     @FXML
-    public void getConnectionAction(){
+    public void getConnectionAction() throws IOException {
         if(Support.match_account(account_name.getText())){
             MailClient client = new MailClient(new Mailbox(account_name.getText()));
             if(client.getConnection()){
                 System.out.println("Client connected");
+                Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
+                Stage window = (Stage) account_name.getScene().getWindow();
+                window.setScene(new Scene(root));
+                //TODO: Download di tutte le mail
             }else{
                 Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
                 emailnotregistreder.showAndWait();

@@ -132,6 +132,7 @@ public class MailServer{
                 }
             }
         }
+        System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
     public Boolean existAccount(String account_name){
@@ -165,8 +166,8 @@ public class MailServer{
 
     @Override
     public String toString() {
-        return "MailServer{\n" +
-                "   MailBoxes=" + mailboxes.toString() +
-                "}\n";
+        return "MailServer{`\n" +
+                "   mailboxes= " + mailboxes +
+                '}';
     }
 }
