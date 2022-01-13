@@ -38,11 +38,11 @@ public class MailClient {
 
                 Objects.requireNonNull(out).writeObject(this.mailbox.getAccount_name());
 
-                Object input = in.readObject();
+                String input = (String) in.readObject();
                 if (input.equals("true"))
                     connection_established = true;
-                System.out.println("Connection established: " + connection_established);
-
+                this.mailbox = (Mailbox) in.readObject();
+                System.out.println(mailbox.toString()); //STAMPA TEST
                 return connection_established;
             }finally {out.flush();in.close();out.close();client_socket.close();}
         }catch (IOException | ClassNotFoundException e){e.printStackTrace();}

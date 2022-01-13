@@ -43,8 +43,7 @@ public class ServerMain extends Application {
         server.addMailBox(Support.gabriele);
         server.create_dirs();
         server.loadEmailFromLocal();
-        System.out.println(server.toString());
-
+        System.out.println(server.toString()); //STAMPA TEST
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
             while (true) {

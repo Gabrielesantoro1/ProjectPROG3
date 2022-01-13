@@ -1,10 +1,11 @@
 package com.unito.prog3.fmail.model;
 import com.unito.prog3.fmail.support.Support;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mailbox {
+public class Mailbox implements Serializable{
     private String account_name;
     private List<Email> mail_rcvd;
     private List<Email> mail_sent;

@@ -6,11 +6,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Email implements Serializable {
-    private SimpleIntegerProperty id;
-    private SimpleStringProperty from;
-    private SimpleStringProperty to;
-    private SimpleStringProperty object;
-    private SimpleStringProperty text;
+    private int id;
+    private String from;
+    private String to;
+    private String object;
+    private String text;
     private Date date;
 
     public Email(){}
@@ -18,7 +18,7 @@ public class Email implements Serializable {
     /**
      *   This constructor is used by Client because it doesn't know the current id counter.
      */
-    public Email(SimpleStringProperty from, SimpleStringProperty to, SimpleStringProperty object, SimpleStringProperty text) {
+    public Email(String from, String to, String object, String text) {
         this.from = from;
         this.to = to;
         this.object = object;
@@ -29,7 +29,7 @@ public class Email implements Serializable {
     /**
      *  This constructor is used by Server because it knows the current id counter.
      */
-    public Email(SimpleIntegerProperty id, SimpleStringProperty from, SimpleStringProperty to, SimpleStringProperty object, SimpleStringProperty text, Date date) {
+    public Email(int id, String from, String to, String object, String text, Date date) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -39,23 +39,23 @@ public class Email implements Serializable {
     }
 
     public int getId() {
-        return id.get();
+        return id;
     }
 
     public String getFrom() {
-        return from.get();
+        return from;
     }
 
     public String getTo() {
-        return to.get();
+        return to;
     }
 
     public String getObject() {
-        return object.get();
+        return object;
     }
 
     public String getText() {
-        return text.get();
+        return text;
     }
 
     public Date getDate() {
@@ -65,11 +65,11 @@ public class Email implements Serializable {
     @Override
     public String toString() {
         return "\n              Email{" +
-                "id=" + id.get() +
-                ", from='" + from.get() + '\'' +
-                ", to='" + to.get() + '\'' +
-                ", object='" + object.get() + '\'' +
-                ", text='" + text.get() + '\'' +
+                "id=" + id +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", object='" + object + '\'' +
+                ", text='" + text + '\'' +
                 ", date=" + date +
                 '}';
     }

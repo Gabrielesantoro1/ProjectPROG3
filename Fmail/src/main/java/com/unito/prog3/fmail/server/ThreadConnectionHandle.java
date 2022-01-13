@@ -28,6 +28,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     if (server.existAccount(name)) {
                         Objects.requireNonNull(output).writeObject("true");
                         System.out.println("Client " + name + " is now connected");
+                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getindexbyname(name)));
                     } else {
                         output.writeObject("false");
                         System.out.println("An unknown client tried to connect unsuccessfully");

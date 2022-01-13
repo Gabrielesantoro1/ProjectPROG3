@@ -5,6 +5,9 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.model.Mailbox;
 import com.unito.prog3.fmail.support.Support;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +27,7 @@ public class ClientController implements Initializable {
     @FXML
     TextField account_name;
     @FXML
-    TableView Tableview_email_rcvd;
+    TableView<Email> Tableview_email_rcvd;
 
     @FXML
     public void getConnectionAction() throws IOException {
@@ -35,11 +38,7 @@ public class ClientController implements Initializable {
                 Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
                 Stage window = (Stage) account_name.getScene().getWindow();
                 window.setScene(new Scene(root));
-                /*Tableview_email_rcvd.setEditable(false);
-                Tableview_email_rcvd.getColumns().addAll()
-                //TODO: Download di tutte le mail
-                fillTableView(client.getMailbox().getMail_rcvd(), Tableview_email_rcvd);
-                */
+                //fill_TableView(client.getMailbox().getMail_rcvd());
             }else{
                 Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
                 emailnotregistreder.showAndWait();
@@ -51,9 +50,15 @@ public class ClientController implements Initializable {
         }
     }
 
-    //FUNZIONE IN W.I.P
-    public void fillTableView(List<Email> emailList, TableView tableView){
-
+    //FUNZIONE IN W.I.P PER RIEMPIRE LA TABELLA
+    public void fill_TableView(List<Email> email_list){
+        ObservableList<Email> emails = FXCollections.observableArrayList();
+        for(int i=0; i< email_list.size(); i++){
+            emails.add(email_list.get(i));
+        }
+        Tableview_email_rcvd = new TableView<>();
+        Tableview_email_rcvd.setItems(emails);
+        System.out.println("Tabella riempita");
     }
 
     @Override

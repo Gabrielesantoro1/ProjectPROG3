@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static javax.swing.UIManager.get;
+
 public class MailServer{
     private List<Mailbox> mailboxes;
 
@@ -87,7 +89,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_del(email_to_load);
                             }
                         }
@@ -102,7 +104,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_sent(email_to_load);
                             }
                         }
@@ -118,7 +120,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_rcvd(email_to_load);
                             }
                         }
@@ -141,7 +143,7 @@ public class MailServer{
 
     private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}
 
-    private int getindexbyname(String account){
+    public int getindexbyname(String account){
         for (int i = 0; i< mailboxes.size(); i++){
             if(account.equals(mailboxes.get(i).getAccount_name())){
                 return i;
