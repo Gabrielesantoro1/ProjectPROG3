@@ -16,12 +16,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
     @FXML
     TextField account_name;
+    @FXML
+    TableView Tableview_email_rcvd;
 
     @FXML
     public void getConnectionAction() throws IOException {
@@ -32,7 +35,11 @@ public class ClientController implements Initializable {
                 Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
                 Stage window = (Stage) account_name.getScene().getWindow();
                 window.setScene(new Scene(root));
+                /*Tableview_email_rcvd.setEditable(false);
+                Tableview_email_rcvd.getColumns().addAll()
                 //TODO: Download di tutte le mail
+                fillTableView(client.getMailbox().getMail_rcvd(), Tableview_email_rcvd);
+                */
             }else{
                 Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
                 emailnotregistreder.showAndWait();
@@ -42,6 +49,11 @@ public class ClientController implements Initializable {
             Alert emailnotmatch = new Alert(Alert.AlertType.NONE, "L'email inserita ha un formato non corretto, riprova", ButtonType.OK);
             emailnotmatch.showAndWait();
         }
+    }
+
+    //FUNZIONE IN W.I.P
+    public void fillTableView(List<Email> emailList, TableView tableView){
+
     }
 
     @Override

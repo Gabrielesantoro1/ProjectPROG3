@@ -1,10 +1,13 @@
 package com.unito.prog3.fmail;
 
+import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailServer;
 import com.unito.prog3.fmail.model.Mailbox;
 import com.unito.prog3.fmail.server.ThreadConnectionHandle;
 import com.unito.prog3.fmail.support.Support;
 import javafx.application.Application;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,6 +43,8 @@ public class ServerMain extends Application {
         server.addMailBox(Support.gabriele);
         server.create_dirs();
         server.loadEmailFromLocal();
+        System.out.println(server.toString());
+
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
             while (true) {
@@ -49,7 +55,6 @@ public class ServerMain extends Application {
         }catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
 

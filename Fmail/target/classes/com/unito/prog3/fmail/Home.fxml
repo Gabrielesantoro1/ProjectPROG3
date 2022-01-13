@@ -36,13 +36,14 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <TableView layoutY="33.0" prefHeight="338.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+                  <TableView fx:id="Tableview_email_rcvd" layoutY="33.0" prefHeight="338.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
                      <columns>
                         <TableColumn prefWidth="121.0" text="Nome" />
                         <TableColumn prefWidth="424.0" text="Ogetto" />
                         <TableColumn minWidth="0.0" prefWidth="54.0" text="Data" />
                      </columns>
                   </TableView>
+
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="5.0">
                      <buttons>
                         <Button mnemonicParsing="false" text="Aggiorna" />

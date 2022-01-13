@@ -1,17 +1,13 @@
 package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
 
 import java.io.*;
-import java.lang.constant.Constable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,9 +48,10 @@ public class MailServer{
         String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\received";
         String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\sent";
 
+        System.out.println(path_recipient);
         try{
             File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
-            File sent = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
+            File sent = new File(path_sender + "\\" +  email_to_write.getId() + ".txt");
             if(rcvd.createNewFile() && sent.createNewFile()){
                 String what_write =  email_to_write.getId()+"\n"+email_to_write.getFrom()+"\n"+email_to_write.getTo()+"\n"+email_to_write.getObject()+"\n"+email_to_write.getText()+"\n"+email_to_write.getDate().toString();
                 BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
@@ -64,11 +61,11 @@ public class MailServer{
                 buffer = new BufferedWriter(new FileWriter(sent));
                 buffer.write(what_write);
                 buffer.flush();
+                System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory");
     }
 
     /**
@@ -90,9 +87,8 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                String account_name = account.getName();
-                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_del(email_to_load);
+                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_del(email_to_load);
                             }
                         }
 
@@ -106,9 +102,8 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                String account_name = account.getName();
-                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_sent(email_to_load);
+                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_sent(email_to_load);
                             }
                         }
                         break;
@@ -123,9 +118,8 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                String account_name = account.getName();
-                                Email email_to_load = new Email((Integer.parseInt(email_string_array.get(0))), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account_name)).setMail_rcvd(email_to_load);
+                                Email email_to_load = new Email(new SimpleIntegerProperty((Integer.parseInt(email_string_array.get(0)))), new SimpleStringProperty(email_string_array.get(1)), new SimpleStringProperty(email_string_array.get(2)), new SimpleStringProperty(email_string_array.get(3)), new SimpleStringProperty(email_string_array.get(4)), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_rcvd(email_to_load);
                             }
                         }
                         break;
@@ -156,13 +150,9 @@ public class MailServer{
         return -1;
     }
 
-    public void removeMailBox(Mailbox mailbox){this.mailboxes.remove(mailbox);}
-
     public void addMailBox(Mailbox mailbox){this.mailboxes.add(mailbox);}
 
     public List<Mailbox> getMailboxes() {return mailboxes;}
-
-    public void setMailboxes(List<Mailbox> mailboxes) {this.mailboxes = mailboxes;}
 
     @Override
     public String toString() {

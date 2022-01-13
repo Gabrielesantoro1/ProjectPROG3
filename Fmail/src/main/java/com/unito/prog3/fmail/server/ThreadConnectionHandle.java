@@ -22,7 +22,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
             try{
                 input = new ObjectInputStream(socket.getInputStream());
                 output = new ObjectOutputStream(socket.getOutputStream());
-
                 Object in;
                 in = input.readObject();
                 if (in instanceof String name) {
