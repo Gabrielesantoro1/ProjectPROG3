@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static javax.swing.UIManager.get;
 
 public class MailServer{
-    private AtomicInteger emailId_count; //TODO: bisogna salvare il valore in qualche posto per poterlo prendere anche dopo che il server si riconnette.
+    private static AtomicInteger emailId_count; //TODO: bisogna salvare il valore in qualche posto per poterlo prendere anche dopo che il server si riconnette.
     private List<Mailbox> mailboxes;
 
     /**
@@ -77,7 +77,7 @@ public class MailServer{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  saved;
+        return saved;
     }
 
     /**
@@ -134,6 +134,8 @@ public class MailServer{
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_rcvd(email_to_load);
                             }
                         }
+                        break;
+                    default:
                         break;
                 }
             }

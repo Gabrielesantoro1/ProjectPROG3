@@ -41,9 +41,11 @@ public class MailClient {
                 String input = (String) in.readObject();
                 if (input.equals("true"))
                     connection_established = true;
+
                 this.mailbox = (Mailbox) in.readObject();
                 System.out.println(mailbox.toString()); //STAMPA TEST
                 return connection_established;
+
             }finally {out.flush();in.close();out.close();client_socket.close();}
         }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
     return connection_established;

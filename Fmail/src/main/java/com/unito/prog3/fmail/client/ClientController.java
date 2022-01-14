@@ -25,6 +25,7 @@ import java.util.*;
 
 public class ClientController implements Initializable {
     private static MailClient client;
+
     //ConnectionClient.fxml
     @FXML
     TextField account_name;
@@ -32,14 +33,20 @@ public class ClientController implements Initializable {
     //Home.fxml
     @FXML
     private TableView<Email> Tableview_email_rcvd;
-    @FXML private TableColumn<Email, String> From_rcvd;
-    @FXML private TableColumn<Email, String> Object_rcvd;
-    @FXML private TableColumn<Email, Date> Date_rcvd;
+    @FXML
+    private TableColumn<Email, String> From_rcvd;
+    @FXML
+    private TableColumn<Email, String> Object_rcvd;
+    @FXML
+    private TableColumn<Email, Date> Date_rcvd;
 
     //SendmailPage.fxml
-    @FXML private TextField Text_sendpage;
-    @FXML private TextField Recipient_sendpage;
-    @FXML private TextField Object_sendpage;
+    @FXML
+    private TextArea Area_sendpage;
+    @FXML
+    private TextField Recipient_sendpage;
+    @FXML
+    private TextField Object_sendpage;
 
     @FXML
     public void getConnectionAction() throws IOException {
@@ -72,7 +79,8 @@ public class ClientController implements Initializable {
         Tableview_email_rcvd.getItems().setAll(email_list);
         System.out.println("Tabella riempita");
     }
-     */
+
+    */
 
     public void openSendPage(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
@@ -84,7 +92,7 @@ public class ClientController implements Initializable {
 
     public void SendmailAction(ActionEvent event) {
         String recipient = Recipient_sendpage.getText();
-        String text = Text_sendpage.getText();
+        String text = Area_sendpage.getText();
         String object = Object_sendpage.getText();
 
         String[] recipients = recipient.split(" ");
