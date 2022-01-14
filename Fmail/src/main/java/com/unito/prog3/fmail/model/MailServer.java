@@ -10,10 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static javax.swing.UIManager.get;
 
 public class MailServer{
+    private AtomicInteger emailId_count; //TODO: bisogna salvare il valore in qualche posto per poterlo prendere anche dopo che il server si riconnette.
     private List<Mailbox> mailboxes;
 
     /**
@@ -21,6 +23,7 @@ public class MailServer{
      **/
     public MailServer() {
         this.mailboxes = new ArrayList<>();
+        emailId_count = new AtomicInteger();
         System.out.println("MailServer created");
     }
 
@@ -46,16 +49,18 @@ public class MailServer{
      * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one.
      * @param email_to_write Object Email to write
      */
-    public void saveEmailInLocal(Email email_to_write){
-        String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\received";
-        String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\sent";
+    public boolean saveEmail(Email email_to_write){
+        boolean saved = false;
+        email_to_write.setId(emailId_count.getAndIncrement());
+        String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\sent";
+        String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\received";
 
-        System.out.println(path_recipient);
         try{
             File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
             File sent = new File(path_sender + "\\" +  email_to_write.getId() + ".txt");
             if(rcvd.createNewFile() && sent.createNewFile()){
-                String what_write =  email_to_write.getId()+"\n"+email_to_write.getFrom()+"\n"+email_to_write.getTo()+"\n"+email_to_write.getObject()+"\n"+email_to_write.getText()+"\n"+email_to_write.getDate().toString();
+                SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                String what_write =  email_to_write.getId()+"\n"+email_to_write.getFrom()+"\n"+email_to_write.getTo()+"\n"+email_to_write.getObject()+"\n"+email_to_write.getText()+"\n"+ DateFor.format(email_to_write.getDate()).toString();
                 BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
                 buffer.write(what_write);
                 buffer.flush();
@@ -63,11 +68,16 @@ public class MailServer{
                 buffer = new BufferedWriter(new FileWriter(sent));
                 buffer.write(what_write);
                 buffer.flush();
-                System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory");
+
+                this.mailboxes.get(getindexbyname(email_to_write.getFrom())).setMail_sent(email_to_write);
+                this.mailboxes.get(getindexbyname(email_to_write.getTo())).setMail_rcvd(email_to_write);
+                saved = true;
+                System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory and in local");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return  saved;
     }
 
     /**
@@ -89,7 +99,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_del(email_to_load);
                             }
                         }
@@ -104,7 +114,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_sent(email_to_load);
                             }
                         }
@@ -120,7 +130,7 @@ public class MailServer{
                                     email_string_array.add(line);
                                     line = reader.readLine();
                                 }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy").parse(email_string_array.get(5)));
+                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getindexbyname(account.getName())).setMail_rcvd(email_to_load);
                             }
                         }

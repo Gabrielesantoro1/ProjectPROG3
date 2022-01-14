@@ -49,6 +49,30 @@ public class MailClient {
     return connection_established;
     }
 
+    public boolean sendEmail(Email email) {
+        boolean saved = false;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try{
+            Socket client_socket = new Socket(this.local, Support.port);
+            try {
+                out = new ObjectOutputStream(client_socket.getOutputStream());
+                in = new ObjectInputStream(client_socket.getInputStream());
+
+                Objects.requireNonNull(out).writeObject(email);
+
+                String input = (String) in.readObject();
+                if(input.equals("true")){
+                    this.mailbox.setMail_sent(email);
+                    saved = true;
+                }
+            } finally {out.flush();in.close();out.close(); }
+        }catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return saved;
+    }
+
     public Mailbox getMailbox() {return mailbox;}
 
     @Override
@@ -57,6 +81,5 @@ public class MailClient {
                 ", mailbox=" + mailbox +
                 "}";
     }
-
 }
 

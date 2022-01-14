@@ -17,14 +17,14 @@
                <children>
                   <TableView layoutY="33.0" prefHeight="336.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
                     <columns>
-                      <TableColumn editable="false" prefWidth="121.0" text="Nome" />
-                      <TableColumn editable="false" prefWidth="424.0" text="Oggetto" />
-                        <TableColumn editable="false" minWidth="0.0" prefWidth="54.0" text="Data" />
+                      <TableColumn fx:id="From_rcvd" editable="false" prefWidth="121.0" text="Nome" />
+                      <TableColumn fx:id="Object_rcvd" editable="false" prefWidth="424.0" text="Oggetto" />
+                        <TableColumn fx:id="Date_rcvd" editable="false" minWidth="0.0" prefWidth="54.0" text="Data" />
                     </columns>
                   </TableView>
                   <ButtonBar layoutY="-5.0" prefHeight="38.0" prefWidth="163.0" AnchorPane.rightAnchor="5.0">
                     <buttons>
-                      <Button mnemonicParsing="false" text="Scrivi" />
+                      <Button onAction="#openSendPage" mnemonicParsing="false" text="Scrivi" />
                         <Button mnemonicParsing="false" text="Aggiorna" />
                     </buttons>
                   </ButtonBar>
@@ -38,9 +38,9 @@
                <children>
                   <TableView fx:id="Tableview_email_rcvd" layoutY="33.0" prefHeight="338.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
                      <columns>
-                        <TableColumn prefWidth="121.0" text="Nome" />
-                        <TableColumn prefWidth="424.0" text="Ogetto" />
-                        <TableColumn minWidth="0.0" prefWidth="54.0" text="Data" />
+                        <TableColumn fx:id="From" prefWidth="121.0" text="Nome" />
+                        <TableColumn fx:id="Object" prefWidth="424.0" text="Ogetto" />
+                        <TableColumn fx:id="Date" minWidth="0.0" prefWidth="54.0" text="Data" />
                      </columns>
                   </TableView>
 

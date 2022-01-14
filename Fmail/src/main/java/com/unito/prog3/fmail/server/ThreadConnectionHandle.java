@@ -33,8 +33,22 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                         output.writeObject("false");
                         System.out.println("An unknown client tried to connect unsuccessfully");
                     }
+                }else if(in instanceof Email email){
+                    if(server.existAccount(email.getTo())){
+                       if(server.saveEmail(email)) {
+                           Objects.requireNonNull(output).writeObject("true");
+                           System.out.println("Email sent successfully");
+                       }else {
+                           Objects.requireNonNull(output).writeObject("false");
+                           System.out.println("An error occurs on saving email");
+                       }
+                    }else{
+                        Objects.requireNonNull(output).writeObject("false");
+                        System.out.println("The recipient doesn't exist");
+                    }
                 }
-                            }finally {output.flush();input.close();output.close();input.close();socket.close();}
+            }finally {output.flush();input.close();output.close();input.close();socket.close();
+                System.out.println("Connection closed");}
         } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
     }
 

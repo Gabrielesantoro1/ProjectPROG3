@@ -12,27 +12,39 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ClientController implements Initializable {
+    private static MailClient client;
+    //ConnectionClient.fxml
     @FXML
     TextField account_name;
+
+    //Home.fxml
     @FXML
-    TableView<Email> Tableview_email_rcvd;
+    private TableView<Email> Tableview_email_rcvd;
+    @FXML private TableColumn<Email, String> From_rcvd;
+    @FXML private TableColumn<Email, String> Object_rcvd;
+    @FXML private TableColumn<Email, Date> Date_rcvd;
+
+    //SendmailPage.fxml
+    @FXML private TextField Text_sendpage;
+    @FXML private TextField Recipient_sendpage;
+    @FXML private TextField Object_sendpage;
 
     @FXML
     public void getConnectionAction() throws IOException {
         if(Support.match_account(account_name.getText())){
-            MailClient client = new MailClient(new Mailbox(account_name.getText()));
+            client = new MailClient(new Mailbox(account_name.getText()));
             if(client.getConnection()){
                 System.out.println("Client connected");
                 Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
@@ -50,15 +62,63 @@ public class ClientController implements Initializable {
         }
     }
 
-    //FUNZIONE IN W.I.P PER RIEMPIRE LA TABELLA
+    /*TODO: VEDERE BENE LA FUNZIONE DI RIEMPIMENTO DELLA TABLE
     public void fill_TableView(List<Email> email_list){
         ObservableList<Email> emails = FXCollections.observableArrayList();
-        for(int i=0; i< email_list.size(); i++){
-            emails.add(email_list.get(i));
-        }
-        Tableview_email_rcvd = new TableView<>();
-        Tableview_email_rcvd.setItems(emails);
+        emails.addAll(email_list);
+        From_rcvd.setCellValueFactory(new PropertyValueFactory<Email, String>("from"));
+        Object_rcvd.setCellValueFactory(new PropertyValueFactory<Email, String>("object"));
+        Date_rcvd.setCellValueFactory(new PropertyValueFactory<Email, Date>("date"));
+        Tableview_email_rcvd.getItems().setAll(email_list);
         System.out.println("Tabella riempita");
+    }
+     */
+
+    public void openSendPage(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void SendmailAction(ActionEvent event) {
+        String recipient = Recipient_sendpage.getText();
+        String text = Text_sendpage.getText();
+        String object = Object_sendpage.getText();
+
+        String[] recipients = recipient.split(" ");
+        boolean recipients_corrects = true;
+        for(String s : recipients){
+            if(!Support.match_account(s)){
+                recipients_corrects = false;
+            }
+        }
+
+        List<String> recipients_failed = new ArrayList<>();
+        if(recipients_corrects){
+            for (String s : recipients){
+                if(client.sendEmail(new Email(client.getMailbox().getAccount_name(), s, object,text))){
+                    System.out.println("Email to "+s+" sent successfully");
+                }else{
+                    recipients_failed.add(s);
+                }
+            }
+            if(!recipients_failed.isEmpty()){
+                String recipients_failed_string = "";
+                for(String s : recipients_failed){
+                    recipients_failed_string += s+"\n";
+                }
+                Alert emailnotsent = new Alert(Alert.AlertType.NONE, "La mail ai seguenti destinatari non é stata inviata: \n"+recipients_failed_string+"Ricontrolla i campi o riprova.", ButtonType.OK);
+                emailnotsent.showAndWait();
+                Recipient_sendpage.clear();
+            }else{
+                Alert emailsent = new Alert(Alert.AlertType.NONE, "La mail é stata inviata a tutti i destinatari con successo.", ButtonType.OK);
+                emailsent.showAndWait();
+                Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+                stage.close();
+            }
+        }
     }
 
     @Override
