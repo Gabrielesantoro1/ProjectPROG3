@@ -31,7 +31,6 @@ public class Mailbox implements Serializable{
                 '}';
     }
 
-
     public void addEmail(Email email){this.mail_sent.add(email);}
 
     public String getAccount_name() {return account_name;}
@@ -73,5 +72,11 @@ public class Mailbox implements Serializable{
     public void setAllMail_del(List<Email> mail_del){
         this.mail_del = mail_del;
     }
+
+    public List<Email> getAllMail_rcvd(){return this.mail_rcvd;}
+
+    public List<Email> getAllMail_sent(){return this.mail_sent;}
+
+    public List<Email> getAllMail_del(){return this.mail_del;}
 
 }

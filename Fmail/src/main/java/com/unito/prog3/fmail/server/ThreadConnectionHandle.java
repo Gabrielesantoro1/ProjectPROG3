@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.nio.channels.AsynchronousChannel;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
@@ -46,9 +47,19 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                         Objects.requireNonNull(output).writeObject("false");
                         System.out.println("The recipient doesn't exist");
                     }
+                }else if (in instanceof ArrayList request){
+                    String client_name = (String) request.get(0);
+                    if(server.existAccount(client_name)){ //Controllo non necessario, ma lo rende piú sicuro
+                        Objects.requireNonNull(output).writeObject("true");
+                        System.out.println("Request of refresh received successfully");
+                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getindexbyname(client_name)));
+                        System.out.println("Mailbox sent to " + client_name + "successfully");
+                    }else{
+                        output.writeObject("false");
+                        System.out.println("An unknown client tried request information");
+                    }
                 }
-            }finally {output.flush();input.close();output.close();input.close();socket.close();
-                System.out.println("Connection closed");}
+            }finally {output.flush();input.close();output.close();input.close();socket.close();}
         } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
     }
 

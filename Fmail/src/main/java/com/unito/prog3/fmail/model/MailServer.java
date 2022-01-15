@@ -27,7 +27,7 @@ public class MailServer{
         System.out.println("MailServer created");
     }
 
-    public void create_dirs(){
+    public void create_dirs() throws IOException {
         for (int i = 0; i < this.getMailboxes().size(); i++) {
             String dir_name = this.getnamebyindex(i);
             File f = new File(Support.PATH_NAME_DIR + "\\" + dir_name + "\\" + "deleted");
@@ -43,18 +43,30 @@ public class MailServer{
                 //System.out.println("Sent email directory created");
             }
         }
+        File f = new File(Support.PATH_NAME_DIR + "\\id_count.txt");
+        if(f.createNewFile()){
+            String s = "0";
+            BufferedWriter buffer = new BufferedWriter(new FileWriter(f));
+            buffer.write(s);
+            buffer.flush();
+        }
     }
 
     /**
      * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one.
      * @param email_to_write Object Email to write
      */
-    public boolean saveEmail(Email email_to_write){
+    public boolean saveEmail(Email email_to_write) throws IOException {
         boolean saved = false;
         email_to_write.setId(emailId_count.getAndIncrement());
+
+        File id = new File(Support.PATH_NAME_DIR+"\\id_count.txt");
+        FileOutputStream fos = new FileOutputStream(id,false);
+        fos.write(emailId_count.toString().getBytes());
+
         String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\sent";
         String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\received";
-
+        System.out.println("SAVEMAIL1");
         try{
             File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
             File sent = new File(path_sender + "\\" +  email_to_write.getId() + ".txt");
@@ -87,6 +99,12 @@ public class MailServer{
     public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
         for (File account : Objects.requireNonNull(file.listFiles())){
+            if(account.getName().equals("id_count.txt")){
+                BufferedReader reader = new BufferedReader(new FileReader(account.getAbsolutePath()));
+                String id_value = reader.readLine();
+                emailId_count.set(Integer.parseInt(id_value));
+                return;
+            }
             for(File lists : Objects.requireNonNull(account.listFiles())){
                 switch (lists.getName()){
                     case "deleted":

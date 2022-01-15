@@ -98,7 +98,8 @@ public class ClientController implements Initializable {
         String[] recipients = recipient.split(" ");
         boolean recipients_corrects = true;
         for(String s : recipients){
-            if(!Support.match_account(s)){
+            System.out.println(client.getMailbox().getAccount_name());
+            if(!Support.match_account(s) || Objects.equals(client.getMailbox().getAccount_name(), s)){
                 recipients_corrects = false;
             }
         }
@@ -126,11 +127,26 @@ public class ClientController implements Initializable {
                 Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
                 stage.close();
             }
+        }else{
+            Alert emailsnotcorrect = new Alert(Alert.AlertType.NONE,"Ricontrolla le Email inserite.",ButtonType.OK);
+            emailsnotcorrect.showAndWait();
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+    }
+
+
+    public void updateMailbox(ActionEvent event) {
+        if(client.refresh_listEmail()){
+            Alert emailsrefreshed = new Alert(Alert.AlertType.NONE, "La lista delle mail é stata aggiornata con successo",ButtonType.OK);
+            emailsrefreshed.showAndWait();
+            //TODO: Non so se bisogna fare qualcosa di attivo per far vedere le nuove mails
+        }else{
+            Alert emailsNotrefreshed = new Alert(Alert.AlertType.NONE, "Errore nell'aggiornare le mail, riprova.",ButtonType.OK);
+            emailsNotrefreshed.showAndWait();
+        }
     }
 }
 

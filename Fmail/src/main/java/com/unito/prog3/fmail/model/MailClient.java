@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MailClient {
@@ -68,11 +70,40 @@ public class MailClient {
                     this.mailbox.setMail_sent(email);
                     saved = true;
                 }
-            } finally {out.flush();in.close();out.close(); }
+            } finally {out.flush();in.close();out.close();client_socket.close();}
         }catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return saved;
+    }
+
+    public boolean refresh_listEmail(){
+        boolean getted = false;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try{
+            Socket client_socket = new Socket(this.local, Support.port);
+            try{
+                out = new ObjectOutputStream(client_socket.getOutputStream());
+                in = new ObjectInputStream(client_socket.getInputStream());
+
+                ArrayList<String> what_send = new ArrayList<>();
+                what_send.add(this.mailbox.getAccount_name());
+
+                Objects.requireNonNull(out).writeObject(what_send);
+
+                String input = (String) in.readObject();
+                if(input.equals("true")){
+                    this.mailbox = (Mailbox) in.readObject();
+                    getted = true;
+                }
+                return getted;
+            }finally {out.flush();in.close();out.close();client_socket.close();}
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return getted;
     }
 
     public Mailbox getMailbox() {return mailbox;}
