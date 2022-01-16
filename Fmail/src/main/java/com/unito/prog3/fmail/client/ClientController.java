@@ -32,13 +32,9 @@ public class ClientController implements Initializable {
 
     //Home.fxml
     @FXML
-    private TableView<Email> Tableview_email_rcvd;
+    private ListView<Email> ListView_rcvd;
     @FXML
-    private TableColumn<Email, String> From_rcvd;
-    @FXML
-    private TableColumn<Email, String> Object_rcvd;
-    @FXML
-    private TableColumn<Email, Date> Date_rcvd;
+    private TextField account_name_text;
 
     //SendmailPage.fxml
     @FXML
