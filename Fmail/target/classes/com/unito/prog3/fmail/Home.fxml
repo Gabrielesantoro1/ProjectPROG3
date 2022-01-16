@@ -46,7 +46,7 @@
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="0.0">
                      <buttons>
                         <Button mnemonicParsing="false" onAction="#updateMailbox" text="Aggiorna" />
-                        <Button mnemonicParsing="false" text="Elimina definitivamente" />
+                        <Button onAction="#deleteMails" mnemonicParsing="false" text="Elimina definitivamente" />
                      </buttons>
                   </ButtonBar>
                   <ListView prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />

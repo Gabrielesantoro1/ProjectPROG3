@@ -1,13 +1,18 @@
 package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,8 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static javax.swing.UIManager.get;
 
 public class MailServer{
-    private static AtomicInteger emailId_count; //TODO: bisogna salvare il valore in qualche posto per poterlo prendere anche dopo che il server si riconnette.
+    private static AtomicInteger emailId_count;
     private List<Mailbox> mailboxes;
+    private final ListProperty<String> logs; //TODO: questa implementazione l'ho copiata dal video del prof
+    private final ObservableList<String> logsContnent;
 
     /**
      *   {@code MailServer} Constructor
@@ -24,7 +31,9 @@ public class MailServer{
     public MailServer() {
         this.mailboxes = new ArrayList<>();
         emailId_count = new AtomicInteger();
-        System.out.println("MailServer created");
+        this.logsContnent = FXCollections.observableList(new LinkedList<>());
+        this.logs = new SimpleListProperty<>();
+        this.logs.set(logsContnent);
     }
 
     public void create_dirs() throws IOException {
@@ -186,6 +195,13 @@ public class MailServer{
 
     public List<Mailbox> getMailboxes() {return mailboxes;}
 
+    public ListProperty<String> logsProperty(){
+        return logs;
+    }
+
+    public void addLog(String log){
+        this.logsContnent.add(log);
+    }
     @Override
     public String toString() {
         return "MailServer{`\n" +

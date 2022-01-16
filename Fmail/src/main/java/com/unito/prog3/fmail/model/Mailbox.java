@@ -31,23 +31,7 @@ public class Mailbox implements Serializable{
                 '}';
     }
 
-    public void addEmail(Email email){this.mail_sent.add(email);}
-
     public String getAccount_name() {return account_name;}
-
-    public void setAccount_name(String account_name) {this.account_name = account_name;}
-
-    public List<Email> getMail_rcvd() {
-        return mail_rcvd;
-    }
-
-    public List<Email> getMail_sent() {
-        return mail_sent;
-    }
-
-    public List<Email> getMail_del() {
-        return mail_del;
-    }
 
     public void setMail_rcvd(Email mail_rcvd) {
         this.mail_rcvd.add(mail_rcvd);
@@ -61,17 +45,7 @@ public class Mailbox implements Serializable{
         this.mail_del.add(mail_del);
     }
 
-    public void setAllMail_rcvd(List<Email> mail_rcvd){
-        this.mail_rcvd = mail_rcvd;
-    }
-
-    public void setAllMail_sent(List<Email> mail_sent){
-        this.mail_sent = mail_sent;
-    }
-
-    public void setAllMail_del(List<Email> mail_del){
-        this.mail_del = mail_del;
-    }
+    public void deleteEmails_del(){this.mail_del.clear();}
 
     public List<Email> getAllMail_rcvd(){return this.mail_rcvd;}
 

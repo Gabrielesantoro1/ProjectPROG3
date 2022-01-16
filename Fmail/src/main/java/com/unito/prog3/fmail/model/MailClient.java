@@ -89,6 +89,7 @@ public class MailClient {
 
                 ArrayList<String> what_send = new ArrayList<>();
                 what_send.add(this.mailbox.getAccount_name());
+                what_send.add("refresh");
 
                 Objects.requireNonNull(out).writeObject(what_send);
 
@@ -97,12 +98,39 @@ public class MailClient {
                     this.mailbox = (Mailbox) in.readObject();
                     getted = true;
                 }
-                return getted;
             }finally {out.flush();in.close();out.close();client_socket.close();}
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return getted;
+    }
+
+    public boolean del_listEmaildel() {
+        boolean deleted = false;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try {
+            Socket client_socket = new Socket(this.local, Support.port);
+            try {
+                out = new ObjectOutputStream(client_socket.getOutputStream());
+                in = new ObjectInputStream(client_socket.getInputStream());
+
+                ArrayList<String> what_send = new ArrayList<>();
+                what_send.add(this.mailbox.getAccount_name());
+                what_send.add("delete_all");
+
+                Objects.requireNonNull(out).writeObject(what_send);
+
+                String input = (String) in.readObject();
+                if (input.equals("true")) {
+                    this.mailbox.deleteEmails_del();
+                    deleted = true;
+                }
+            } finally {out.flush();in.close();out.close();client_socket.close();}
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return deleted;
     }
 
     public Mailbox getMailbox() {return mailbox;}
