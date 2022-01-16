@@ -34,26 +34,8 @@ public class ServerMain extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
-        ExecutorService exc = Executors.newFixedThreadPool(10);
-
-        MailServer server = new MailServer();
-        server.addMailBox(Support.daniele);
-        server.addMailBox(Support.danieleSer);
-        server.addMailBox(Support.gabriele);
-        server.create_dirs();
-        server.loadEmailFromLocal();
-        System.out.println(server.toString());
-        try {
-            ServerSocket server_socket = new ServerSocket(Support.port);
-            while (true) {
-                Socket incoming = server_socket.accept();
-                Runnable connectionHandle = new ThreadConnectionHandle(server,incoming);
-                exc.execute(connectionHandle);
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args){
+        launch();
     }
 }
 

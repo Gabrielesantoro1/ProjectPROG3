@@ -32,7 +32,6 @@ public class ClientController implements Initializable {
 
     //Home.fxml
     @FXML
-    @FXML
     private TextField account_name_text;
 
     //SendmailPage.fxml
@@ -69,7 +68,7 @@ public class ClientController implements Initializable {
         }
     }
 
-    /*TODO: VEDERE BENE LA FUNZIONE DI RIEMPIMENTO DELLA TABLE
+    /*
     public void fill_TableView(List<Email> email_list){
         ObservableList<Email> emails = FXCollections.observableArrayList();
         emails.addAll(email_list);
@@ -138,10 +137,19 @@ public class ClientController implements Initializable {
         if(client.refresh_listEmail()){
             Alert emailsrefreshed = new Alert(Alert.AlertType.NONE, "La lista delle mail é stata aggiornata con successo",ButtonType.OK);
             emailsrefreshed.showAndWait();
-            //TODO: Non so se bisogna fare qualcosa di attivo per far vedere le nuove mails
         }else{
             Alert emailsNotrefreshed = new Alert(Alert.AlertType.NONE, "Errore nell'aggiornare le mail, riprova.",ButtonType.OK);
             emailsNotrefreshed.showAndWait();
+        }
+    }
+
+    public void deleteMails(ActionEvent event) {
+        if(client.del_listEmaildel()){
+            Alert emailsdeleted = new Alert(Alert.AlertType.NONE, "La lista delle email eliminate é stata svuotata definitivamente", ButtonType.OK);
+            emailsdeleted.showAndWait();
+        }else{
+            Alert emailsnotdeleted = new Alert(Alert.AlertType.NONE, "Si é presentato un errore, riprova", ButtonType.OK);
+            emailsnotdeleted.showAndWait();
         }
     }
 }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.server.MailServerController">
    <children>
-      <TextArea fx:id="logs" layoutX="14.0" layoutY="57.0" prefHeight="336.0" prefWidth="580.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <ListView fx:id="logs" layoutX="14.0" layoutY="57.0" prefHeight="336.0" prefWidth="580.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
       <Text layoutX="14.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server : Logs" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <font>
             <Font size="30.0" />
          </font>
       </Text>
-      <TextArea fx:id="server_status" layoutX="390.0" layoutY="11.0" prefHeight="16.0" prefWidth="200.0" />
+      <Button onAction="#connect" layoutX="533.0" layoutY="21.0" mnemonicParsing="false" text="Connettiti" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="21.0" />
    </children>
 </AnchorPane>
