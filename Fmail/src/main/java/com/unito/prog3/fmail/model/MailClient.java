@@ -102,7 +102,6 @@ public class MailClient {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         return getted;
     }
 
