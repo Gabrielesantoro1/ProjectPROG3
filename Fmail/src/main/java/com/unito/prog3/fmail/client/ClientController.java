@@ -32,7 +32,6 @@ public class ClientController implements Initializable {
 
     //Home.fxml
     @FXML
-    private ListView<Email> ListView_rcvd;
     @FXML
     private TextField account_name_text;
 
@@ -43,6 +42,11 @@ public class ClientController implements Initializable {
     private TextField Recipient_sendpage;
     @FXML
     private TextField Object_sendpage;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    }
 
     @FXML
     public void getConnectionAction() throws IOException {
@@ -127,10 +131,6 @@ public class ClientController implements Initializable {
             Alert emailsnotcorrect = new Alert(Alert.AlertType.NONE,"Ricontrolla le Email inserite.",ButtonType.OK);
             emailsnotcorrect.showAndWait();
         }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
 
