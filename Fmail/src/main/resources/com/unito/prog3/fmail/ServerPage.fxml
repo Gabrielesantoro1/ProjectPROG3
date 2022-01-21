@@ -14,6 +14,5 @@
             <Font size="30.0" />
          </font>
       </Text>
-      <Button onAction="#connect" layoutX="533.0" layoutY="21.0" mnemonicParsing="false" text="Connettiti" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="21.0" />
    </children>
 </AnchorPane>

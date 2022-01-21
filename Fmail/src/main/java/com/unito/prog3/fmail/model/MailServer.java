@@ -22,8 +22,8 @@ import static javax.swing.UIManager.get;
 public class MailServer{
     private static AtomicInteger emailId_count;
     private List<Mailbox> mailboxes;
-    private final ListProperty<String> logs; //TODO: questa implementazione l'ho copiata dal video del prof
-    private final ObservableList<String> logsContnent;
+    private ListProperty<String> logs; //TODO: questa implementazione l'ho copiata dal video del prof
+    private ObservableList<String> logsContnent;
 
     /**
      *   {@code MailServer} Constructor

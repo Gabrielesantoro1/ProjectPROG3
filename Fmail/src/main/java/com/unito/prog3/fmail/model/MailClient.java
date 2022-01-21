@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class MailClient {
@@ -97,6 +96,7 @@ public class MailClient {
                 if(input.equals("true")){
                     this.mailbox = (Mailbox) in.readObject();
                     getted = true;
+                    System.out.println(mailbox.toString());
                 }
             }finally {out.flush();in.close();out.close();client_socket.close();}
         } catch (IOException | ClassNotFoundException e) {

@@ -2,6 +2,7 @@ package com.unito.prog3.fmail.server;
 
 import com.unito.prog3.fmail.model.MailServer;
 import com.unito.prog3.fmail.support.Support;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,6 +31,7 @@ public class MailServerController implements Initializable{
         server.addMailBox(Support.daniele);
         server.addMailBox(Support.danieleSer);
         server.addMailBox(Support.gabriele);
+        //Platform.setImplicitExit(false);
         logs.itemsProperty().bind(server.logsProperty());
         try {
             server.create_dirs();
@@ -38,23 +40,11 @@ public class MailServerController implements Initializable{
             e.printStackTrace();
         }
         System.out.println(server.toString());
+            Thread start_connection = new Thread(new StartConnectionHandle(server));
+            start_connection.start();
     }
 
     public void connect(ActionEvent event) {
-        ExecutorService exc = Executors.newFixedThreadPool(10);
-        try {
-            ServerSocket server_socket = new ServerSocket(Support.port);
-            server.addLog(new Date() + " : Server connected.");
-            //TODO: Questo while fa impallare  la grafica
-            /*while (!server_socket.isClosed()) {
-                Socket incoming = server_socket.accept();
-                Runnable connectionHandle = new ThreadConnectionHandle(server,incoming);
-                exc.execute(connectionHandle);
-            }
 
-             */
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
