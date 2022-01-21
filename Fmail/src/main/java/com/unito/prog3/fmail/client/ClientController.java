@@ -5,6 +5,7 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.model.Mailbox;
 import com.unito.prog3.fmail.support.Support;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
@@ -25,6 +26,7 @@ import java.util.*;
 
 public class ClientController implements Initializable {
     private static MailClient client;
+    private static ObservableList<Email> email_rcvd_obs;
 
     //ConnectionClient.fxml
     @FXML
@@ -33,6 +35,8 @@ public class ClientController implements Initializable {
     //Home.fxml
     @FXML
     private TextField account_name_text;
+    @FXML
+    private ListView<String> ListView_rcvd;
 
     //SendmailPage.fxml
     @FXML
@@ -44,7 +48,6 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
     }
 
     @FXML
@@ -56,8 +59,17 @@ public class ClientController implements Initializable {
                 Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
                 Stage window = (Stage) account_name.getScene().getWindow();
                 window.setScene(new Scene(root));
-                //fill_TableView(client.getMailbox().getMail_rcvd());
+                account_name_text = new TextField();
+                account_name_text.setText("CIAO");
+
+                //ObservableList<Email> email_rcvd_obs = FXCollections.observableList(new ArrayList<>());
+                //email_rcvd_obs.setAll(client.getMailbox().getAllMail_rcvd());
+                //ListView_rcvd.itemsProperty().set(email_rcvd_obs);
+                //ListView_rcvd.setItems(email_rcvd_obs);
+                //System.out.println(email_rcvd_obs.get(0));
+
             }else{
+
                 Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
                 emailnotregistreder.showAndWait();
             }
@@ -68,18 +80,6 @@ public class ClientController implements Initializable {
         }
     }
 
-    /*
-    public void fill_TableView(List<Email> email_list){
-        ObservableList<Email> emails = FXCollections.observableArrayList();
-        emails.addAll(email_list);
-        From_rcvd.setCellValueFactory(new PropertyValueFactory<Email, String>("from"));
-        Object_rcvd.setCellValueFactory(new PropertyValueFactory<Email, String>("object"));
-        Date_rcvd.setCellValueFactory(new PropertyValueFactory<Email, Date>("date"));
-        Tableview_email_rcvd.getItems().setAll(email_list);
-        System.out.println("Tabella riempita");
-    }
-
-    */
 
     public void openSendPage(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));

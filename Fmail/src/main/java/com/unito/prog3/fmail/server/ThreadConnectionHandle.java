@@ -4,6 +4,7 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.model.MailServer;
 import com.unito.prog3.fmail.support.Support;
+import javafx.application.Platform;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,6 +12,7 @@ import java.nio.channels.AsynchronousChannel;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
@@ -28,7 +30,12 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                 if (in instanceof String name) {
                     if (server.existAccount(name)) {
                         Objects.requireNonNull(output).writeObject("true");
-                        server.addLog("Client " + name + " is now connected");
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                server.addLog(new Date() + ": Client " + name + " is now connected");
+                            }
+                        });
                         Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getindexbyname(name)));
                     } else {
                         output.writeObject("false");

@@ -1,8 +1,11 @@
 package com.unito.prog3.fmail.model;
 import com.unito.prog3.fmail.support.Support;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Mailbox implements Serializable{
