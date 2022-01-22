@@ -54,16 +54,13 @@ public class ClientController implements Initializable {
                 window.setScene(new Scene(root));
                 client.automaticUpdate();
             }else{
-                Alert email_not_registered = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
-                email_not_registered.showAndWait();
+                alertMethod("Email account inserted is not registered, try with another email account");
             }
         }else{
             System.out.println("Email not correct");
-            Alert email_not_match = new Alert(Alert.AlertType.NONE, "L'email inserita ha un formato non corretto, riprova", ButtonType.OK);
-            email_not_match.showAndWait();
+            alertMethod("Email account inserted does not respect the format requested");
         }
     }
-
 
     public void SendPageButton(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
@@ -73,6 +70,7 @@ public class ClientController implements Initializable {
         stage.show();
     }
 
+    //TODO Il metodo funziona ma penso si possano evitare alcuni passaggi, magari alla fine capiamo un attimo come.
     public void SendmailButton(ActionEvent event) {
         String recipient = recipient_sendpage.getText();
         String text = area_sendpage.getText();
@@ -90,7 +88,7 @@ public class ClientController implements Initializable {
         if(recipients_corrects){
             for (String s : recipients){
                 if(client.sendEmail(new Email(client.getMailbox().getAccount_name(), s, object,text))){
-                    System.out.println("Email to "+s+" sent successfully");
+                    //System.out.println("Email to " + s + " sent successfully");
                 }else{
                     recipients_failed.add(s);
                 }
@@ -100,39 +98,37 @@ public class ClientController implements Initializable {
                 for(String s : recipients_failed){
                     recipients_failed_string += s+"\n";
                 }
-                Alert emailnotsent = new Alert(Alert.AlertType.NONE, "La mail ai seguenti destinatari non é stata inviata: \n"+recipients_failed_string+"Ricontrolla i campi o riprova.", ButtonType.OK);
-                emailnotsent.showAndWait();
+                alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");
                 recipient_sendpage.clear();
             }else{
-                Alert emailsent = new Alert(Alert.AlertType.NONE, "La mail é stata inviata a tutti i destinatari con successo.", ButtonType.OK);
-                emailsent.showAndWait();
+                alertMethod("Mail sent successfully to all the recipients");
                 Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
                 stage.close();
             }
         }else{
-            Alert email_not_correct = new Alert(Alert.AlertType.NONE,"Ricontrolla le Email inserite.",ButtonType.OK);
-            email_not_correct.showAndWait();
+            alertMethod("Check the mail account inserted");
         }
     }
 
     public void updateButton(ActionEvent event) {
         if(client.updateMailbox()){
-            Alert email_updated = new Alert(Alert.AlertType.NONE, "La lista delle mail é stata aggiornata con successo",ButtonType.OK);
-            email_updated.showAndWait();
+            alertMethod("Mailbox has been updated successfully");
         }else{
-            Alert email_not_updated = new Alert(Alert.AlertType.NONE, "Errore nell'aggiornare le mail, riprova.",ButtonType.OK);
-            email_not_updated.showAndWait();
+            alertMethod("An error occurred updating the mailbox");
         }
     }
 
     public void deleteButton(ActionEvent event) {
         if(client.deleteMails()){
-            Alert email_deleted = new Alert(Alert.AlertType.NONE, "La lista delle email eliminate é stata svuotata definitivamente", ButtonType.OK);
-            email_deleted.showAndWait();
+            alertMethod("Mails deleted have been completely erased");
         }else{
-            Alert email_not_deleted = new Alert(Alert.AlertType.NONE, "Si é presentato un errore, riprova", ButtonType.OK);
-            email_not_deleted.showAndWait();
+            alertMethod("An error occurred while deleting the emails");
         }
+    }
+
+    private void alertMethod(String alert_string){
+        Alert alert = new Alert(Alert.AlertType.NONE,alert_string, ButtonType.OK);
+        alert.showAndWait();
     }
 }
 

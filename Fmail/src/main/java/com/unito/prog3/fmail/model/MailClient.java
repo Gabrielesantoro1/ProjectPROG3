@@ -19,7 +19,6 @@ public class MailClient {
 
     /**
      * {@code MailClient} Constructor
-     * @param mailbox
      */
     public MailClient(Mailbox mailbox){
         try{
@@ -29,8 +28,8 @@ public class MailClient {
     }
 
     public Boolean getConnection() {
-        ObjectOutputStream output = null;
-        ObjectInputStream input = null;
+        ObjectOutputStream output;
+        ObjectInputStream input;
         boolean connection_established = false;
         try {
             Socket client_socket = new Socket(this.local, Support.port);
@@ -51,8 +50,8 @@ public class MailClient {
     }
 
     public boolean sendEmail(Email email) {
-        ObjectOutputStream output = null;
-        ObjectInputStream input = null;
+        ObjectOutputStream output;
+        ObjectInputStream input;
         boolean saved = false;
         try{
             Socket client_socket = new Socket(this.local, Support.port);
@@ -73,11 +72,11 @@ public class MailClient {
         return saved;
     }
 
-    //TODO updateMailBox e deleteMails sono praticamente uguale, possiamo unirli differenziando l'azione da fare con uno switch-casa
+    //TODO updateMailBox e deleteMails sono praticamente uguali, possiamo unirli differenziando l'azione da fare con uno switch-case
 
     public boolean updateMailbox(){
-        ObjectOutputStream output = null;
-        ObjectInputStream input = null;
+        ObjectOutputStream output;
+        ObjectInputStream input;
         boolean result = false;
         try{
             Socket client_socket = new Socket(this.local, Support.port);
@@ -103,8 +102,8 @@ public class MailClient {
     }
 
     public boolean deleteMails() {
-        ObjectOutputStream output = null;
-        ObjectInputStream input = null;
+        ObjectOutputStream output;
+        ObjectInputStream input;
         boolean deleted = false;
         try {
             Socket client_socket = new Socket(this.local, Support.port);
