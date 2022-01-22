@@ -1,6 +1,5 @@
 package com.unito.prog3.fmail.model;
 
-import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.support.Support;
 
 import java.io.IOException;
@@ -30,109 +29,102 @@ public class MailClient {
     }
 
     public Boolean getConnection() {
+        ObjectOutputStream output = null;
+        ObjectInputStream input = null;
         boolean connection_established = false;
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
         try {
             Socket client_socket = new Socket(this.local, Support.port);
-
+            output = new ObjectOutputStream(client_socket.getOutputStream());
+            input = new ObjectInputStream(client_socket.getInputStream());
             try {
-                out = new ObjectOutputStream(client_socket.getOutputStream());
-                in = new ObjectInputStream(client_socket.getInputStream());
+                Objects.requireNonNull(output).writeObject(this.mailbox.getAccount_name());
 
-                Objects.requireNonNull(out).writeObject(this.mailbox.getAccount_name());
-
-                String input = (String) in.readObject();
-                if (input.equals("true"))
+                String in = (String) input.readObject();
+                if (in.equals("true")) {
                     connection_established = true;
-
-                this.mailbox = (Mailbox) in.readObject();
-                System.out.println(mailbox.toString()); //STAMPA TEST
+                }
+                this.mailbox = (Mailbox) input.readObject();
                 return connection_established;
-
-            }finally {out.flush();in.close();out.close();client_socket.close();}
+            }finally {output.flush();input.close();output.close();client_socket.close();}
         }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
-    return connection_established;
+        return connection_established;
     }
 
     public boolean sendEmail(Email email) {
+        ObjectOutputStream output = null;
+        ObjectInputStream input = null;
         boolean saved = false;
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
         try{
             Socket client_socket = new Socket(this.local, Support.port);
+            output = new ObjectOutputStream(client_socket.getOutputStream());
+            input = new ObjectInputStream(client_socket.getInputStream());
             try {
-                out = new ObjectOutputStream(client_socket.getOutputStream());
-                in = new ObjectInputStream(client_socket.getInputStream());
+                Objects.requireNonNull(output).writeObject(email);
 
-                Objects.requireNonNull(out).writeObject(email);
-
-                String input = (String) in.readObject();
-                if(input.equals("true")){
-                    this.mailbox.setMail_sent(email);
+                String in = (String) input.readObject();
+                if(in.equals("true")){
+                    this.mailbox.setMailSent(email);
                     saved = true;
+                    System.out.println(mailbox.toString());
                 }
-            } finally {out.flush();in.close();out.close();client_socket.close();}
-        }catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+                return saved;
+            } finally {output.flush();input.close();output.close();client_socket.close();}
+        }catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         return saved;
     }
 
+    //TODO updateMailBox e deleteMails sono praticamente uguale, possiamo unirli differenziando l'azione da fare con uno switch-casa
+
     public boolean updateMailbox(){
+        ObjectOutputStream output = null;
+        ObjectInputStream input = null;
         boolean result = false;
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
         try{
             Socket client_socket = new Socket(this.local, Support.port);
+            output = new ObjectOutputStream(client_socket.getOutputStream());
+            input = new ObjectInputStream(client_socket.getInputStream());
             try{
-                out = new ObjectOutputStream(client_socket.getOutputStream());
-                in = new ObjectInputStream(client_socket.getInputStream());
+                ArrayList<String> client_request = new ArrayList<>();
+                client_request.add(this.mailbox.getAccount_name());
+                client_request.add("refresh");
 
-                ArrayList<String> what_send = new ArrayList<>();
-                what_send.add(this.mailbox.getAccount_name());
-                what_send.add("refresh");
+                Objects.requireNonNull(output).writeObject(client_request);
 
-                Objects.requireNonNull(out).writeObject(what_send);
-
-                String input = (String) in.readObject();
-                if(input.equals("true")){
-                    this.mailbox = (Mailbox) in.readObject();
+                String in = (String) input.readObject();
+                if(in.equals("true")){
+                    this.mailbox = (Mailbox) input.readObject();
                     result = true;
                     System.out.println(mailbox.toString());
                 }
-            }finally {out.flush();in.close();out.close();client_socket.close();}
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+                return result;
+            }finally {output.flush();input.close();output.close();client_socket.close();}
+        } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         return result;
     }
 
-    public boolean deleteMailBox() {
+    public boolean deleteMails() {
+        ObjectOutputStream output = null;
+        ObjectInputStream input = null;
         boolean deleted = false;
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
         try {
             Socket client_socket = new Socket(this.local, Support.port);
+            output = new ObjectOutputStream(client_socket.getOutputStream());
+            input = new ObjectInputStream(client_socket.getInputStream());
             try {
-                out = new ObjectOutputStream(client_socket.getOutputStream());
-                in = new ObjectInputStream(client_socket.getInputStream());
+                ArrayList<String> client_request = new ArrayList<>();
+                client_request.add(this.mailbox.getAccount_name());
+                client_request.add("delete_all");
 
-                ArrayList<String> what_send = new ArrayList<>();
-                what_send.add(this.mailbox.getAccount_name());
-                what_send.add("delete_all");
+                Objects.requireNonNull(output).writeObject(client_request);
 
-                Objects.requireNonNull(out).writeObject(what_send);
-
-                String input = (String) in.readObject();
-                if (input.equals("true")) {
-                    this.mailbox.deleteEmails_del();
+                String in = (String) input.readObject();
+                if (in.equals("true")) {
+                    this.mailbox.clearMailDel();
                     deleted = true;
                 }
-            } finally {out.flush();in.close();out.close();client_socket.close();}
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+                return deleted;
+            } finally {output.flush();input.close();output.close();client_socket.close();}
+        } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         return deleted;
     }
 
@@ -142,7 +134,6 @@ public class MailClient {
             @Override
             public void run() {
                 updateMailbox();
-                //System.out.println("Update automatico completato");
             }
         }, 0, 10000);
     }

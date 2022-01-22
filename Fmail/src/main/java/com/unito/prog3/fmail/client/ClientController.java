@@ -126,7 +126,7 @@ public class ClientController implements Initializable {
     }
 
     public void deleteButton(ActionEvent event) {
-        if(client.deleteMailBox()){
+        if(client.deleteMails()){
             Alert email_deleted = new Alert(Alert.AlertType.NONE, "La lista delle email eliminate é stata svuotata definitivamente", ButtonType.OK);
             email_deleted.showAndWait();
         }else{
