@@ -7,10 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Support {
-    public final static String PATH_NAME_DIR = "C:\\Users\\Daniele\\Desktop\\DirProjProg3";
+    public final static String PATH_NAME_DIR = "C:\\Users\\santo\\Documenti\\DirProjProg3";
     public final static Integer port = 8189;
-
-
 
     public final static Mailbox daniele = new Mailbox("daniele@gmail.com");
     public final static Mailbox gabriele = new Mailbox("gabriele@gmail.com");

@@ -5,10 +5,6 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.model.Mailbox;
 import com.unito.prog3.fmail.support.Support;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
@@ -26,11 +20,10 @@ import java.util.*;
 
 public class ClientController implements Initializable {
     private static MailClient client;
-    private static ObservableList<Email> email_rcvd_obs;
 
     //ConnectionClient.fxml
     @FXML
-    TextField account_name;
+    private TextField account_name;
 
     //Home.fxml
     @FXML
@@ -40,18 +33,18 @@ public class ClientController implements Initializable {
 
     //SendmailPage.fxml
     @FXML
-    private TextArea Area_sendpage;
+    private TextArea area_sendpage;
     @FXML
-    private TextField Recipient_sendpage;
+    private TextField recipient_sendpage;
     @FXML
-    private TextField Object_sendpage;
+    private TextField object_sendpage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
     @FXML
-    public void getConnectionAction() throws IOException {
+    public void getConnectionButton() throws IOException {
         if(Support.match_account(account_name.getText())){
             client = new MailClient(new Mailbox(account_name.getText()));
             if(client.getConnection()){
@@ -59,29 +52,20 @@ public class ClientController implements Initializable {
                 Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
                 Stage window = (Stage) account_name.getScene().getWindow();
                 window.setScene(new Scene(root));
-                account_name_text = new TextField();
-                account_name_text.setText("CIAO");
-
-                //ObservableList<Email> email_rcvd_obs = FXCollections.observableList(new ArrayList<>());
-                //email_rcvd_obs.setAll(client.getMailbox().getAllMail_rcvd());
-                //ListView_rcvd.itemsProperty().set(email_rcvd_obs);
-                //ListView_rcvd.setItems(email_rcvd_obs);
-                //System.out.println(email_rcvd_obs.get(0));
-
+                client.automaticUpdate();
             }else{
-
-                Alert emailnotregistreder = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
-                emailnotregistreder.showAndWait();
+                Alert email_not_registered = new Alert(Alert.AlertType.NONE, "L'email inserita non risulta registrata, inserisci una mail valida",ButtonType.OK);
+                email_not_registered.showAndWait();
             }
         }else{
             System.out.println("Email not correct");
-            Alert emailnotmatch = new Alert(Alert.AlertType.NONE, "L'email inserita ha un formato non corretto, riprova", ButtonType.OK);
-            emailnotmatch.showAndWait();
+            Alert email_not_match = new Alert(Alert.AlertType.NONE, "L'email inserita ha un formato non corretto, riprova", ButtonType.OK);
+            email_not_match.showAndWait();
         }
     }
 
 
-    public void openSendPage(ActionEvent event) throws IOException {
+    public void SendPageButton(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
         Stage stage = new Stage();
         Scene scene = new Scene(root);
@@ -89,10 +73,10 @@ public class ClientController implements Initializable {
         stage.show();
     }
 
-    public void SendmailAction(ActionEvent event) {
-        String recipient = Recipient_sendpage.getText();
-        String text = Area_sendpage.getText();
-        String object = Object_sendpage.getText();
+    public void SendmailButton(ActionEvent event) {
+        String recipient = recipient_sendpage.getText();
+        String text = area_sendpage.getText();
+        String object = object_sendpage.getText();
 
         String[] recipients = recipient.split(" ");
         boolean recipients_corrects = true;
@@ -102,7 +86,6 @@ public class ClientController implements Initializable {
                 recipients_corrects = false;
             }
         }
-
         List<String> recipients_failed = new ArrayList<>();
         if(recipients_corrects){
             for (String s : recipients){
@@ -119,7 +102,7 @@ public class ClientController implements Initializable {
                 }
                 Alert emailnotsent = new Alert(Alert.AlertType.NONE, "La mail ai seguenti destinatari non é stata inviata: \n"+recipients_failed_string+"Ricontrolla i campi o riprova.", ButtonType.OK);
                 emailnotsent.showAndWait();
-                Recipient_sendpage.clear();
+                recipient_sendpage.clear();
             }else{
                 Alert emailsent = new Alert(Alert.AlertType.NONE, "La mail é stata inviata a tutti i destinatari con successo.", ButtonType.OK);
                 emailsent.showAndWait();
@@ -127,29 +110,28 @@ public class ClientController implements Initializable {
                 stage.close();
             }
         }else{
-            Alert emailsnotcorrect = new Alert(Alert.AlertType.NONE,"Ricontrolla le Email inserite.",ButtonType.OK);
-            emailsnotcorrect.showAndWait();
+            Alert email_not_correct = new Alert(Alert.AlertType.NONE,"Ricontrolla le Email inserite.",ButtonType.OK);
+            email_not_correct.showAndWait();
         }
     }
 
-
-    public void updateMailbox(ActionEvent event) {
-        if(client.refresh_listEmail()){
-            Alert emailsrefreshed = new Alert(Alert.AlertType.NONE, "La lista delle mail é stata aggiornata con successo",ButtonType.OK);
-            emailsrefreshed.showAndWait();
+    public void updateButton(ActionEvent event) {
+        if(client.updateMailbox()){
+            Alert email_updated = new Alert(Alert.AlertType.NONE, "La lista delle mail é stata aggiornata con successo",ButtonType.OK);
+            email_updated.showAndWait();
         }else{
-            Alert emailsNotrefreshed = new Alert(Alert.AlertType.NONE, "Errore nell'aggiornare le mail, riprova.",ButtonType.OK);
-            emailsNotrefreshed.showAndWait();
+            Alert email_not_updated = new Alert(Alert.AlertType.NONE, "Errore nell'aggiornare le mail, riprova.",ButtonType.OK);
+            email_not_updated.showAndWait();
         }
     }
 
-    public void deleteMails(ActionEvent event) {
-        if(client.del_listEmaildel()){
-            Alert emailsdeleted = new Alert(Alert.AlertType.NONE, "La lista delle email eliminate é stata svuotata definitivamente", ButtonType.OK);
-            emailsdeleted.showAndWait();
+    public void deleteButton(ActionEvent event) {
+        if(client.deleteMailBox()){
+            Alert email_deleted = new Alert(Alert.AlertType.NONE, "La lista delle email eliminate é stata svuotata definitivamente", ButtonType.OK);
+            email_deleted.showAndWait();
         }else{
-            Alert emailsnotdeleted = new Alert(Alert.AlertType.NONE, "Si é presentato un errore, riprova", ButtonType.OK);
-            emailsnotdeleted.showAndWait();
+            Alert email_not_deleted = new Alert(Alert.AlertType.NONE, "Si é presentato un errore, riprova", ButtonType.OK);
+            email_not_deleted.showAndWait();
         }
     }
 }

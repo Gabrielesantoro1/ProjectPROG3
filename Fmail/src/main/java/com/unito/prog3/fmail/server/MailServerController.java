@@ -43,8 +43,4 @@ public class MailServerController implements Initializable{
             Thread start_connection = new Thread(new StartConnectionHandle(server));
             start_connection.start();
     }
-
-    public void connect(ActionEvent event) {
-
-    }
 }

@@ -1,5 +1,6 @@
 package com.unito.prog3.fmail.model;
 
+import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.support.Support;
 
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MailClient {
     private Mailbox mailbox;
@@ -76,8 +79,8 @@ public class MailClient {
         return saved;
     }
 
-    public boolean refresh_listEmail(){
-        boolean getted = false;
+    public boolean updateMailbox(){
+        boolean result = false;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
         try{
@@ -95,17 +98,17 @@ public class MailClient {
                 String input = (String) in.readObject();
                 if(input.equals("true")){
                     this.mailbox = (Mailbox) in.readObject();
-                    getted = true;
+                    result = true;
                     System.out.println(mailbox.toString());
                 }
             }finally {out.flush();in.close();out.close();client_socket.close();}
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return getted;
+        return result;
     }
 
-    public boolean del_listEmaildel() {
+    public boolean deleteMailBox() {
         boolean deleted = false;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
@@ -132,6 +135,18 @@ public class MailClient {
         }
         return deleted;
     }
+
+    public void automaticUpdate(){
+        Timer timer_update = new Timer();
+        timer_update.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                updateMailbox();
+                //System.out.println("Update automatico completato");
+            }
+        }, 0, 10000);
+    }
+
 
     public Mailbox getMailbox() {return mailbox;}
 
