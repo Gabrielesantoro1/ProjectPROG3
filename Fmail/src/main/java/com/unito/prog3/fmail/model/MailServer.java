@@ -2,9 +2,7 @@ package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -90,8 +88,8 @@ public class MailServer{
                 buffer.write(what_write);
                 buffer.flush();
 
-                this.mailboxes.get(getindexbyname(email_to_write.getFrom())).setMail_sent(email_to_write);
-                this.mailboxes.get(getindexbyname(email_to_write.getTo())).setMail_rcvd(email_to_write);
+                this.mailboxes.get(getindexbyname(email_to_write.getFrom())).setMailSent(email_to_write);
+                this.mailboxes.get(getindexbyname(email_to_write.getTo())).setMailRcvd(email_to_write);
                 saved = true;
                 System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory and in local");
             }
@@ -142,7 +140,7 @@ public class MailServer{
                                     line = reader.readLine();
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_sent(email_to_load);
+                                this.mailboxes.get(this.getindexbyname(account.getName())).setMailSent(email_to_load);
                             }
                         }
                         break;
@@ -158,7 +156,7 @@ public class MailServer{
                                     line = reader.readLine();
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_rcvd(email_to_load);
+                                this.mailboxes.get(this.getindexbyname(account.getName())).setMailRcvd(email_to_load);
                             }
                         }
                         break;
