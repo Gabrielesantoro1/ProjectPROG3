@@ -40,8 +40,7 @@ public class ClientController implements Initializable {
     private TextField object_sendpage;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
+    public void initialize(URL url, ResourceBundle resourceBundle) {}
 
     @FXML
     public void getConnectionButton() throws IOException {
