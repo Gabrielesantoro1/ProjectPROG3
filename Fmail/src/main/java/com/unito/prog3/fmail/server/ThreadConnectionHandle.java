@@ -15,9 +15,9 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
     @Override
     public void run() {
         //TODO Secondo me ha senso dividere tutto questo codice in run in più metodi (sono 60 righe)
-        ObjectInputStream input = null;
-        ObjectOutputStream output = null;
-        Object in = null;
+        ObjectInputStream input;
+        ObjectOutputStream output;
+        Object in;
         try {
             input = new ObjectInputStream(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
