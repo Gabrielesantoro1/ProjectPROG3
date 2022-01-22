@@ -16,8 +16,8 @@
                <children>
                   <ButtonBar layoutY="-5.0" prefHeight="38.0" prefWidth="163.0" AnchorPane.rightAnchor="5.0">
                     <buttons>
-                      <Button mnemonicParsing="false" onAction="#openSendPage" text="Scrivi" />
-                        <Button mnemonicParsing="false" onAction="#updateMailbox" text="Aggiorna" />
+                      <Button mnemonicParsing="false" onAction="#SendPageButton" text="Scrivi" />
+                        <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
                     </buttons>
                   </ButtonBar>
                   <TextField fx:id="account_name_text" editable="false" layoutY="4.0" AnchorPane.leftAnchor="6.0" />
@@ -32,7 +32,7 @@
 
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="5.0">
                      <buttons>
-                        <Button mnemonicParsing="false" onAction="#updateMailbox" text="Aggiorna" />
+                        <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
                      </buttons>
                   </ButtonBar>
                   <ListView prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
@@ -45,8 +45,8 @@
                <children>
                   <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="0.0">
                      <buttons>
-                        <Button mnemonicParsing="false" onAction="#updateMailbox" text="Aggiorna" />
-                        <Button onAction="#deleteMails" mnemonicParsing="false" text="Elimina definitivamente" />
+                        <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
+                        <Button onAction="#deleteButton" mnemonicParsing="false" text="Elimina definitivamente" />
                      </buttons>
                   </ButtonBar>
                   <ListView prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
