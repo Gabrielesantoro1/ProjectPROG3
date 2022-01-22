@@ -2,7 +2,6 @@ package com.unito.prog3.fmail.server;
 
 import com.unito.prog3.fmail.model.MailServer;
 import com.unito.prog3.fmail.support.Support;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
