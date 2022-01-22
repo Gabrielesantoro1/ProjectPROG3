@@ -147,7 +147,6 @@ public class MailClient {
         }, 0, 10000);
     }
 
-
     public Mailbox getMailbox() {return mailbox;}
 
     @Override
