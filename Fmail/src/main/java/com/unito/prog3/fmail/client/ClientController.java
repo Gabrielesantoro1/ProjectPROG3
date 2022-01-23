@@ -15,11 +15,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.util.*;
 
 public class ClientController implements Initializable {
     private static MailClient client;
+    private Thread heartbeatThread;
 
     //ConnectionClient.fxml
     @FXML
@@ -42,18 +44,43 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {}
 
+    /**
+     * The function checks if the inserted email is of the correct format, calls the getConnection () function which returns a result of type String. If the result is "CC" then the client was able to connect successfully, then starts a backgroud thread that checks every 5000 milliseconds if the server is still connected and finally changes the scene. If the result is "CNR" it means that the email entered is not a registered email. Finally, if the result is "SNC" it means that we have not been able to establish a connection with the server because the server is probably offline.
+     */
     @FXML
     public void getConnectionButton() throws IOException {
         if(Support.match_account(account_name.getText())){
             client = new MailClient(new Mailbox(account_name.getText()));
-            if(client.getConnection()){
-                System.out.println("Client connected");
-                Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
-                Stage window = (Stage) account_name.getScene().getWindow();
-                window.setScene(new Scene(root));
-                client.automaticUpdate();
-            }else{
-                alertMethod("Email account inserted is not registered, try with another email account");
+            String result = client.getConnection();
+            switch (result) {
+                //Client Connected
+                case "CC" -> {
+                    //HeartBeat to check every 5000ms if the server is still online
+                    heartbeatThread = new Thread(() -> {
+                        while(true){
+                            try{
+                                Socket client_socket = new Socket(client.getLocal(),Support.port);
+                                client_socket.getOutputStream().write(666);
+                                System.out.println("Still connected");
+                                Thread.sleep(5000);
+                            }catch (IOException | InterruptedException e) {
+                                System.out.println("Server offline");
+                                client.setConnect(false);
+                                client.getConnection(); //TODO Se questo da risultato positivo devo provare a far apparrire un avviso che si é riconnesso ma un thread non può interagire sull'interfaccia.
+                            }
+                        }
+                    });
+                    heartbeatThread.start();
+                    //Change scene
+                    Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
+                    Stage window = (Stage) account_name.getScene().getWindow();
+                    window.setScene(new Scene(root));
+                    client.automaticUpdate();
+                }
+                //Client Not Registered
+                case "CNR" -> alertMethod("Email account inserted is not registered, try with another email account");
+                //Server Not Connected
+                case "SNC" -> alertMethod("There was an error connecting to the server, please try again");
             }
         }else{
             System.out.println("Email not correct");
@@ -61,67 +88,92 @@ public class ClientController implements Initializable {
         }
     }
 
+    /**
+     * If the client is connected with the server, then if the server is not offline, the screen for compiling the email to be sent opens
+     *
+     */
     public void SendPageButton(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
-        Stage stage = new Stage();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        if(client.isConnect()) {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("SendmailPage.fxml")));
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
+        }
     }
 
     //TODO Il metodo funziona ma penso si possano evitare alcuni passaggi, magari alla fine capiamo un attimo come.
-    public void SendmailButton(ActionEvent event) {
-        String recipient = recipient_sendpage.getText();
-        String text = area_sendpage.getText();
-        String object = object_sendpage.getText();
 
-        String[] recipients = recipient.split(" ");
-        boolean recipients_corrects = true;
-        for(String s : recipients){
-            System.out.println(client.getMailbox().getAccount_name());
-            if(!Support.match_account(s) || Objects.equals(client.getMailbox().getAccount_name(), s)){
-                recipients_corrects = false;
-            }
-        }
-        List<String> recipients_failed = new ArrayList<>();
-        if(recipients_corrects){
-            for (String s : recipients){
-                if(client.sendEmail(new Email(client.getMailbox().getAccount_name(), s, object,text))){
-                    //System.out.println("Email to " + s + " sent successfully");
-                }else{
-                    recipients_failed.add(s);
+    /**
+     *If the server is offline, a popup is sent. Otherwise the inserted fields are analyzed, it is checked if there are more than one mail and the sendEmail () function is called.
+     */
+    public void SendmailButton(ActionEvent event) {
+        if(client.isConnect()) {
+            String recipient = recipient_sendpage.getText();
+            String text = area_sendpage.getText();
+            String object = object_sendpage.getText();
+
+            //Split recipient if there are more than one
+            String[] recipients = recipient.split(" ");
+            boolean recipients_corrects = true;
+            for (String s : recipients) {
+                System.out.println(client.getMailbox().getAccount_name());
+                if (!Support.match_account(s) || Objects.equals(client.getMailbox().getAccount_name(), s)) {
+                    recipients_corrects = false;
                 }
             }
-            if(!recipients_failed.isEmpty()){
-                String recipients_failed_string = "";
-                for(String s : recipients_failed){
-                    recipients_failed_string += s+"\n";
+            //Sends the email to all recipients
+            List<String> recipients_failed = new ArrayList<>();
+            if (recipients_corrects) {
+                for (String s : recipients) {
+                    if (!client.sendEmail(new Email(client.getMailbox().getAccount_name(), s, object, text))) {
+                        recipients_failed.add(s);
+                    }
                 }
-                alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");
-                recipient_sendpage.clear();
-            }else{
-                alertMethod("Mail sent successfully to all the recipients");
-                Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-                stage.close();
+                //Check if there were any recipients to whom the email could not be sent
+                if (!recipients_failed.isEmpty()) {
+                    String recipients_failed_string = "";
+                    for (String s : recipients_failed) {
+                        recipients_failed_string += s + "\n";
+                    }
+                    alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");
+                    recipient_sendpage.clear();
+                } else {
+                    alertMethod("Mail sent successfully to all the recipients");
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.close();
+                }
+            } else {
+                alertMethod("Check the mail account inserted");
             }
         }else{
-            alertMethod("Check the mail account inserted");
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 
     public void updateButton(ActionEvent event) {
-        if(client.updateMailbox()){
-            alertMethod("Mailbox has been updated successfully");
+        if(client.isConnect()) {
+            if (client.updateMailbox()) {
+                alertMethod("Mailbox has been updated successfully");
+            } else {
+                alertMethod("An error occurred updating the mailbox");
+            }
         }else{
-            alertMethod("An error occurred updating the mailbox");
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 
     public void deleteButton(ActionEvent event) {
-        if(client.deleteMails()){
-            alertMethod("Mails deleted have been completely erased");
+        if(client.isConnect()) {
+            if (client.deleteMails()) {
+                alertMethod("Mails deleted have been completely erased");
+            } else {
+                alertMethod("An error occurred while deleting the emails");
+            }
         }else{
-            alertMethod("An error occurred while deleting the emails");
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 
