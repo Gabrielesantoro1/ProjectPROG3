@@ -16,6 +16,8 @@ import java.util.TimerTask;
 public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
+    private boolean Connect = false;
+
 
     /**
      * {@code MailClient} Constructor
@@ -27,10 +29,10 @@ public class MailClient {
         this.mailbox = mailbox;
     }
 
-    public Boolean getConnection() {
+    public String getConnection() {
         ObjectOutputStream output;
         ObjectInputStream input;
-        boolean connection_established = false;
+        String return_result;
         try {
             Socket client_socket = new Socket(this.local, Support.port);
             output = new ObjectOutputStream(client_socket.getOutputStream());
@@ -40,13 +42,17 @@ public class MailClient {
 
                 String in = (String) input.readObject();
                 if (in.equals("true")) {
-                    connection_established = true;
+                    return_result = "CC"; //Client Connected
+                    Connect = true;
+                }else{
+                    return_result = "CNR"; //Client Not Registered
                 }
                 this.mailbox = (Mailbox) input.readObject();
-                return connection_established;
             }finally {output.flush();input.close();output.close();client_socket.close();}
-        }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
-        return connection_established;
+        }catch (IOException | ClassNotFoundException e){
+            return_result = "SNC"; //Server Not Connected
+        }
+        return return_result;
     }
 
     public boolean sendEmail(Email email) {
@@ -72,8 +78,6 @@ public class MailClient {
         return saved;
     }
 
-    //TODO updateMailBox e deleteMails sono praticamente uguali, possiamo unirli differenziando l'azione da fare con uno switch-case
-
     public boolean updateMailbox(){
         ObjectOutputStream output;
         ObjectInputStream input;
@@ -93,11 +97,11 @@ public class MailClient {
                 if(in.equals("true")){
                     this.mailbox = (Mailbox) input.readObject();
                     result = true;
-                    System.out.println(mailbox.toString());
+                    System.out.println("Emails Updated");
                 }
                 return result;
             }finally {output.flush();input.close();output.close();client_socket.close();}
-        } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
+        } catch (IOException | ClassNotFoundException e) {}
         return result;
     }
 
@@ -138,6 +142,18 @@ public class MailClient {
     }
 
     public Mailbox getMailbox() {return mailbox;}
+
+    public InetAddress getLocal() {
+        return local;
+    }
+
+    public boolean isConnect() {
+        return Connect;
+    }
+
+    public void setConnect(boolean connect) {
+        Connect = connect;
+    }
 
     @Override
     public String toString() {

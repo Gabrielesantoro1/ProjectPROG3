@@ -14,7 +14,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
 
     @Override
     public void run() {
-        //TODO Secondo me ha senso dividere tutto questo codice in run in più metodi (sono 60 righe)
         ObjectInputStream input;
         ObjectOutputStream output;
         Object in;
@@ -40,7 +39,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                        }else {
                            Objects.requireNonNull(output).writeObject("false");
                            Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() +" from " + email.getFrom()));
-                           //TODO Cosa fare ? Ritentare il salvataggio, capire da cosa dipenda il problema o lasciare semplicemente così ?
                        }
                     }else{
                         Objects.requireNonNull(output).writeObject("false");

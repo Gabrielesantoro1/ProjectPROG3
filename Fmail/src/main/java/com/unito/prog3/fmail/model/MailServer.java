@@ -20,7 +20,7 @@ import static javax.swing.UIManager.get;
 public class MailServer{
     private static AtomicInteger emailId_count;
     private List<Mailbox> mailboxes;
-    private ListProperty<String> logs; //TODO: questa implementazione l'ho copiata dal video del prof
+    private ListProperty<String> logs;
     private ObservableList<String> logsContnent;
 
     /**
