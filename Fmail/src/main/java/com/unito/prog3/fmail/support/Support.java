@@ -13,7 +13,6 @@ public class Support {
     public final static Mailbox daniele = new Mailbox("daniele@gmail.com");
     public final static Mailbox gabriele = new Mailbox("gabriele@gmail.com");
     public final static Mailbox danieleSer = new Mailbox("danieleSer@gmail.com");
-    //public final static Mailbox wrong = new Mailbox("wrong@css");
 
     //TODO Nella funzione non è possibile inserire punti o numeri.
     public static boolean match_account(String account_name){

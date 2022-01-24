@@ -105,7 +105,6 @@ public class ClientController implements Initializable {
     }
 
     //TODO Il metodo funziona ma penso si possano evitare alcuni passaggi, magari alla fine capiamo un attimo come.
-
     /**
      *If the server is offline, a popup is sent. Otherwise the inserted fields are analyzed, it is checked if there are more than one mail and the sendEmail () function is called.
      */
@@ -153,6 +152,9 @@ public class ClientController implements Initializable {
         }
     }
 
+    /**
+     *If the server is offline, a popup is sent. Otherwise the updateMailbox() function is called.
+     */
     public void updateButton(ActionEvent event) {
         if(client.isConnect()) {
             if (client.updateMailbox()) {
@@ -165,6 +167,9 @@ public class ClientController implements Initializable {
         }
     }
 
+    /**
+     *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.
+     */
     public void deleteButton(ActionEvent event) {
         if(client.isConnect()) {
             if (client.deleteMails()) {
@@ -177,6 +182,10 @@ public class ClientController implements Initializable {
         }
     }
 
+    /**
+     * Create a new Alert pop-up
+     * @param alert_string string to show
+     */
     private void alertMethod(String alert_string){
         Alert alert = new Alert(Alert.AlertType.NONE,alert_string, ButtonType.OK);
         alert.showAndWait();
