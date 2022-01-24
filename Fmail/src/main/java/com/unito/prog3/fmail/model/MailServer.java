@@ -60,7 +60,7 @@ public class MailServer{
     }
 
     /**
-     * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one.
+     * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one. It also updates the value of the id_counter
      * @param email_to_write Object Email to write
      */
     public boolean saveEmail(Email email_to_write) throws IOException {
@@ -100,8 +100,8 @@ public class MailServer{
     }
 
     /**
-     * The function scrolls through all the folders of each account saved locally and for each account and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding to each account.
-     * @throws IOException
+     * The function scrolls through all the folders of each account saved locally and for each account and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding to each account. Forward also loads the current value of the id_count
+     *
      */
     public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
@@ -168,16 +168,6 @@ public class MailServer{
         System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
-    public Boolean existAccount(String account_name){
-        boolean exist = false;
-        for(int i = 0; i < mailboxes.size() && !exist; i++){
-            if(mailboxes.get(i).getAccount_name().equals(account_name)){
-                exist = true;
-            }
-        }
-        return  exist;
-    }
-
     private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}
 
     public int getindexbyname(String account){
@@ -195,6 +185,16 @@ public class MailServer{
 
     public ListProperty<String> logsProperty(){
         return logs;
+    }
+
+    public Boolean existAccount(String account_name){
+        boolean exist = false;
+        for(int i = 0; i < mailboxes.size() && !exist; i++){
+            if(mailboxes.get(i).getAccount_name().equals(account_name)){
+                exist = true;
+            }
+        }
+        return  exist;
     }
 
     public void addLog(String log){

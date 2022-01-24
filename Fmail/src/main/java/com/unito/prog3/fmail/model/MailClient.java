@@ -29,6 +29,10 @@ public class MailClient {
         this.mailbox = mailbox;
     }
 
+    /**
+     * The function tries to open a connection with the server, if it fails it means that the server is probably offline so it returns the String "SNC" to warn the controller. Otherwise it forwards its account name, if it receives a "true" result it means that the entered name is registered and then returns the String "CC" otherwise it returns the value "CNR"
+     * @return A string that is able to make the controller understand what happened and therefore be able to proceed accordingly
+     */
     public String getConnection() {
         ObjectOutputStream output;
         ObjectInputStream input;
@@ -55,6 +59,11 @@ public class MailClient {
         return return_result;
     }
 
+    /**
+     *A connection with the server is created and the email is sent. Wait for a return value that indicates whether the email was sent successfully or not
+     * @param email email to send
+     * @return a Boolean value that indicates whether the email was sent successfully or not
+     */
     public boolean sendEmail(Email email) {
         ObjectOutputStream output;
         ObjectInputStream input;
@@ -78,6 +87,10 @@ public class MailClient {
         return saved;
     }
 
+    /**
+     * Send a request to update its emails.
+     * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
+     */
     public boolean updateMailbox(){
         ObjectOutputStream output;
         ObjectInputStream input;
@@ -105,6 +118,10 @@ public class MailClient {
         return result;
     }
 
+    /**
+     * Send a request for permanent deletion of its deleted emails
+     * @return a Boolean value that indicates whether the deleted emails was permanent deleted successfully or not
+     */
     public boolean deleteMails() {
         ObjectOutputStream output;
         ObjectInputStream input;
@@ -131,6 +148,9 @@ public class MailClient {
         return deleted;
     }
 
+    /**
+     * Start a timer where every 10000ms updates the mailbox
+     */
     public void automaticUpdate(){
         Timer timer_update = new Timer();
         timer_update.schedule(new TimerTask() {
