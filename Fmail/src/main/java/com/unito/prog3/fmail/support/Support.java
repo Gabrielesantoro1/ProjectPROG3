@@ -14,9 +14,8 @@ public class Support {
     public final static Mailbox gabriele = new Mailbox("gabriele@gmail.com");
     public final static Mailbox danieleSer = new Mailbox("danieleSer@gmail.com");
 
-    //TODO Nella funzione non è possibile inserire punti o numeri.
     public static boolean match_account(String account_name){
-        Pattern p = Pattern.compile("[a-zwA-Z]++@[a-zA-Z]++.com");
+        Pattern p = Pattern.compile("[a-zA-Z0-9]++@[a-zA-Z]++.com");
         Matcher m = p.matcher(account_name);
         return m.matches();
     }

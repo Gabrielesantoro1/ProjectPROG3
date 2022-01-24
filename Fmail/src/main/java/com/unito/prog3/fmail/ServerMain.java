@@ -8,10 +8,12 @@ import com.unito.prog3.fmail.support.Support;
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,6 +33,12 @@ public class ServerMain extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ServerPage.fxml")));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
         stage.show();
     }
 
