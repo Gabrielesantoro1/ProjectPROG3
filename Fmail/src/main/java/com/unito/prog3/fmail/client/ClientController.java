@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
@@ -52,6 +53,7 @@ public class ClientController implements Initializable {
         if(Support.match_account(account_name.getText())){
             client = new MailClient(new Mailbox(account_name.getText()));
             String result = client.getConnection();
+            System.out.println(result);
             switch (result) {
                 //Client Connected
                 case "CC" -> {
@@ -70,17 +72,28 @@ public class ClientController implements Initializable {
                             }
                         }
                     });
+                    heartbeatThread.setDaemon(true);
                     heartbeatThread.start();
                     //Change scene
                     Parent root = FXMLLoader.load(Objects.requireNonNull(ClientMain.class.getResource("Home.fxml")));
                     Stage window = (Stage) account_name.getScene().getWindow();
                     window.setScene(new Scene(root));
+                    /*window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent windowEvent) {
+                            System.exit(0);
+                        }
+                    });*/
                     client.automaticUpdate();
                 }
                 //Client Not Registered
-                case "CNR" -> alertMethod("Email account inserted is not registered, try with another email account");
+                case "CNR" -> {
+                    alertMethod("Email account inserted is not registered, try with another email account");
+                }
                 //Server Not Connected
-                case "SNC" -> alertMethod("There was an error connecting to the server, please try again");
+                case "SNC" -> {
+                    alertMethod("There was an error connecting to the server, please try again");
+                }
             }
         }else{
             System.out.println("Email not correct");
@@ -104,7 +117,6 @@ public class ClientController implements Initializable {
         }
     }
 
-    //TODO Il metodo funziona ma penso si possano evitare alcuni passaggi, magari alla fine capiamo un attimo come.
     /**
      *If the server is offline, a popup is sent. Otherwise the inserted fields are analyzed, it is checked if there are more than one mail and the sendEmail () function is called.
      */
@@ -157,7 +169,7 @@ public class ClientController implements Initializable {
      */
     public void updateButton(ActionEvent event) {
         if(client.isConnect()) {
-            if (client.updateMailbox()) {
+            if (client.requestAction("update")) {
                 alertMethod("Mailbox has been updated successfully");
             } else {
                 alertMethod("An error occurred updating the mailbox");
@@ -172,7 +184,7 @@ public class ClientController implements Initializable {
      */
     public void deleteButton(ActionEvent event) {
         if(client.isConnect()) {
-            if (client.deleteMails()) {
+            if (client.requestAction("delete")) {
                 alertMethod("Mails deleted have been completely erased");
             } else {
                 alertMethod("An error occurred while deleting the emails");

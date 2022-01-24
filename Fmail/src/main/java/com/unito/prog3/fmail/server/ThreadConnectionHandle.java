@@ -54,7 +54,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }
                 }else if (in instanceof ArrayList request){ //Request Case
                     String client_name = (String) request.get(0);
-                    if(request.get(1).equals("refresh")){ //Refresh request
+                    if(request.get(1).equals("update")){ //Refresh request
                         if(server.existAccount(client_name)){ //Controllo non necessario, ma lo rende piú sicuro
                             Objects.requireNonNull(output).writeObject("true");
                             System.out.println("Request of refresh received successfully");
@@ -66,11 +66,11 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                             System.out.println("An unknown client tried the refresh request");
                         }
                     }
-                    else if(request.get(1).equals("delete_all")){ //Permanent elimination request
+                    else if(request.get(1).equals("delete")){ //Permanent elimination request
                         if(server.existAccount(client_name)){
                             server.getMailboxes().get(server.getindexbyname(client_name)).clearMailDel();
                             Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + "Deleted mails of client " + client_name + " successfully cleared"));
+                            Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
                         }else{
                             output.writeObject("false");
                             System.out.println("An unknown client tried the delete request");
