@@ -61,12 +61,12 @@ public class ClientController implements Initializable {
                             try{
                                 Socket client_socket = new Socket(client.getLocal(),Support.port);
                                 client_socket.getOutputStream().write(666);
+                                client.setConnect(true);
                                 System.out.println("Still connected");
                                 Thread.sleep(5000);
                             }catch (IOException | InterruptedException e) {
                                 System.out.println("Server offline");
                                 client.setConnect(false);
-                                client.getConnection(); //TODO Se questo da risultato positivo devo provare a far apparrire un avviso che si é riconnesso ma un thread non può interagire sull'interfaccia.
                             }
                         }
                     });
