@@ -35,7 +35,7 @@
                         <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
                      </buttons>
                   </ButtonBar>
-                  <ListView prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
+                  <ListView fx:id="ListView_sent" prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -49,7 +49,7 @@
                         <Button onAction="#deleteButton" mnemonicParsing="false" text="Elimina definitivamente" />
                      </buttons>
                   </ButtonBar>
-                  <ListView prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
+                  <ListView fx:id="ListView_del" prefHeight="200.0" prefWidth="392.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
                </children>
             </AnchorPane>
          </content>
