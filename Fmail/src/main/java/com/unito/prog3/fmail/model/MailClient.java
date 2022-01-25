@@ -2,9 +2,7 @@ package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -16,7 +14,7 @@ import java.util.TimerTask;
 public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
-    private boolean Connect = false;
+    private static boolean Connect = false;
 
 
     /**
@@ -92,34 +90,41 @@ public class MailClient {
      * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
      */
     public boolean requestAction(String request){
-        ObjectOutputStream output;
-        ObjectInputStream input;
         boolean result = false;
-        try{
-            Socket client_socket = new Socket(this.local, Support.port);
-            output = new ObjectOutputStream(client_socket.getOutputStream());
-            input = new ObjectInputStream(client_socket.getInputStream());
-            try{
-                ArrayList<String> client_request = new ArrayList<>();
-                client_request.add(this.mailbox.getAccount_name());
-                client_request.add(request);
+        if(this.Connect){
+            ObjectOutputStream output;
+            ObjectInputStream input;
+            try {
+                Socket client_socket = new Socket(this.local, Support.port);
+                output = new ObjectOutputStream(client_socket.getOutputStream());
+                input = new ObjectInputStream(client_socket.getInputStream());
+                try {
+                    ArrayList<String> client_request = new ArrayList<>();
+                    client_request.add(this.mailbox.getAccount_name());
+                    client_request.add(request);
 
-                Objects.requireNonNull(output).writeObject(client_request);
+                    Objects.requireNonNull(output).writeObject(client_request);
 
-                String in = (String) input.readObject();
-                if(in.equals("true")){
-                    if(request.equals("update")) {
-                        this.mailbox = (Mailbox) input.readObject();
-                        System.out.println("Emails Updated");
-                    }else if(request.equals("delete")){
-                        this.mailbox.getAllMailDel().clear();
-                        System.out.println("Emails Deleted");
+                    String in = (String) input.readObject();
+                    if (in.equals("true")) {
+                        if (request.equals("update")) {
+                            this.mailbox = (Mailbox) input.readObject();
+                            System.out.println("Emails Updated");
+                        } else if (request.equals("delete")) {
+                            this.mailbox.getAllMailDel().clear();
+                            System.out.println("Emails Deleted");
+                        }
+                        result = true;
                     }
-                    result = true;
+                } finally {
+                    output.flush();
+                    input.close();
+                    output.close();
+                    client_socket.close();
                 }
-            }finally {output.flush();input.close();output.close();client_socket.close();}
-        } catch (IOException | ClassNotFoundException e){
-            e.printStackTrace();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -132,9 +137,36 @@ public class MailClient {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                requestAction("update");
+                if(requestAction("update")){
+
+                }
             }
-        }, 0, 10000);
+        }, 0, 5000);
+    }
+
+    public void startBeat(){
+        //HeartBeat to check every 5000ms if the server is still online
+        Thread heartbeatThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Socket client_socket = new Socket(this.local, Support.port);
+                    ObjectOutputStream output = null;
+                    ObjectInputStream input = null;
+                    try {
+                        output = new ObjectOutputStream(client_socket.getOutputStream());
+                        output.writeObject(666);
+                        this.setConnect(true);
+                        System.out.println("Still connected");
+                        Thread.sleep(3000);
+                    }finally {output.close(); client_socket.close();}
+                }catch(IOException | InterruptedException e){
+                    System.out.println("Server offline");
+                    this.setConnect(false);
+                }
+            }
+        });
+        heartbeatThread.setDaemon(true);
+        heartbeatThread.start();
     }
 
     public Mailbox getMailbox() {return mailbox;}

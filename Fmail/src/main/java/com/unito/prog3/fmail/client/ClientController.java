@@ -36,14 +36,6 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {}
 
-
-
-
-
-
-
-
-
     /**
      *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.
      */

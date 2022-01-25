@@ -52,23 +52,7 @@ public class ConnectionCrontoller implements Initializable {
             switch (result) {
                 //Client Connected
                 case "CC" -> {
-                    //HeartBeat to check every 5000ms if the server is still online
-                    Thread heartbeatThread = new Thread(() -> {
-                        while (true) {
-                            try {
-                                Socket client_socket = new Socket(client.getLocal(), Support.port);
-                                client_socket.getOutputStream().write(666);
-                                client.setConnect(true);
-                                System.out.println("Still connected");
-                                Thread.sleep(5000);
-                            } catch (IOException | InterruptedException e) {
-                                System.out.println("Server offline");
-                                client.setConnect(false);
-                            }
-                        }
-                    });
-                    heartbeatThread.setDaemon(true);
-                    heartbeatThread.start();
+                    client.startBeat();
                     //Change scene
                     FXMLLoader homeloader = new FXMLLoader(ClientMain.class.getResource("Home.fxml"));
                     Parent root = homeloader.load();
