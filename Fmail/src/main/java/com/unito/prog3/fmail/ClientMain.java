@@ -1,5 +1,6 @@
 package com.unito.prog3.fmail;
 
+import com.unito.prog3.fmail.client.ConnectionCrontoller;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
 import javafx.application.Application;
@@ -13,17 +14,17 @@ import javafx.stage.WindowEvent;
 import java.util.Objects;
 
 public class ClientMain extends Application {
+    static MailClient client;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ConnectionClient.fxml")));
+        client = new MailClient();
+        FXMLLoader listLoader = new FXMLLoader(ClientMain.class.getResource("ConnectionClient.fxml"));
+        Parent root = listLoader.load();
+        ConnectionCrontoller connectionCrontoller = listLoader.getController();
+        connectionCrontoller.initModel(client);
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        /*window.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent windowEvent) {
-                            System.exit(0);
-                        }
-                    });*/
         stage.show();
     }
 

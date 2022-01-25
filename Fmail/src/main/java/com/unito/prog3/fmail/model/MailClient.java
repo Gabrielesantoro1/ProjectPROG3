@@ -29,6 +29,8 @@ public class MailClient {
         this.mailbox = mailbox;
     }
 
+    public MailClient(){}
+
     /**
      * The function tries to open a connection with the server, if it fails it means that the server is probably offline so it returns the String "SNC" to warn the controller. Otherwise it forwards its account name, if it receives a "true" result it means that the entered name is registered and then returns the String "CC" otherwise it returns the value "CNR"
      * @return A string that is able to make the controller understand what happened and therefore be able to proceed accordingly
@@ -77,7 +79,6 @@ public class MailClient {
 
                 String in = (String) input.readObject();
                 if(in.equals("true")){
-                    this.mailbox.setMailSent(email);
                     saved = true;
                     System.out.println(mailbox.toString());
                 }
