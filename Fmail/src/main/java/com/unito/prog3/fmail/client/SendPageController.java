@@ -10,10 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -21,6 +19,7 @@ import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class SendPageController implements Initializable {
     private MailClient client;
+    private Email email;
 
     @FXML
     private TextArea area_sendpage;
@@ -34,6 +33,14 @@ public class SendPageController implements Initializable {
 
     public void initModel(MailClient client) {
         this.client = client;
+    }
+
+    public void initModel_Email(MailClient client, Email email){
+        this.client = client;
+        this.email = email;
+        area_sendpage.setText(email.getText());
+        object_sendpage.setText("RE:"+email.getObject());
+
     }
 
     /**

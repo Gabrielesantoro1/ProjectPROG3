@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -165,6 +166,22 @@ public class MailServer{
             }
         }
         System.out.println("All the mailboxes were loaded successfully from local directory");
+    }
+
+    public  void CleardeleteEmail(String account_name){
+        String path = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted";
+        File file = new File(path);
+        for(File emails : file.listFiles()){
+            emails.delete();
+        }
+    }
+
+    public void deleteEmail_rcvd(String account_name, int id) throws IOException {
+        String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
+        String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
+        File rcvd = new File(path_rcvd);
+        File del = new File(path_del);
+        Files.move(rcvd.toPath(),del.toPath());
     }
 
     private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}

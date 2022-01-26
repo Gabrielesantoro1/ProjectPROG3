@@ -152,7 +152,7 @@ public class MailClient {
                         if (request.equals("delete_all")) {
                             this.mailbox.getAllMailDel().clear();
                         } else if (request.equals("delete_single")){
-                            this.mailbox.delete_email(Integer.parseInt(optional));
+                            this.mailbox.delete_email_rcvd(Integer.parseInt(optional));
                         }
                         result = true;
                     }

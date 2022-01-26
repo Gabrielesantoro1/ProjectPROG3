@@ -1,18 +1,23 @@
 package com.unito.prog3.fmail.client;
 
+import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 public class ViewPageController {
@@ -43,7 +48,13 @@ public class ViewPageController {
     public void ReplyAllButton(ActionEvent event) {
     }
 
-    public void ForwardButton(ActionEvent event) {
+    public void ForwardButton(ActionEvent event) throws IOException {
+        FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
+        Parent root = sendloader.load();
+        SendPageController sendPageController = sendloader.getController();
+        sendPageController.initModel_Email(client, email);
+        Stage window = (Stage) email_text.getScene().getWindow();
+        window.setScene(new Scene(root));
     }
 
     public void DeleteButton(ActionEvent event) {

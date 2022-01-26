@@ -78,6 +78,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     else if(request.get(1).equals("delete_all")){ //Permanent elimination request
                         if(server.existAccount(client_name)){
                             server.getMailboxes().get(server.getindexbyname(client_name)).clearMailDel();
+                            server.CleardeleteEmail(client_name);
                             Objects.requireNonNull(output).writeObject("true");
                             Platform.runLater(() -> server.addLog(new Date() + " : Deleted mails of client " + client_name + " successfully cleared"));
                         }else{
@@ -88,8 +89,9 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                         if(server.existAccount(client_name)){
                             int id = Integer.parseInt((String) request.get(2));
                             Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
-                            mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID(id)));
-                            mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID(id));
+                            server.deleteEmail_rcvd(client_name, id);
+                            mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id)));
+                            mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
                             Objects.requireNonNull(output).writeObject("true");
                             Platform.runLater(() -> server.addLog(new Date() + " :Email "+id+" from client "+client_name+" was successfully deleted"));
                         }else{
