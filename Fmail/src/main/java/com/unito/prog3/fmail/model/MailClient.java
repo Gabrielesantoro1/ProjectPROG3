@@ -89,7 +89,45 @@ public class MailClient {
      * Send a request to update its emails.
      * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
      */
-    public boolean requestAction(String request, String optional){
+    public boolean updateAction(){
+        boolean result = false;
+        if(Connect){
+            ObjectOutputStream output;
+            ObjectInputStream input;
+            try {
+                Socket client_socket = new Socket(this.local, Support.port);
+                output = new ObjectOutputStream(client_socket.getOutputStream());
+                input = new ObjectInputStream(client_socket.getInputStream());
+                try {
+                    ArrayList<String> client_request = new ArrayList<>();
+                    client_request.add(this.mailbox.getAccount_name());
+                    client_request.add("update");
+                    Objects.requireNonNull(output).writeObject(client_request);
+
+                    String in = (String) input.readObject();
+                    if (in.equals("true")) {
+                        this.mailbox = (Mailbox) input.readObject();
+                        System.out.println("Emails Updated");
+                        result = true;
+                    }
+                } finally {
+                    output.flush();
+                    input.close();
+                    output.close();
+                    client_socket.close();
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Send a request to update its emails.
+     * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
+     */
+    public boolean deleteAction(String request, String optional){
         boolean result = false;
         if(Connect){
             ObjectOutputStream output;
@@ -110,12 +148,8 @@ public class MailClient {
 
                     String in = (String) input.readObject();
                     if (in.equals("true")) {
-                        if (request.equals("update")) {
-                            this.mailbox = (Mailbox) input.readObject();
-                            System.out.println("Emails Updated");
-                        } else if (request.equals("delete_all")) {
+                        if (request.equals("delete_all")) {
                             this.mailbox.getAllMailDel().clear();
-                            System.out.println("Emails Deleted");
                         } else if (request.equals("delete_single")){
                             this.mailbox.delete_email(Integer.parseInt(optional));
                         }
@@ -142,7 +176,7 @@ public class MailClient {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(requestAction("update","")){
+                if(updateAction()){
 
                 }
             }

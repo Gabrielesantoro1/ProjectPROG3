@@ -49,7 +49,7 @@ public class ViewPageController implements Initializable {
 
     public void DeleteButton(ActionEvent event) {
         if(client.isConnect()){
-            if(client.requestAction("delete_single",""/*TODO:aggiungere ID email*/)){
+            if(client.deleteAction("delete_single",""/*TODO:aggiungere ID email*/)){
                 Support.alertMethod("Email moved to deleted mails");
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();

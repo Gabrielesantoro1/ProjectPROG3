@@ -127,7 +127,7 @@ public class HomeController implements Initializable {
      */
     public void updateButton(ActionEvent event) {
         if (client.isConnect()) {
-            if (client.requestAction("update","")) {
+            if (client.updateAction()) {
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
                 
@@ -142,5 +142,20 @@ public class HomeController implements Initializable {
             alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
-    public void deleteButton(ActionEvent event) {}
+
+
+    /**
+     *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.
+     */
+    public void deleteButton(ActionEvent event) {
+        if(client.isConnect()) {
+            if (client.deleteAction("delete_all","")) {
+                alertMethod("Mails deleted have been completely erased");
+            } else {
+                alertMethod("An error occurred while deleting the emails");
+            }
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
+        }
+    }
 }
