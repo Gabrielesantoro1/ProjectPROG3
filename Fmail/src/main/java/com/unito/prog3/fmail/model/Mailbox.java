@@ -47,6 +47,20 @@ public class Mailbox implements Serializable{
         this.mail_rcvd.remove(getIndexbyID_rcvd(id));
     }
 
+    public void delete_email_sent(int id){
+        this.mail_del.add(this.mail_sent.get(getIndexbyID_sent(id)));
+        this.mail_sent.remove(getIndexbyID_sent(id));
+    }
+
+    public int getIndexbyID_sent(int iD){
+        for(int i = 0; i<mail_sent.size();i++){
+            if(mail_sent.get(i).getId() == iD){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public int getIndexbyID_rcvd(int iD){
         for(int i = 0; i<mail_rcvd.size();i++){
             if(mail_rcvd.get(i).getId() == iD){

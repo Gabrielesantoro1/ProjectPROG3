@@ -57,9 +57,9 @@ public class ViewPageController {
         window.setScene(new Scene(root));
     }
 
-    public void DeleteButton(ActionEvent event) {
+    public void DeleteButton_rcvd(ActionEvent event) {
         if(client.isConnect()){
-            if(client.deleteAction("delete_single", Integer.toString(email.getId()))){
+            if(client.deleteAction("delete_single", Integer.toString(email.getId()),"rcvd")){
                 Support.alertMethod("Email moved to deleted mails");
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();

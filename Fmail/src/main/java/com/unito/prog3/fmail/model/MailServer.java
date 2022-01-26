@@ -184,6 +184,14 @@ public class MailServer{
         Files.move(rcvd.toPath(),del.toPath());
     }
 
+    public void deleteEmail_sent(String account_name, int id) throws IOException {
+        String path_sent = Support.PATH_NAME_DIR + "\\" + account_name +"\\sent\\" + id + ".txt";
+        String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
+        File rcvd = new File(path_sent);
+        File del = new File(path_del);
+        Files.move(rcvd.toPath(),del.toPath());
+    }
+
     private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}
 
     public int getindexbyname(String account){

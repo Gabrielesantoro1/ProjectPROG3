@@ -8,7 +8,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.ViewPageSentController">
    <children>
       <TextField fx:id="email_text" editable="false" layoutX="113.0" layoutY="130.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
-      <Button layoutX="500.0" layoutY="19.0" minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButton" prefHeight="32.0" prefWidth="86.0" text="Elimina" />
+      <Button layoutX="500.0" layoutY="19.0" minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButton_sent" prefHeight="32.0" prefWidth="86.0" text="Elimina" />
       <Text fx:id="from_text" layoutX="32.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.rightAnchor="291.0" />
       <Text fx:id="to_text" layoutX="22.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.bottomAnchor="357.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="26.0" />
       <Text fx:id="object_text" layoutX="47.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="257.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="44.0" />

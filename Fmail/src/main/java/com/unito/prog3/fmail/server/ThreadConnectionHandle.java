@@ -88,12 +88,21 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }else if(request.get(1).equals("delete_single")){
                         if(server.existAccount(client_name)){
                             int id = Integer.parseInt((String) request.get(2));
-                            Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
-                            server.deleteEmail_rcvd(client_name, id);
-                            mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id)));
-                            mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
-                            Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + " :Email "+id+" from client "+client_name+" was successfully deleted"));
+                            if(request.get(3).equals("rcvd")) {
+                                Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
+                                server.deleteEmail_rcvd(client_name, id);
+                                mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id)));
+                                mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
+                                Objects.requireNonNull(output).writeObject("true");
+                                Platform.runLater(() -> server.addLog(new Date() + " :Email " + id + " from client " + client_name + " was successfully deleted"));
+                            }else{
+                                Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
+                                server.deleteEmail_sent(client_name, id);
+                                mailbox.getAllMailDel().add(mailbox.getAllMailSent().get(mailbox.getIndexbyID_sent(id)));
+                                mailbox.getAllMailSent().remove(mailbox.getIndexbyID_sent(id));
+                                Objects.requireNonNull(output).writeObject("true");
+                                Platform.runLater(() -> server.addLog(new Date() + " :Email " + id + " from client " + client_name + " was successfully deleted"));
+                            }
                         }else{
                             output.writeObject("false");
                             System.out.println("An unknown client tried the delete_single request");

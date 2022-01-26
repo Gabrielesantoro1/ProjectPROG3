@@ -144,7 +144,7 @@ public class HomeController implements Initializable {
      */
     public void deleteButton(ActionEvent event) {
         if(client.isConnect()) {
-            if (client.deleteAction("delete_all","")) {
+            if (client.deleteAction("delete_all","","")) {
                 alertMethod("Mails deleted have been completely erased");
             } else {
                 alertMethod("An error occurred while deleting the emails");

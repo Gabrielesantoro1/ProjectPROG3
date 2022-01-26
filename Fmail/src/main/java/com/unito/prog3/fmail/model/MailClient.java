@@ -128,7 +128,7 @@ public class MailClient {
      * Send a request to update its emails.
      * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
      */
-    public boolean deleteAction(String request, String optional){
+    public boolean deleteAction(String request, String id, String position){
         boolean result = false;
         if(Connect){
             ObjectOutputStream output;
@@ -142,7 +142,8 @@ public class MailClient {
                     client_request.add(this.mailbox.getAccount_name());
                     client_request.add(request);
                     if(request.equals("delete_single")){
-                        client_request.add(optional);
+                        client_request.add(id);
+                        client_request.add(position);
                     }
 
                     Objects.requireNonNull(output).writeObject(client_request);
@@ -152,7 +153,11 @@ public class MailClient {
                         if (request.equals("delete_all")) {
                             this.mailbox.getAllMailDel().clear();
                         } else if (request.equals("delete_single")){
-                            this.mailbox.delete_email_rcvd(Integer.parseInt(optional));
+                            if(id.equals("rcvd")) {
+                                this.mailbox.delete_email_rcvd(Integer.parseInt(id));
+                            }else{
+                                this.mailbox.delete_email_sent(Integer.parseInt(id));
+                            }
                         }
                         result = true;
                     }
