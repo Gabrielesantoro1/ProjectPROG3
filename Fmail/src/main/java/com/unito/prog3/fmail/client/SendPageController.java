@@ -55,27 +55,21 @@ public class SendPageController implements Initializable {
                 }
             }
             //Sends the email to all recipients
-            List<String> recipients_failed = new ArrayList<>();
-            if (recipients_corrects) {
-                for (String s : recipients) {
-                    if (!client.sendEmail(new Email(client.getMailbox().getAccount_name(), s, object, text))) {
-                        recipients_failed.add(s);
-                    }
-                }
-                //Check if there were any recipients to whom the email could not be sent
-                if (!recipients_failed.isEmpty()) {
+            if (recipients_corrects){
+                ArrayList<String> faileds = client.sendEmail(new Email(client.getMailbox().getAccount_name(), recipient, object, text));
+                if(!faileds.isEmpty()){
                     String recipients_failed_string = "";
-                    for (String s : recipients_failed) {
+                    for (String s : faileds) {
                         recipients_failed_string += s + "\n";
                     }
                     alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");
                     recipient_sendpage.clear();
-                } else {
+                }else{
                     alertMethod("Mail sent successfully to all the recipients");
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     stage.close();
                 }
-            } else {
+            }else {
                 alertMethod("Check the mail account inserted");
             }
         }else{

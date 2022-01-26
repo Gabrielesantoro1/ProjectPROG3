@@ -64,10 +64,10 @@ public class MailClient {
      * @param email email to send
      * @return a Boolean value that indicates whether the email was sent successfully or not
      */
-    public boolean sendEmail(Email email) {
+    public ArrayList<String> sendEmail(Email email) {
         ObjectOutputStream output;
         ObjectInputStream input;
-        boolean saved = false;
+        ArrayList<String> fails = new ArrayList<>();
         try{
             Socket client_socket = new Socket(this.local, Support.port);
             output = new ObjectOutputStream(client_socket.getOutputStream());
@@ -77,12 +77,13 @@ public class MailClient {
 
                 String in = (String) input.readObject();
                 if(in.equals("true")){
-                    saved = true;
                     System.out.println(mailbox.toString());
+                }else{
+                    fails = (ArrayList<String>) input.readObject();
                 }
             } finally {output.flush();input.close();output.close();client_socket.close();}
         }catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
-        return saved;
+        return fails;
     }
 
     /**

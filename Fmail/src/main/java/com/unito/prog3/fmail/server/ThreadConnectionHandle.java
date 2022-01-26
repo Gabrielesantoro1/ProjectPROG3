@@ -41,19 +41,26 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }
                 }
                 else if(in instanceof Email email){ //Sendmail Case
-                    if(server.existAccount(email.getTo())){
-                       if(server.saveEmail(email)) {
+                        String recipients_text = email.getTo();
+                        String[] recipients = recipients_text.split(" ");
+                        ArrayList<String> fails = new ArrayList<>();
+                        for(String s : recipients){
+                            if(!server.saveEmail(email, s)){
+                                fails.add(s);
+                            }
+                            Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s + " sent successfully"));
+                        }
+                       if(fails.isEmpty()) {
                            Objects.requireNonNull(output).writeObject("true");
-                           Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + email.getTo() + " sent successfully"));
+
                        }else {
                            Objects.requireNonNull(output).writeObject("false");
-                           Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() +" from " + email.getFrom() + " to " + email.getTo()));
+                           Objects.requireNonNull(output).writeObject(fails);
+                           for(String f : fails) {
+                               Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + f+ " because the recipient doesn't exists"));
+                           }
                        }
-                    }
-                    else{
-                        Objects.requireNonNull(output).writeObject("false");
-                        Platform.runLater(() -> server.addLog(new Date() + ": The recipient " + email.getTo() + " indicated by " + email.getFrom() + "does not exist"));
-                    }
+
                 }else if (in instanceof ArrayList request){ //Request Case
                     String client_name = (String) request.get(0);
                     if(request.get(1).equals("update")){ //Refresh request
@@ -84,7 +91,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                             mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID(id)));
                             mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID(id));
                             Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + " :Email "+id+" from client "+client_name+"was successfully deleted"));
+                            Platform.runLater(() -> server.addLog(new Date() + " :Email "+id+" from client "+client_name+" was successfully deleted"));
                         }else{
                             output.writeObject("false");
                             System.out.println("An unknown client tried the delete_single request");

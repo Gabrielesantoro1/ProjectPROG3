@@ -63,7 +63,7 @@ public class MailServer{
      * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one. It also updates the value of the id_counter
      * @param email_to_write Object Email to write
      */
-    public boolean saveEmail(Email email_to_write) throws IOException {
+    public boolean saveEmail(Email email_to_write, String single_recipient) throws IOException {
         boolean saved = false;
         email_to_write.setId(emailId_count.getAndIncrement());
 
@@ -72,8 +72,7 @@ public class MailServer{
         fos.write(emailId_count.toString().getBytes());
 
         String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\sent";
-        String path_recipient = Support.PATH_NAME_DIR + "\\" + email_to_write.getTo() + "\\received";
-        System.out.println("SAVEMAIL1");
+        String path_recipient = Support.PATH_NAME_DIR + "\\" + single_recipient + "\\received";
         try{
             File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
             File sent = new File(path_sender + "\\" +  email_to_write.getId() + ".txt");
@@ -89,7 +88,7 @@ public class MailServer{
                 buffer.flush();
 
                 this.mailboxes.get(getindexbyname(email_to_write.getFrom())).setMailSent(email_to_write);
-                this.mailboxes.get(getindexbyname(email_to_write.getTo())).setMailRcvd(email_to_write);
+                this.mailboxes.get(getindexbyname(single_recipient)).setMailRcvd(email_to_write);
                 saved = true;
                 System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory and in local");
             }
