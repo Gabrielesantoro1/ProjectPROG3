@@ -89,9 +89,9 @@ public class MailClient {
      * Send a request to update its emails.
      * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
      */
-    public boolean requestAction(String request){
+    public boolean requestAction(String request, String optional){
         boolean result = false;
-        if(this.Connect){
+        if(Connect){
             ObjectOutputStream output;
             ObjectInputStream input;
             try {
@@ -102,6 +102,9 @@ public class MailClient {
                     ArrayList<String> client_request = new ArrayList<>();
                     client_request.add(this.mailbox.getAccount_name());
                     client_request.add(request);
+                    if(request.equals("delete_single")){
+                        client_request.add(optional);
+                    }
 
                     Objects.requireNonNull(output).writeObject(client_request);
 
@@ -110,9 +113,11 @@ public class MailClient {
                         if (request.equals("update")) {
                             this.mailbox = (Mailbox) input.readObject();
                             System.out.println("Emails Updated");
-                        } else if (request.equals("delete")) {
+                        } else if (request.equals("delete_all")) {
                             this.mailbox.getAllMailDel().clear();
                             System.out.println("Emails Deleted");
+                        } else if (request.equals("delete_single")){
+                            this.mailbox.delete_email(Integer.parseInt(optional));
                         }
                         result = true;
                     }
@@ -137,7 +142,7 @@ public class MailClient {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(requestAction("update")){
+                if(requestAction("update","")){
 
                 }
             }

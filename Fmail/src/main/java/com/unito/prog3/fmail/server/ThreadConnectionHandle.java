@@ -2,12 +2,14 @@ package com.unito.prog3.fmail.server;
 
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailServer;
+import com.unito.prog3.fmail.model.Mailbox;
 import javafx.application.Platform;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
@@ -66,14 +68,26 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                             System.out.println("An unknown client tried the refresh request");
                         }
                     }
-                    else if(request.get(1).equals("delete")){ //Permanent elimination request
+                    else if(request.get(1).equals("delete_all")){ //Permanent elimination request
                         if(server.existAccount(client_name)){
                             server.getMailboxes().get(server.getindexbyname(client_name)).clearMailDel();
                             Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
+                            Platform.runLater(() -> server.addLog(new Date() + " : Deleted mails of client " + client_name + " successfully cleared"));
                         }else{
                             output.writeObject("false");
-                            System.out.println("An unknown client tried the delete request");
+                            System.out.println("An unknown client tried the delete_all request");
+                        }
+                    }else if(request.get(1).equals("delete_single")){
+                        if(server.existAccount(client_name)){
+                            int id = Integer.parseInt((String) request.get(2));
+                            Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
+                            mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID(id)));
+                            mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID(id));
+                            Objects.requireNonNull(output).writeObject("true");
+                            Platform.runLater(() -> server.addLog(new Date() + " :Email "+id+" from client "+client_name+"was successfully deleted"));
+                        }else{
+                            output.writeObject("false");
+                            System.out.println("An unknown client tried the delete_single request");
                         }
                     }
                 }

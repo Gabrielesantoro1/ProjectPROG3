@@ -41,7 +41,7 @@ public class ClientController implements Initializable {
      */
     public void deleteButton(ActionEvent event) {
         if(client.isConnect()) {
-            if (client.requestAction("delete")) {
+            if (client.requestAction("delete_all","")) {
                 alertMethod("Mails deleted have been completely erased");
             } else {
                 alertMethod("An error occurred while deleting the emails");

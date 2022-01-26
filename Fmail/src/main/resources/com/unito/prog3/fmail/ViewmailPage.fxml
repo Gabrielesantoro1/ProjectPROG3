@@ -4,30 +4,30 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.ViewPageController">
    <children>
-      <TextArea editable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
-      <ButtonBar layoutX="410.0" layoutY="14.0" prefHeight="40.0" prefWidth="287.0" AnchorPane.rightAnchor="10.0">
+      <TextField fx:id="email_text" editable="false" layoutX="113.0" layoutY="130.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
+      <ButtonBar layoutX="410.0" layoutY="14.0" prefHeight="40.0" prefWidth="287.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="10.0">
         <buttons>
             <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Rispondi">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Rispondi" />
-                  <MenuItem mnemonicParsing="false" text="Rispondi a Tutti" />
+                  <MenuItem mnemonicParsing="false" onAction="#ReplyButton" text="Rispondi" />
+                  <MenuItem mnemonicParsing="false" onAction="#ReplyAllBUtton" text="Rispondi a Tutti" />
                </items>
             </MenuButton>
-            <Button minWidth="38.0" mnemonicParsing="false" prefHeight="25.0" text="Inoltra" />
-            <Button minWidth="38.0" mnemonicParsing="false" prefHeight="25.0" text="Elimina" />
+            <Button minWidth="38.0" mnemonicParsing="false" onAction="#ForwardButton" prefHeight="25.0" text="Inoltra" />
+            <Button minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButton" prefHeight="25.0" text="Elimina" />
         </buttons>
       </ButtonBar>
-      <MenuButton layoutX="14.0" layoutY="22.0" mnemonicParsing="false" text="Da: ">
-        <items>
-          <MenuItem mnemonicParsing="false" text="A: " />
-          <MenuItem mnemonicParsing="false" text="Data:" />
-            <MenuItem mnemonicParsing="false" text="Oggetto:" />
-        </items>
-      </MenuButton>
+      <Text fx:id="from_text" layoutX="32.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.rightAnchor="291.0" />
+      <Text fx:id="to_text" layoutX="22.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.bottomAnchor="357.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="26.0" />
+      <Text fx:id="object_text" layoutX="47.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="257.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="44.0" />
+      <Text layoutX="-1.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" />
+      <Text layoutX="6.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="26.0" />
+      <Text layoutX="5.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object:" wrappingWidth="47.494140625" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="44.0" />
    </children>
 </AnchorPane>

@@ -42,6 +42,20 @@ public class Mailbox implements Serializable{
 
     public List<Email> getAllMailDel(){return this.mail_del;}
 
+    public void delete_email(int id){
+        this.mail_del.add(this.mail_rcvd.get(getIndexbyID(id)));
+        this.mail_rcvd.remove(getIndexbyID(id));
+    }
+
+    public int getIndexbyID(int iD){
+        for(int i = 0; i<mail_rcvd.size();i++){
+            if(mail_rcvd.get(i).getId() == iD){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public String toString() {
         return  "\n       account_name: " + account_name +

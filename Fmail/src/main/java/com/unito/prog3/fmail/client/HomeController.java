@@ -57,23 +57,20 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ListView_rcvd.setOrientation(Orientation.VERTICAL);
         ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        ListView_rcvd.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Email>() {
-            @Override
-            public void changed(ObservableValue<? extends Email> observableValue, Email email, Email t1) {
-                FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
-                Parent root = null;
-                try {
-                    root = viewLoader.load();
-                } catch (IOException e) {e.printStackTrace();}
+        ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
+            FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
+            Parent root = null;
+            try {
+                root = viewLoader.load();
                 ViewPageController viewPageController= viewLoader.getController();
                 viewPageController.initModel(client);
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
-            }
+            } catch (IOException e) {e.printStackTrace();}
         });
-        ListView_rcvd.setCellFactory(new Callback<ListView<Email>, ListCell<Email>>() {
+        ListView_rcvd.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Email> call(ListView<Email> emailListView) {
                 return new cellVisual();
@@ -130,7 +127,7 @@ public class HomeController implements Initializable {
      */
     public void updateButton(ActionEvent event) {
         if (client.isConnect()) {
-            if (client.requestAction("update")) {
+            if (client.requestAction("update","")) {
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
                 
