@@ -63,7 +63,7 @@ public class HomeController implements Initializable {
             try {
                 root = viewLoader.load();
                 ViewPageController viewPageController= viewLoader.getController();
-                viewPageController.initModel(client);
+                viewPageController.initModel(client, t1);
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
@@ -130,11 +130,6 @@ public class HomeController implements Initializable {
             if (client.updateAction()) {
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
-                
-                email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
-                ListView_rcvd.setItems(email_rcvd);
-                ListView_sent.setItems(email_sent);
-                ListView_del.setItems(email_del);
             } else {
                 alertMethod("An error occurred updating the mailbox");
             }

@@ -1,5 +1,6 @@
 package com.unito.prog3.fmail.client;
 
+import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
 import javafx.event.ActionEvent;
@@ -14,34 +15,32 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-public class ViewPageController implements Initializable {
+public class ViewPageController {
     private MailClient client;
+    private Email email;
 
     @FXML
-    TextField email_text;
+    private TextField email_text;
     @FXML
-    Text from_text;
+    private Text from_text;
     @FXML
-    Text to_text;
+    private Text to_text;
     @FXML
-    Text object_text;
+    private Text object_text;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.email_text.setText("provaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        this.from_text.setText("pepinoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        this.to_text.setText("aoushdoasdiasdasiodoas");
-        this.object_text.setText("Prova");
-    }
-
-    public void initModel(MailClient client){
+    public void initModel(MailClient client, Email email){
         this.client = client;
+        this.email = email;
+        this.from_text.setText(email.getFrom());
+        this.email_text.setText(email.getText());
+        this.to_text.setText(email.getTo());
+        this.object_text.setText(email.getObject());
     }
 
     public void ReplyButton(ActionEvent event) {
     }
 
-    public void ReplyAllBUtton(ActionEvent event) {
+    public void ReplyAllButton(ActionEvent event) {
     }
 
     public void ForwardButton(ActionEvent event) {
