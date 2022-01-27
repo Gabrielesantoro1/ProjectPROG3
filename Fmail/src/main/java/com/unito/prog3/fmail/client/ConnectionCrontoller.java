@@ -24,21 +24,12 @@ import java.util.ResourceBundle;
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 
-public class ConnectionCrontoller implements Initializable {
+public class ConnectionCrontoller{
     private MailClient client;
-
     @FXML
     private TextField account_name;
 
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
-
-    public void initModel(MailClient client){
-        this.client = client;
-    }
+    public void initModel(MailClient client){this.client = client;}
 
     /**
      * The function checks if the inserted email is of the correct format, calls the getConnection () function which returns a result of type String. If the result is "CC" then the client was able to connect successfully, then starts a backgroud thread that checks every 5000 milliseconds if the server is still connected and finally changes the scene. If the result is "CNR" it means that the email entered is not a registered email. Finally, if the result is "SNC" it means that we have not been able to establish a connection with the server because the server is probably offline.
@@ -75,6 +66,4 @@ public class ConnectionCrontoller implements Initializable {
             alertMethod("Email account inserted does not respect the format requested");
         }
     }
-
-
 }

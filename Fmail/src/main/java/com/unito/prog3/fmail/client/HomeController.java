@@ -23,6 +23,7 @@ import javafx.scene.control.cell.ChoiceBoxListCell;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.shape.Box;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import javax.swing.*;
@@ -57,10 +58,10 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ListView_rcvd.setOrientation(Orientation.VERTICAL);
-        ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
             FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
-            Parent root = null;
+            Parent root;
             try {
                 root = viewLoader.load();
                 ViewPageController viewPageController= viewLoader.getController();
@@ -71,16 +72,13 @@ public class HomeController implements Initializable {
                 stage.show();
             } catch (IOException e) {e.printStackTrace();}
         });
-        ListView_rcvd.setCellFactory(new Callback<>() {
-            @Override
-            public ListCell<Email> call(ListView<Email> emailrcvdView) {return new Support.cellVisual();}
-        });
+        ListView_rcvd.setCellFactory(emailrcvdView -> new Support.cellVisual());
 
         ListView_sent.setOrientation(Orientation.VERTICAL);
         ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         ListView_sent.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
             FXMLLoader viewSentLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
-            Parent root = null;
+            Parent root;
             try {
                 root = viewSentLoader.load();
                 ViewPageSentController viewPageSentController = viewSentLoader.getController();
@@ -91,10 +89,7 @@ public class HomeController implements Initializable {
                 stage.show();
             } catch (IOException e) {e.printStackTrace();}
         });
-        ListView_sent.setCellFactory(new Callback<>() {
-            @Override
-            public ListCell<Email> call(ListView<Email> emailsentView) {return new Support.cellVisual();}
-        });
+        ListView_sent.setCellFactory(emailsentView -> new Support.cellVisual());
     }
 
     public void initModel(MailClient client){
@@ -109,7 +104,6 @@ public class HomeController implements Initializable {
         email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
         ListView_del.setItems(email_del);
     }
-
     /**
      * If the client is connected with the server, then if the server is not offline, the screen for compiling the email to be sent opens
      */
@@ -163,8 +157,8 @@ public class HomeController implements Initializable {
                         for(int i = email_del.size(); i < client.getMailbox().getAllMailDel().size();i++) {
                             email_del.add(client.getMailbox().getAllMailDel().get(i));
                         }
-                            default:
-                                System.out.println("An error occurred");
+                        default:
+                            System.out.println("The lists have not any new elements");
                 }
             } else {
                 alertMethod("An error occurred updating the mailbox");
@@ -173,20 +167,6 @@ public class HomeController implements Initializable {
             alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
-
-    private boolean checkNewEmail(){
-        int old_size = email_rcvd.size();
-        int new_size = client.getMailbox().getAllMailRcvd().size();
-
-        if(old_size!=new_size){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-
-
 
     /**
      *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.

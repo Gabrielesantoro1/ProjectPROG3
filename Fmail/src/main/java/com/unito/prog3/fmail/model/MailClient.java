@@ -14,7 +14,7 @@ import java.util.TimerTask;
 public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
-    private static boolean Connect = false;
+    private boolean Connect = false;
     
     /**
      * {@code MailClient} Constructor
@@ -129,7 +129,7 @@ public class MailClient {
      */
     public boolean deleteAction(String request, String id, String position){
         boolean result = false;
-        if(Connect){
+        if(isConnect()){
             ObjectOutputStream output;
             ObjectInputStream input;
             try {
@@ -181,9 +181,7 @@ public class MailClient {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(updateAction()){
-
-                }
+                if(updateAction());
             }
         }, 0, 5000);
     }
@@ -213,7 +211,6 @@ public class MailClient {
         heartbeatThread.start();
     }
 
-
     public char checkNewEmail(Integer mailrcvd_size, Integer mailsent_size, Integer maildel_size){
         int mailrcvd_newsize = this.mailbox.getAllMailRcvd().size();
         int mailsent_newsize = this.mailbox.getAllMailSent().size();
@@ -231,12 +228,11 @@ public class MailClient {
         return 0;
     }
 
-
     public Mailbox getMailbox() {return mailbox;}
 
     public InetAddress getLocal() {return local;}
 
-    public boolean isConnect() {return Connect;}
+    public synchronized boolean isConnect() {return Connect;}
 
     public void setConnect(boolean connect) {Connect = connect;}
 
