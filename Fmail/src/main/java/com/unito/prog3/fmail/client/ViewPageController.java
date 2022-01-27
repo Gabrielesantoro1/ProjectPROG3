@@ -27,6 +27,7 @@ public class ViewPageController {
     @FXML
     private Text object_text;
 
+
     public void initModel(MailClient client, Email email){
         this.client = client;
         this.email = email;
@@ -48,7 +49,7 @@ public class ViewPageController {
         Parent root = sendloader.load();
         SendPageController sendPageController = sendloader.getController();
         sendPageController.initModel_Email(client, email);
-        //TODO Non possiamo chiamare getScene perchè email_text è un textArea non un textField.
+        //TODO Non possiamo chiamare getScene perché email_text è un textArea non un textField.
         //Stage window = (Stage) email_text.getScene().getWindow();
         //window.setScene(new Scene(root));
     }

@@ -91,7 +91,7 @@ public class MailClient {
      */
     public boolean updateAction(){
         boolean result = false;
-        if(Connect){
+        if(isConnect()){
             ObjectOutputStream output;
             ObjectInputStream input;
             try {
@@ -226,6 +226,32 @@ public class MailClient {
             return 'd';
         }
         return 0;
+    }
+
+    public boolean closeAction(){
+        boolean result = false;
+            ObjectOutputStream output;
+            ObjectInputStream input;
+            try {
+                Socket client_socket = new Socket(this.local, Support.port);
+                output = new ObjectOutputStream(client_socket.getOutputStream());
+                input = new ObjectInputStream(client_socket.getInputStream());
+                try {
+                    ArrayList<String> client_request = new ArrayList<>();
+                    client_request.add(this.mailbox.getAccount_name());
+                    client_request.add("close_connection");
+                    Objects.requireNonNull(output).writeObject(client_request);
+
+                    String in = (String) input.readObject();
+                    if (in.equals("true")) {
+                        result = true;
+                        System.out.println("Request for connection closing was received");
+                    }
+                } finally {output.flush();input.close();output.close();client_socket.close();}
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        return result;
     }
 
     public Mailbox getMailbox() {return mailbox;}

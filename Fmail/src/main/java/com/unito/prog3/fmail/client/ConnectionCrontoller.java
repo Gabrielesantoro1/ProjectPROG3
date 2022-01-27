@@ -4,22 +4,16 @@ import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.model.Mailbox;
 import com.unito.prog3.fmail.support.Support;
-import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
@@ -51,6 +45,17 @@ public class ConnectionCrontoller{
                     homeController.initModel(client);
                     Stage window = (Stage) account_name.getScene().getWindow();
                     window.setScene(new Scene(root));
+                    window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent windowEvent) {
+                            if(client.closeAction()) {
+                                window.close();
+                                System.exit(0);
+                            }else{
+                                System.out.println("Request not sent");
+                            }
+                        }
+                    });
                 }
                 //Client Not Registered
                 case "CNR" -> {

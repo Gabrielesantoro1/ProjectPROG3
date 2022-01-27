@@ -25,6 +25,12 @@ public class ClientMain extends Application {
         connectionCrontoller.initModel(client);
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
         stage.show();
     }
 
