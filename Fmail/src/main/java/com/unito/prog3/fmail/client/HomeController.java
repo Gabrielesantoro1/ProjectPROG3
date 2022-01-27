@@ -3,6 +3,7 @@ package com.unito.prog3.fmail.client;
 import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
+import com.unito.prog3.fmail.support.Support;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -72,22 +73,28 @@ public class HomeController implements Initializable {
         });
         ListView_rcvd.setCellFactory(new Callback<>() {
             @Override
-            public ListCell<Email> call(ListView<Email> emailListView) {
-                return new cellVisual();
-            }
+            public ListCell<Email> call(ListView<Email> emailrcvdView) {return new Support.cellVisual();}
         });
-    }
 
-    private class cellVisual extends ListCell<Email>{
-        @Override
-        protected void updateItem(Email item, boolean empty) {
-            super.updateItem(item, empty);
-            if(item != null) {
-                setText(item.getObject());
-                setGraphic(new Box());
-
-            }
-        }
+        ListView_sent.setOrientation(Orientation.VERTICAL);
+        ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListView_sent.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
+            FXMLLoader viewSentLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
+            Parent root = null;
+            try {
+                root = viewSentLoader.load();
+                ViewPageSentController viewPageSentController = viewSentLoader.getController();
+                viewPageSentController.initModel(client, t1);
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {e.printStackTrace();}
+        });
+        ListView_sent.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Email> call(ListView<Email> emailsentView) {return new Support.cellVisual();}
+        });
     }
 
     public void initModel(MailClient client){
@@ -105,7 +112,6 @@ public class HomeController implements Initializable {
 
     /**
      * If the client is connected with the server, then if the server is not offline, the screen for compiling the email to be sent opens
-     *
      */
     public void SendPageButton(ActionEvent event) throws IOException {
         if(client.isConnect()) {
@@ -130,6 +136,36 @@ public class HomeController implements Initializable {
             if (client.updateAction()) {
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
+
+                /*
+                *Prima versione dell'aggiornamento automatico.
+                *Ogni volta che si preme il bottone di aggiornamento chiamiamo la funzione checkNewEmail().
+                *(vedere documentazione della funzione in MailClient.java)
+                *Il carattere che ritorna indica qual è la lista che ha cambiato dimensione.
+                *Cicliamo sulla lista partendo dalla vecchia misura massima fino alla nuova.
+                *
+                *CAPIRE SE E' EFFICIENTE E SE E' NECESSARIO SPOSTARE ANCHE QUESTA PARTE NEL CLIENT
+                *PER RISPETTARE IL PATTERN MVC.
+                * */
+
+                char c = client.checkNewEmail(email_rcvd.size(),email_sent.size(),email_del.size());
+
+                switch (c){
+                    case 'r':
+                        for(int i = email_rcvd.size(); i < client.getMailbox().getAllMailRcvd().size();i++){
+                            email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
+                        }
+                    case 's':
+                        for(int i = email_sent.size(); i < client.getMailbox().getAllMailSent().size();i++) {
+                            email_sent.add(client.getMailbox().getAllMailSent().get(i));
+                        }
+                    case 'd':
+                        for(int i = email_del.size(); i < client.getMailbox().getAllMailDel().size();i++) {
+                            email_del.add(client.getMailbox().getAllMailDel().get(i));
+                        }
+                            default:
+                                System.out.println("An error occurred");
+                }
             } else {
                 alertMethod("An error occurred updating the mailbox");
             }
@@ -137,6 +173,19 @@ public class HomeController implements Initializable {
             alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
+
+    private boolean checkNewEmail(){
+        int old_size = email_rcvd.size();
+        int new_size = client.getMailbox().getAllMailRcvd().size();
+
+        if(old_size!=new_size){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 
 
     /**

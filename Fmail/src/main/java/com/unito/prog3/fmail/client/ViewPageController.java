@@ -12,7 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -25,7 +25,7 @@ public class ViewPageController {
     private Email email;
 
     @FXML
-    private TextField email_text;
+    private TextArea email_text;
     @FXML
     private Text from_text;
     @FXML
@@ -36,6 +36,7 @@ public class ViewPageController {
     public void initModel(MailClient client, Email email){
         this.client = client;
         this.email = email;
+
         this.from_text.setText(email.getFrom());
         this.email_text.setText(email.getText());
         this.to_text.setText(email.getTo());
@@ -53,8 +54,9 @@ public class ViewPageController {
         Parent root = sendloader.load();
         SendPageController sendPageController = sendloader.getController();
         sendPageController.initModel_Email(client, email);
-        Stage window = (Stage) email_text.getScene().getWindow();
-        window.setScene(new Scene(root));
+        //TODO Non possiamo chiamare getScene perchè email_text è un textArea non un textField.
+        //Stage window = (Stage) email_text.getScene().getWindow();
+        //window.setScene(new Scene(root));
     }
 
     public void DeleteButton_rcvd(ActionEvent event) {

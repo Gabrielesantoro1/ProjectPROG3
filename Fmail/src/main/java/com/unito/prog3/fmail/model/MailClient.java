@@ -15,8 +15,7 @@ public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
     private static boolean Connect = false;
-
-
+    
     /**
      * {@code MailClient} Constructor
      */
@@ -213,6 +212,25 @@ public class MailClient {
         heartbeatThread.setDaemon(true);
         heartbeatThread.start();
     }
+
+
+    public char checkNewEmail(Integer mailrcvd_size, Integer mailsent_size, Integer maildel_size){
+        int mailrcvd_newsize = this.mailbox.getAllMailRcvd().size();
+        int mailsent_newsize = this.mailbox.getAllMailSent().size();
+        int maildel_newsize = this.mailbox.getAllMailDel().size();
+
+        if(!mailrcvd_size.equals(mailrcvd_newsize)){
+            return 'r';
+        }
+        if(!mailsent_size.equals(mailsent_newsize)){
+            return 's';
+        }
+        if(!maildel_size.equals(maildel_newsize)){
+            return 'd';
+        }
+        return 0;
+    }
+
 
     public Mailbox getMailbox() {return mailbox;}
 

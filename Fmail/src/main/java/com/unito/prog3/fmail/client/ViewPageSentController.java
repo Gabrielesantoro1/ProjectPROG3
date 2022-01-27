@@ -10,7 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -21,7 +21,7 @@ public class ViewPageSentController {
     private Email email;
 
     @FXML
-    private TextField email_text;
+    private TextArea email_text;
     @FXML
     private Text from_text;
     @FXML
