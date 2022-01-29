@@ -1,6 +1,9 @@
 package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -173,18 +176,6 @@ public class MailClient {
         return result;
     }
 
-    /**
-     * Start a timer where every 10000ms updates the mailbox
-     */
-    public void automaticUpdate(){
-        Timer timer_update = new Timer();
-        timer_update.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if(updateAction());
-            }
-        }, 0, 5000);
-    }
 
     public void startBeat(){
         //HeartBeat to check every 5000ms if the server is still online
@@ -209,23 +200,6 @@ public class MailClient {
         });
         heartbeatThread.setDaemon(true);
         heartbeatThread.start();
-    }
-
-    public char checkNewEmail(Integer mailrcvd_size, Integer mailsent_size, Integer maildel_size){
-        int mailrcvd_newsize = this.mailbox.getAllMailRcvd().size();
-        int mailsent_newsize = this.mailbox.getAllMailSent().size();
-        int maildel_newsize = this.mailbox.getAllMailDel().size();
-
-        if(!mailrcvd_size.equals(mailrcvd_newsize)){
-            return 'r';
-        }
-        if(!mailsent_size.equals(mailsent_newsize)){
-            return 's';
-        }
-        if(!maildel_size.equals(maildel_newsize)){
-            return 'd';
-        }
-        return 0;
     }
 
     public boolean closeAction(){

@@ -10,7 +10,7 @@
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.HomeController">
   <tabs>
-    <Tab text="Posta in Arrivo">
+    <Tab fx:id="receivedTab" text="Posta in Arrivo">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
@@ -25,7 +25,7 @@
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab text="Posta Inviata">
+    <Tab fx:id="sentTab" text="Posta Inviata">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
@@ -39,7 +39,7 @@
                </children></AnchorPane>
       </content>
     </Tab>
-      <Tab text="Posta Eliminata">
+      <Tab fx:id="delTab" text="Posta Eliminata">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>

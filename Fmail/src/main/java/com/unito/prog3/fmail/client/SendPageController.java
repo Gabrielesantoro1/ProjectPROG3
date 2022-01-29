@@ -40,7 +40,6 @@ public class SendPageController implements Initializable {
         this.email = email;
         area_sendpage.setText(email.getText());
         object_sendpage.setText("RE:"+email.getObject());
-
     }
 
     /**
@@ -63,10 +62,10 @@ public class SendPageController implements Initializable {
             }
             //Sends the email to all recipients
             if (recipients_corrects){
-                ArrayList<String> faileds = client.sendEmail(new Email(client.getMailbox().getAccount_name(), recipient, object, text));
-                if(!faileds.isEmpty()){
+                ArrayList<String> fails = client.sendEmail(new Email(client.getMailbox().getAccount_name(), recipient, object, text));
+                if(!fails.isEmpty()){
                     String recipients_failed_string = "";
-                    for (String s : faileds) {
+                    for (String s : fails) {
                         recipients_failed_string += s + "\n";
                     }
                     alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");

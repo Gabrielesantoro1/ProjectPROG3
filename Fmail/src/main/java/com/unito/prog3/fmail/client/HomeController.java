@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
@@ -55,8 +57,17 @@ public class HomeController implements Initializable {
     @FXML
     private ListView<Email> ListView_del;
 
+    @FXML
+    private Tab receivedTab;
+    @FXML
+    private Tab sentTab;
+    @FXML
+    private Tab delTab;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        /*Setting for the received mail list view*/
+
         ListView_rcvd.setOrientation(Orientation.VERTICAL);
         ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
@@ -74,6 +85,8 @@ public class HomeController implements Initializable {
         });
         ListView_rcvd.setCellFactory(emailrcvdView -> new Support.cellVisual());
 
+        /*Setting for the sent mail list view*/
+
         ListView_sent.setOrientation(Orientation.VERTICAL);
         ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         ListView_sent.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
@@ -90,11 +103,16 @@ public class HomeController implements Initializable {
             } catch (IOException e) {e.printStackTrace();}
         });
         ListView_sent.setCellFactory(emailsentView -> new Support.cellVisual());
+
+        /*Setting for the deleted mail list view*/
+
+        ListView_del.setOrientation(Orientation.VERTICAL);
+        ListView_del.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListView_del.setCellFactory(emailsentView -> new Support.cellVisual());
     }
 
-    public void initModel(MailClient client){
+    public void initModel(MailClient client) {
         this.client = client;
-        this.client.automaticUpdate();
         account_name_text.setText(client.getMailbox().getAccount_name());
 
         email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
@@ -103,11 +121,12 @@ public class HomeController implements Initializable {
         ListView_sent.setItems(email_sent);
         email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
         ListView_del.setItems(email_del);
+
+        automaticUpdate();
     }
-    /**
-     * If the client is connected with the server, then if the server is not offline, the screen for compiling the email to be sent opens
-     */
-    public void SendPageButton(ActionEvent event) throws IOException {
+
+    @FXML
+    private void SendPageButton(ActionEvent event) throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -125,40 +144,25 @@ public class HomeController implements Initializable {
     /**
      *If the server is offline, a popup is sent. Otherwise, the updateMailbox() function is called.
      */
-    public void updateButton(ActionEvent event) {
+    @FXML
+    private void updateButton(ActionEvent event) {
         if (client.isConnect()) {
             if (client.updateAction()) {
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
 
-                /*
-                *Prima versione dell'aggiornamento automatico.
-                *Ogni volta che si preme il bottone di aggiornamento chiamiamo la funzione checkNewEmail().
-                *(vedere documentazione della funzione in MailClient.java)
-                *Il carattere che ritorna indica qual è la lista che ha cambiato dimensione.
-                *Cicliamo sulla lista partendo dalla vecchia misura massima fino alla nuova.
-                *
-                *CAPIRE SE E' EFFICIENTE E SE E' NECESSARIO SPOSTARE ANCHE QUESTA PARTE NEL CLIENT
-                *PER RISPETTARE IL PATTERN MVC.
-                * */
-
-                char c = client.checkNewEmail(email_rcvd.size(),email_sent.size(),email_del.size());
-
-                switch (c){
-                    case 'r':
-                        for(int i = email_rcvd.size(); i < client.getMailbox().getAllMailRcvd().size();i++){
-                            email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
-                        }
-                    case 's':
-                        for(int i = email_sent.size(); i < client.getMailbox().getAllMailSent().size();i++) {
-                            email_sent.add(client.getMailbox().getAllMailSent().get(i));
-                        }
-                    case 'd':
-                        for(int i = email_del.size(); i < client.getMailbox().getAllMailDel().size();i++) {
-                            email_del.add(client.getMailbox().getAllMailDel().get(i));
-                        }
-                        default:
-                            System.out.println("The lists have not any new elements");
+                if(receivedTab.isSelected()){
+                    System.out.println("tab email ricevute");
+                    email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
+                    ListView_rcvd.setItems(email_rcvd);
+                }else if(sentTab.isSelected()){
+                    System.out.println("tab email inviate");
+                    email_sent = FXCollections.observableList(client.getMailbox().getAllMailSent());
+                    ListView_sent.setItems(email_sent);
+                }else if(delTab.isSelected()){
+                    System.out.println("tab email cancellate");
+                    email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
+                    ListView_del.setItems(email_del);
                 }
             } else {
                 alertMethod("An error occurred updating the mailbox");
@@ -171,15 +175,30 @@ public class HomeController implements Initializable {
     /**
      *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.
      */
-    public void deleteButton(ActionEvent event) {
+    @FXML
+    private void deleteButton(ActionEvent event) {
         if(client.isConnect()) {
             if (client.deleteAction("delete_all","","")) {
                 alertMethod("Mails deleted have been completely erased");
+                email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
+                ListView_del.setItems(email_del);
             } else {
                 alertMethod("An error occurred while deleting the emails");
             }
         }else{
             alertMethod("The server is momentarily offline, please try again in a while");
         }
+    }
+
+    private void automaticUpdate() {
+        Timer timer_update = new Timer();
+        timer_update.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (client.updateAction()) {
+
+                }
+            }
+        }, 0, 5000);
     }
 }
