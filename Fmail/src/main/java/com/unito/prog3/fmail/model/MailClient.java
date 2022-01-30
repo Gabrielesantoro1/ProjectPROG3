@@ -228,6 +228,23 @@ public class MailClient {
         return result;
     }
 
+    public int checkNewMail(int old_size, char list) {
+        int new_size;
+        switch (list) {
+            case 'r':
+                new_size = mailbox.getAllMailRcvd().size();
+                return new_size;
+            case 's':
+                new_size = mailbox.getAllMailSent().size();
+                return new_size;
+            case 'd':
+                new_size = mailbox.getAllMailDel().size();
+                return old_size;
+        }
+        return -1;
+    }
+
+
     public Mailbox getMailbox() {return mailbox;}
 
     public InetAddress getLocal() {return local;}

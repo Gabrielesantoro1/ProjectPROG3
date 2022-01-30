@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.ViewPageDelController">
+   <children>
+      <TextArea fx:id="email_text" editable="false" layoutX="113.0" layoutY="130.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
+      <Text fx:id="from_text" layoutX="45.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.rightAnchor="268.0" />
+      <Text fx:id="to_text" layoutX="33.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.bottomAnchor="358.0" AnchorPane.rightAnchor="280.0" AnchorPane.topAnchor="25.0" />
+      <Text fx:id="object_text" layoutX="60.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="257.0" AnchorPane.rightAnchor="283.0" AnchorPane.topAnchor="43.0" />
+      <Text layoutX="7.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="563.0" />
+      <Text layoutX="6.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="578.080078125" AnchorPane.topAnchor="25.0" />
+      <Text layoutX="9.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object:" wrappingWidth="47.494140625" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="543.505859375" AnchorPane.topAnchor="43.0" />
+   </children>
+</AnchorPane>

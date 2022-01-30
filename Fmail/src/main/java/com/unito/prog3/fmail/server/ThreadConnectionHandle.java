@@ -37,7 +37,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }
                     else {
                         output.writeObject("false");
-                        Platform.runLater(() -> server.addLog(new Date() + ": Unknown client " + name + " tried to connect unsuccessfully"));
+                        Platform.runLater(() -> server.addLog(new Date() + ":Unknown client " + name + " tried to connect unsuccessfully"));
                     }
                 }
                 else if(in instanceof Email email){ //Sendmail Case
@@ -80,7 +80,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                             server.getMailboxes().get(server.getindexbyname(client_name)).clearMailDel();
                             server.CleardeleteEmail(client_name);
                             Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + " : Deleted mails of client " + client_name + " successfully cleared"));
+                            Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
                         }else{
                             output.writeObject("false");
                             System.out.println("An unknown client tried the delete_all request");
@@ -94,14 +94,14 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                                 mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id)));
                                 mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
                                 Objects.requireNonNull(output).writeObject("true");
-                                Platform.runLater(() -> server.addLog(new Date() + " : Email " + id + " from client " + client_name + " was successfully deleted"));
+                                Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
                             } else {
                                 Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
                                 server.deleteEmail_sent(client_name, id);
                                 mailbox.getAllMailDel().add(mailbox.getAllMailSent().get(mailbox.getIndexbyID_sent(id)));
                                 mailbox.getAllMailSent().remove(mailbox.getIndexbyID_sent(id));
                                 Objects.requireNonNull(output).writeObject("true");
-                                Platform.runLater(() -> server.addLog(new Date() + " : Email " + id + " from client " + client_name + " was successfully deleted"));
+                                Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
                             }
                         }else{
                             output.writeObject("false");
@@ -110,7 +110,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }else if(request.get(1).equals("close_connection")) {
                         if (server.existAccount(client_name)) {
                             Objects.requireNonNull(output).writeObject("true");
-                            Platform.runLater(() -> server.addLog(new Date() + " : Client " + client_name + " closed the connection with the server"));
+                            Platform.runLater(() -> server.addLog(new Date() + ": Client " + client_name + " closed the connection with the server"));
                         } else {
                             output.writeObject("false");
                             System.out.println("An unknown client tried to cose the connection");

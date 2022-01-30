@@ -4,6 +4,7 @@ import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
@@ -104,11 +106,27 @@ public class HomeController implements Initializable {
         });
         ListView_sent.setCellFactory(emailsentView -> new Support.cellVisual());
 
+
+
+
         /*Setting for the deleted mail list view*/
 
         ListView_del.setOrientation(Orientation.VERTICAL);
         ListView_del.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        ListView_del.setCellFactory(emailsentView -> new Support.cellVisual());
+        ListView_del.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
+        FXMLLoader viewDelLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
+        Parent root;
+        try {
+            root = viewDelLoader.load();
+            ViewPageDelController viewPageDelController = viewDelLoader.getController();
+            viewPageDelController.initModel(client, t1);
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {e.printStackTrace();}
+    });
+        ListView_del.setCellFactory(emaildelView -> new Support.cellVisual());
     }
 
     public void initModel(MailClient client) {
@@ -148,22 +166,10 @@ public class HomeController implements Initializable {
     private void updateButton(ActionEvent event) {
         if (client.isConnect()) {
             if (client.updateAction()) {
+                changeView();
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
 
-                if(receivedTab.isSelected()){
-                    System.out.println("tab email ricevute");
-                    email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
-                    ListView_rcvd.setItems(email_rcvd);
-                }else if(sentTab.isSelected()){
-                    System.out.println("tab email inviate");
-                    email_sent = FXCollections.observableList(client.getMailbox().getAllMailSent());
-                    ListView_sent.setItems(email_sent);
-                }else if(delTab.isSelected()){
-                    System.out.println("tab email cancellate");
-                    email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
-                    ListView_del.setItems(email_del);
-                }
             } else {
                 alertMethod("An error occurred updating the mailbox");
             }
@@ -195,10 +201,39 @@ public class HomeController implements Initializable {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (client.updateAction()) {
+                Platform.runLater(() -> {
+                    if (client.updateAction()) {
+                        changeView();
+                    }
 
-                }
+                });
             }
         }, 0, 5000);
+    }
+
+    private void changeView(){
+        int new_size;
+        if(receivedTab.isSelected()){
+            new_size = client.checkNewMail(email_rcvd.size(), 'r');
+            if(new_size!=email_rcvd.size()){
+                for(int i = email_rcvd.size(); i < new_size; i++){
+                    email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
+                }
+            }
+        }else if(sentTab.isSelected()){
+            new_size = client.checkNewMail(email_sent.size(), 's');
+            if(new_size!=email_sent.size()){
+                for(int i = email_sent.size(); i < new_size; i++){
+                    email_sent.add(client.getMailbox().getAllMailSent().get(i));
+                }
+            }
+        }else if(delTab.isSelected()){
+            new_size = client.checkNewMail(email_del.size(), 'd');
+            if(new_size!=email_del.size()){
+                for(int i = email_del.size(); i > new_size; i--){
+                    email_del.remove(client.getMailbox().getAllMailDel().get(i));
+                }
+            }
+        }
     }
 }
