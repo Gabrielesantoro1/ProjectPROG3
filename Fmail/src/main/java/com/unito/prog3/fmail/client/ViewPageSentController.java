@@ -31,11 +31,13 @@ public class ViewPageSentController {
 
     public void initModel(MailClient client, Email email){
         this.client = client;
-        this.email = email;
-        this.from_text.setText(email.getFrom());
-        this.email_text.setText(email.getText());
-        this.to_text.setText(email.getTo());
-        this.object_text.setText(email.getObject());
+        if(email!=null) {
+            this.email = email;
+            this.from_text.setText(email.getFrom());
+            this.email_text.setText(email.getText());
+            this.to_text.setText(email.getTo());
+            this.object_text.setText(email.getObject());
+        }
     }
 
     public void DeleteButton_sent(ActionEvent event) {

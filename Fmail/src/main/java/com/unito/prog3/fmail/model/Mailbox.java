@@ -24,24 +24,14 @@ public class Mailbox implements Serializable{
 
     public String getAccount_name() {return account_name;}
 
-    public void setMailRcvd(Email mail_rcvd) {
-        this.mail_rcvd.add(mail_rcvd);
-    }
-
-    public void setMailSent(Email mail_sent) {this.mail_sent.add(mail_sent);}
-
-    public void setMail_del(Email mail_del) {
-        this.mail_del.add(mail_del);
-    }
-
     public void clearMailDel(){this.mail_del.clear();}
 
-    public List<Email> getAllMailRcvd(){return this.mail_rcvd;}
 
-    public List<Email> getAllMailSent(){return this.mail_sent;}
-
-    public List<Email> getAllMailDel(){return this.mail_del;}
-
+    /**Takes the id of the email that we want to delete
+     * and first of all adds it to the mail_del list of the mailbox
+     * then removes it from the mail_rcvd list.
+     * @param id of the email
+     */
     public void delete_email_rcvd(int id){
         this.mail_del.add(this.mail_rcvd.get(getIndexbyID_rcvd(id)));
         this.mail_rcvd.remove(getIndexbyID_rcvd(id));
@@ -52,18 +42,25 @@ public class Mailbox implements Serializable{
         this.mail_sent.remove(getIndexbyID_sent(id));
     }
 
-    public int getIndexbyID_sent(int iD){
+    public int getIndexbyID_sent(int ID){
         for(int i = 0; i<mail_sent.size();i++){
-            if(mail_sent.get(i).getId() == iD){
+            if(mail_sent.get(i).getId() == ID){
                 return i;
             }
         }
         return -1;
     }
 
-    public int getIndexbyID_rcvd(int iD){
+
+    /**
+     * Takes the ID of the email we want to delete and check on the mail list (rcvd in this case)
+     * if there is such element. If it is, it returns the element position in the list.
+     * @param ID of the email
+     * @return i index of the email-ID
+     */
+    public int getIndexbyID_rcvd(int ID){
         for(int i = 0; i<mail_rcvd.size();i++){
-            if(mail_rcvd.get(i).getId() == iD){
+            if(mail_rcvd.get(i).getId() == ID){
                 return i;
             }
         }
@@ -78,5 +75,21 @@ public class Mailbox implements Serializable{
                 "\n         mail_del = " + mail_del +
                 '}';
     }
+
+    public void setMailRcvd(Email mail_rcvd) {
+        this.mail_rcvd.add(mail_rcvd);
+    }
+
+    public void setMailSent(Email mail_sent) {this.mail_sent.add(mail_sent);}
+
+    public void setMail_del(Email mail_del) {
+        this.mail_del.add(mail_del);
+    }
+
+    public List<Email> getAllMailRcvd(){return this.mail_rcvd;}
+
+    public List<Email> getAllMailSent(){return this.mail_sent;}
+
+    public List<Email> getAllMailDel(){return this.mail_del;}
 
 }

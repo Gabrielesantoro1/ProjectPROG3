@@ -28,20 +28,16 @@ public class ViewPageController {
     @FXML
     private Text object_text;
 
-
-    public void initModel(MailClient client, Email email){
+    public void initModel(MailClient client, Email email) {
         this.client = client;
-        if(email != null) {
+        if (email != null) {
             this.email = email;
             this.from_text.setText(email.getFrom());
             this.email_text.setText(email.getText());
-            this.to_text.setText(email.getTo());
             this.object_text.setText(email.getObject());
-        }else{
-            System.out.println("Email is null");
+            this.to_text.setText(email.getTo());
         }
     }
-
     public void ReplyButton(ActionEvent event) {
     }
 

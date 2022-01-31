@@ -9,7 +9,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
@@ -33,7 +32,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     if (server.existAccount(name)) {
                         Objects.requireNonNull(output).writeObject("true");
                         Platform.runLater(() -> server.addLog(new Date() + ": Client " + name + " is now connected"));
-                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getindexbyname(name)));
+                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(name)));
                     }
                     else {
                         output.writeObject("false");
@@ -63,22 +62,22 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
 
                 }else if (in instanceof ArrayList request){ //Request Case
                     String client_name = (String) request.get(0);
+                    System.out.println("Richiesta presa dal server");
                     if(request.get(1).equals("update")){ //Refresh request
                         if(server.existAccount(client_name)){ //Controllo non necessario, ma lo rende piú sicuro
                             Objects.requireNonNull(output).writeObject("true");
                             System.out.println("Request of refresh received successfully");
 
-                            Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getindexbyname(client_name)));
+                            Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
                             System.out.println("Mailbox sent to " + client_name + " successfully");
                         }else{
                             output.writeObject("false");
                             System.out.println("An unknown client tried the refresh request");
                         }
-                    }
-                    else if(request.get(1).equals("delete_all")){ //Permanent elimination request
+                    } else if(request.get(1).equals("delete_all")){
                         if(server.existAccount(client_name)){
-                            server.getMailboxes().get(server.getindexbyname(client_name)).clearMailDel();
-                            server.CleardeleteEmail(client_name);
+                            server.getMailboxes().get(server.getIndexByName(client_name)).clearMailDel();
+                            server.clearDelEmail(client_name);
                             Objects.requireNonNull(output).writeObject("true");
                             Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
                         }else{
@@ -88,19 +87,31 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     }else if(request.get(1).equals("delete_single")){
                         if(server.existAccount(client_name)) {
                             int id = Integer.parseInt((String) request.get(2));
+
                             if (request.get(3).equals("rcvd")) {
-                                Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
-                                server.deleteEmail_rcvd(client_name, id);
-                                mailbox.getAllMailDel().add(mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id)));
-                                mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
+                                Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
                                 Objects.requireNonNull(output).writeObject("true");
+
+                                Email tmp = mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id));
+                                mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
+                                mailbox.getAllMailDel().add(tmp);
+
+
+                                Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
+
+                                server.deleteEmail_rcvd(client_name, id);
                                 Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
                             } else {
-                                Mailbox mailbox = server.getMailboxes().get(server.getindexbyname(client_name));
-                                server.deleteEmail_sent(client_name, id);
-                                mailbox.getAllMailDel().add(mailbox.getAllMailSent().get(mailbox.getIndexbyID_sent(id)));
-                                mailbox.getAllMailSent().remove(mailbox.getIndexbyID_sent(id));
+                                Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
                                 Objects.requireNonNull(output).writeObject("true");
+
+                                Email tmp = mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_sent(id));
+                                mailbox.getAllMailSent().remove(mailbox.getIndexbyID_sent(id));
+                                mailbox.getAllMailDel().add(tmp);
+
+                                Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
+
+                                server.deleteEmail_sent(client_name, id);
                                 Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
                             }
                         }else{

@@ -5,12 +5,9 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,26 +15,14 @@ import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ChoiceBoxListCell;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.shape.Box;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 
-import javax.swing.*;
-import javax.swing.colorchooser.ColorSelectionModel;
-import javax.swing.plaf.ColorUIResource;
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
@@ -68,6 +53,7 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         /*Setting for the received mail list view*/
 
         ListView_rcvd.setOrientation(Orientation.VERTICAL);
@@ -105,9 +91,6 @@ public class HomeController implements Initializable {
             } catch (IOException e) {e.printStackTrace();}
         });
         ListView_sent.setCellFactory(emailsentView -> new Support.cellVisual());
-
-
-
 
         /*Setting for the deleted mail list view*/
 
@@ -169,7 +152,6 @@ public class HomeController implements Initializable {
                 changeView();
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
-
             } else {
                 alertMethod("An error occurred updating the mailbox");
             }
@@ -213,25 +195,47 @@ public class HomeController implements Initializable {
 
     private void changeView(){
         int new_size;
+
         if(receivedTab.isSelected()){
-            new_size = client.checkNewMail(email_rcvd.size(), 'r');
-            if(new_size!=email_rcvd.size()){
+            new_size = client.checkChangeMail('r');
+            System.out.println(new_size);
+
+            if(new_size > email_rcvd.size()){
                 for(int i = email_rcvd.size(); i < new_size; i++){
                     email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
                 }
+
+            }else if(new_size < email_rcvd.size()) {
+                for (int i = email_rcvd.size(); i > new_size; i--) {
+                    email_rcvd.remove(i - 1);
+                }
+            }else if(new_size == 0){
+                email_rcvd.clear();
             }
+
         }else if(sentTab.isSelected()){
-            new_size = client.checkNewMail(email_sent.size(), 's');
-            if(new_size!=email_sent.size()){
+            new_size = client.checkChangeMail('s');
+            System.out.println(new_size);
+
+            if(new_size > email_sent.size()){
                 for(int i = email_sent.size(); i < new_size; i++){
                     email_sent.add(client.getMailbox().getAllMailSent().get(i));
                 }
+
+            }else if(new_size < email_sent.size()){
+                for(int i = email_sent.size(); i > new_size; i--){
+                    email_sent.remove(i-1);
+                }
+            }else if(new_size == 0){
+                email_sent.clear();
             }
+
         }else if(delTab.isSelected()){
-            new_size = client.checkNewMail(email_del.size(), 'd');
-            if(new_size!=email_del.size()){
-                for(int i = email_del.size(); i > new_size; i--){
-                    email_del.remove(client.getMailbox().getAllMailDel().get(i));
+            new_size = client.checkChangeMail( 'd');
+
+            if(new_size > email_del.size()){
+                for(int i = email_del.size(); i < new_size; i++){
+                    email_del.add(client.getMailbox().getAllMailDel().get(i));
                 }
             }
         }

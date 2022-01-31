@@ -1,9 +1,6 @@
 package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -11,8 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MailClient {
     private Mailbox mailbox;
@@ -105,6 +100,7 @@ public class MailClient {
                     ArrayList<String> client_request = new ArrayList<>();
                     client_request.add(this.mailbox.getAccount_name());
                     client_request.add("update");
+
                     Objects.requireNonNull(output).writeObject(client_request);
 
                     String in = (String) input.readObject();
@@ -113,15 +109,8 @@ public class MailClient {
                         System.out.println("Emails Updated");
                         result = true;
                     }
-                } finally {
-                    output.flush();
-                    input.close();
-                    output.close();
-                    client_socket.close();
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+                } finally {output.flush();input.close();output.close();client_socket.close();}
+            } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         }
         return result;
     }
@@ -147,20 +136,12 @@ public class MailClient {
                         client_request.add(id);
                         client_request.add(position);
                     }
-
                     Objects.requireNonNull(output).writeObject(client_request);
 
                     String in = (String) input.readObject();
                     if (in.equals("true")) {
-                        if (request.equals("delete_all")) {
-                            this.mailbox.getAllMailDel().clear();
-                        } else if (request.equals("delete_single")){
-                            if(id.equals("rcvd")) {
-                                this.mailbox.delete_email_rcvd(Integer.parseInt(id));
-                            }else{
-                                this.mailbox.delete_email_sent(Integer.parseInt(id));
-                            }
-                        }
+                        this.mailbox = (Mailbox) input.readObject();
+                        System.out.println(this.mailbox.toString());
                         result = true;
                     }
                 } finally {
@@ -228,20 +209,29 @@ public class MailClient {
         return result;
     }
 
-    public int checkNewMail(int old_size, char list) {
-        int new_size;
+    public int checkChangeMail(char list) {
+        int new_size = 0;
         switch (list) {
             case 'r':
                 new_size = mailbox.getAllMailRcvd().size();
-                return new_size;
+                if(new_size > 0) {
+                    return new_size;
+                }
+                break;
             case 's':
                 new_size = mailbox.getAllMailSent().size();
-                return new_size;
+                if(new_size > 0) {
+                    return new_size;
+                }
+                break;
             case 'd':
                 new_size = mailbox.getAllMailDel().size();
-                return old_size;
+                if(new_size > 0) {
+                    return new_size;
+                }
+                break;
         }
-        return -1;
+        return new_size;
     }
 
 

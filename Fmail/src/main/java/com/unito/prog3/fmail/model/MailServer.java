@@ -22,7 +22,7 @@ public class MailServer{
     private static AtomicInteger emailId_count;
     private List<Mailbox> mailboxes;
     private ListProperty<String> logs;
-    private ObservableList<String> logsContnent;
+    private ObservableList<String> logs_content;
 
     /**
      *   {@code MailServer} Constructor
@@ -30,27 +30,25 @@ public class MailServer{
     public MailServer() {
         this.mailboxes = new ArrayList<>();
         emailId_count = new AtomicInteger();
-        this.logsContnent = FXCollections.observableList(new LinkedList<>());
+        this.logs_content = FXCollections.observableList(new LinkedList<>());
         this.logs = new SimpleListProperty<>();
-        this.logs.set(logsContnent);
+        this.logs.set(logs_content);
     }
 
     public void create_dirs() throws IOException {
         for (int i = 0; i < this.getMailboxes().size(); i++) {
-            String dir_name = this.getnamebyindex(i);
+            String dir_name = this.getNameByIndex(i);
+
             File f = new File(Support.PATH_NAME_DIR + "\\" + dir_name + "\\" + "deleted");
-            if (f.mkdirs()) {
-                //System.out.println("Deleted email directory created");
-            }
+            f.mkdirs();
+
             f = new File(Support.PATH_NAME_DIR + "\\" + dir_name + "\\" + "received");
-            if (f.mkdirs()) {
-                //System.out.println("Received email directory created");
-            }
+            f.mkdirs();
+
             f = new File(Support.PATH_NAME_DIR + "\\" + dir_name + "\\" + "sent");
-            if (f.mkdirs()) {
-                //System.out.println("Sent email directory created");
-            }
+            f.mkdirs();
         }
+
         File f = new File(Support.PATH_NAME_DIR + "\\id_count.txt");
         if(f.createNewFile()){
             String s = "0";
@@ -61,7 +59,8 @@ public class MailServer{
     }
 
     /**
-     * The function automatically extracts the sender and the recipient information and save the email in the right directory of each one. It also updates the value of the id_counter
+     * The function automatically extracts the sender and the recipient information
+     * and save the email in the right directory of each one. It also updates the value of the id_counter.
      * @param email_to_write Object Email to write
      */
     public boolean saveEmail(Email email_to_write, String single_recipient) throws IOException {
@@ -88,8 +87,8 @@ public class MailServer{
                 buffer.write(what_write);
                 buffer.flush();
 
-                this.mailboxes.get(getindexbyname(email_to_write.getFrom())).setMailSent(email_to_write);
-                this.mailboxes.get(getindexbyname(single_recipient)).setMailRcvd(email_to_write);
+                this.mailboxes.get(getIndexByName(email_to_write.getFrom())).setMailSent(email_to_write);
+                this.mailboxes.get(getIndexByName(single_recipient)).setMailRcvd(email_to_write);
                 saved = true;
                 System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory and in local");
             }
@@ -100,8 +99,9 @@ public class MailServer{
     }
 
     /**
-     * The function scrolls through all the folders of each account saved locally and for each account and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding to each account. Forward also loads the current value of the id_count
-     *
+     * The function scrolls through all the folders of each account saved locally and for each account
+     * and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding
+     * to each account. Forward also loads the current value of the id_count
      */
     public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
@@ -125,7 +125,7 @@ public class MailServer{
                                     line = reader.readLine();
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account.getName())).setMail_del(email_to_load);
+                                this.mailboxes.get(this.getIndexByName(account.getName())).setMail_del(email_to_load);
                             }
                         }
 
@@ -140,7 +140,7 @@ public class MailServer{
                                     line = reader.readLine();
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account.getName())).setMailSent(email_to_load);
+                                this.mailboxes.get(this.getIndexByName(account.getName())).setMailSent(email_to_load);
                             }
                         }
                         break;
@@ -156,7 +156,7 @@ public class MailServer{
                                     line = reader.readLine();
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getindexbyname(account.getName())).setMailRcvd(email_to_load);
+                                this.mailboxes.get(this.getIndexByName(account.getName())).setMailRcvd(email_to_load);
                             }
                         }
                         break;
@@ -168,7 +168,7 @@ public class MailServer{
         System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
-    public  void CleardeleteEmail(String account_name){
+    public synchronized void clearDelEmail(String account_name){
         String path = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted";
         File file = new File(path);
         for(File emails : file.listFiles()){
@@ -176,7 +176,7 @@ public class MailServer{
         }
     }
 
-    public void deleteEmail_rcvd(String account_name, int id) throws IOException {
+    public synchronized void deleteEmail_rcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         File rcvd = new File(path_rcvd);
@@ -184,7 +184,7 @@ public class MailServer{
         Files.move(rcvd.toPath(),del.toPath());
     }
 
-    public void deleteEmail_sent(String account_name, int id) throws IOException {
+    public synchronized void deleteEmail_sent(String account_name, int id) throws IOException {
         String path_sent = Support.PATH_NAME_DIR + "\\" + account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         File rcvd = new File(path_sent);
@@ -192,10 +192,10 @@ public class MailServer{
         Files.move(rcvd.toPath(),del.toPath());
     }
 
-    private String getnamebyindex(Integer i){return mailboxes.get(i).getAccount_name();}
+    private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}
 
-    public int getindexbyname(String account){
-        for (int i = 0; i< mailboxes.size(); i++){
+    public int getIndexByName(String account){
+        for (int i = 0; i < mailboxes.size(); i++){
             if(account.equals(mailboxes.get(i).getAccount_name())){
                 return i;
             }
@@ -207,9 +207,7 @@ public class MailServer{
 
     public List<Mailbox> getMailboxes() {return mailboxes;}
 
-    public ListProperty<String> logsProperty(){
-        return logs;
-    }
+    public ListProperty<String> logsProperty(){return logs;}
 
     public Boolean existAccount(String account_name){
         boolean exist = false;
@@ -222,8 +220,9 @@ public class MailServer{
     }
 
     public void addLog(String log){
-        this.logsContnent.add(log);
+        this.logs_content.add(log);
     }
+
     @Override
     public String toString() {
         return "MailServer{`\n" +
