@@ -38,6 +38,7 @@ public class ViewPageController {
             this.to_text.setText(email.getTo());
         }
     }
+
     public void ReplyButton(ActionEvent event) {
     }
 
