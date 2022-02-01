@@ -51,7 +51,6 @@ public class Mailbox implements Serializable{
         return -1;
     }
 
-
     /**
      * Takes the ID of the email we want to delete and check on the mail list (rcvd in this case)
      * if there is such element. If it is, it returns the element position in the list.

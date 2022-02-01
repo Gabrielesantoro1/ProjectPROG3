@@ -62,7 +62,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
 
                 }else if (in instanceof ArrayList request){ //Request Case
                     String client_name = (String) request.get(0);
-                    System.out.println("Richiesta presa dal server");
                     if(request.get(1).equals("update")){ //Refresh request
                         if(server.existAccount(client_name)){ //Controllo non necessario, ma lo rende piú sicuro
                             Objects.requireNonNull(output).writeObject("true");
@@ -96,7 +95,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                                 mailbox.getAllMailRcvd().remove(mailbox.getIndexbyID_rcvd(id));
                                 mailbox.getAllMailDel().add(tmp);
 
-
                                 Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
 
                                 server.deleteEmail_rcvd(client_name, id);
@@ -105,7 +103,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                                 Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
                                 Objects.requireNonNull(output).writeObject("true");
 
-                                Email tmp = mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_sent(id));
+                                Email tmp = mailbox.getAllMailSent().get(mailbox.getIndexbyID_sent(id));
                                 mailbox.getAllMailSent().remove(mailbox.getIndexbyID_sent(id));
                                 mailbox.getAllMailDel().add(tmp);
 
