@@ -168,8 +168,6 @@ public class HomeController implements Initializable {
         if(client.isConnect()) {
             if (client.deleteAction("delete_all","","")) {
                 alertMethod("Mails deleted have been completely erased");
-                email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
-                ListView_del.setItems(email_del);
             } else {
                 alertMethod("An error occurred while deleting the emails");
             }
@@ -209,6 +207,7 @@ public class HomeController implements Initializable {
                 for (int i = email_rcvd.size(); i > new_size; i--) {
                     email_rcvd.remove(i - 1);
                 }
+
             }else if(new_size == 0){
                 email_rcvd.clear();
             }
