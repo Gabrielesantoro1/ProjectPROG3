@@ -85,10 +85,8 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                                     Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
                                     Objects.requireNonNull(output).writeObject("true");
 
-                                    Email tmp = mailbox.getAllMailRcvd().get(mailbox.getIndexbyID_rcvd(id));
                                     mailbox.delete_email_rcvd(id);
                                     server.deleteEmail_rcvd(client_name, id);
-                                    System.out.println(id + client_name);
                                     Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
 
                                     Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
@@ -96,7 +94,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                                     Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
                                     Objects.requireNonNull(output).writeObject("true");
 
-                                    Email tmp = mailbox.getAllMailSent().get(mailbox.getIndexbyID_sent(id));
                                     mailbox.delete_email_sent(id);
                                     server.deleteEmail_sent(client_name, id);
                                     Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));

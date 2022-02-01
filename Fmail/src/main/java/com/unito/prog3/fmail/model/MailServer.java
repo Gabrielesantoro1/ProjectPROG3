@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class MailServer{
             BufferedWriter buffer = new BufferedWriter(new FileWriter(f));
             buffer.write(s);
             buffer.flush();
+            buffer.close();
         }
     }
 
@@ -86,6 +89,7 @@ public class MailServer{
                 buffer = new BufferedWriter(new FileWriter(sent));
                 buffer.write(what_write);
                 buffer.flush();
+                buffer.close();
 
                 this.mailboxes.get(getIndexByName(email_to_write.getFrom())).setMailSent(email_to_write);
                 this.mailboxes.get(getIndexByName(single_recipient)).setMailRcvd(email_to_write);
@@ -125,9 +129,9 @@ public class MailServer{
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getIndexByName(account.getName())).setMail_del(email_to_load);
+                                reader.close();
                             }
                         }
-
                     case "sent":
                         for (File email: Objects.requireNonNull(lists.listFiles())){
                             if(!email.isDirectory()){
@@ -140,10 +144,9 @@ public class MailServer{
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getIndexByName(account.getName())).setMailSent(email_to_load);
+                                reader.close();
                             }
                         }
-                        break;
-
                     case "received":
                         for (File email: Objects.requireNonNull(lists.listFiles())){
                             if(!email.isDirectory()){
@@ -156,9 +159,9 @@ public class MailServer{
                                 }
                                 Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                                 this.mailboxes.get(this.getIndexByName(account.getName())).setMailRcvd(email_to_load);
+                                reader.close();
                             }
                         }
-                        break;
                     default:
                         break;
                 }
@@ -178,17 +181,17 @@ public class MailServer{
     public void deleteEmail_rcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
-        File rcvd = new File(path_rcvd);
-        File del = new File(path_del);
-        Files.move(rcvd.toPath(),del.toPath());
+        Path rcvd = Paths.get(path_rcvd);
+        Path del = Paths.get(path_del);
+        System.out.println(Files.move(rcvd,del));
     }
 
     public void deleteEmail_sent(String account_name, int id) throws IOException {
-        String path_sent = Support.PATH_NAME_DIR + "\\" + account_name +"\\sent\\" + id + ".txt";
+        String path_sent = Support.PATH_NAME_DIR +"\\"+ account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
-        File sent = new File(path_sent);
-        File del = new File(path_del);
-        Files.move(sent.toPath(),del.toPath());
+        Path sent = Paths.get(path_sent);
+        Path del = Paths.get(path_del);
+        Files.move(sent, del);
     }
 
     private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}

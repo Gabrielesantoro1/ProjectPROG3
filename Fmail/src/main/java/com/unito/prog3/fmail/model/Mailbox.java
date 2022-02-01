@@ -26,18 +26,17 @@ public class Mailbox implements Serializable{
 
     public void clearMailDel(){this.mail_del.clear();}
 
-
     /**Takes the id of the email that we want to delete
-     * and first of all adds it to the mail_del list of the mailbox
+     * and first adds it to the mail_del list of the mailbox
      * then removes it from the mail_rcvd list.
      * @param id of the email
      */
-    public void delete_email_rcvd(int id){
+    public synchronized void delete_email_rcvd(int id){
         this.mail_del.add(this.mail_rcvd.get(getIndexbyID_rcvd(id)));
         this.mail_rcvd.remove(getIndexbyID_rcvd(id));
     }
 
-    public void delete_email_sent(int id){
+    public synchronized void delete_email_sent(int id){
         this.mail_del.add(this.mail_sent.get(getIndexbyID_sent(id)));
         this.mail_sent.remove(getIndexbyID_sent(id));
     }
