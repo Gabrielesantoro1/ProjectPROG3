@@ -180,7 +180,7 @@ public class MailServer{
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         File rcvd = new File(path_rcvd);
         File del = new File(path_del);
-        rcvd.renameTo(del);
+        Files.move(rcvd.toPath(),del.toPath());
     }
 
     public void deleteEmail_sent(String account_name, int id) throws IOException {
@@ -188,8 +188,7 @@ public class MailServer{
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         File sent = new File(path_sent);
         File del = new File(path_del);
-        sent.renameTo(del);
-
+        Files.move(sent.toPath(),del.toPath());
     }
 
     private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}
