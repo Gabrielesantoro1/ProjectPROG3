@@ -140,8 +140,10 @@ public class MailClient {
 
                     String in = (String) input.readObject();
                     if (in.equals("true")) {
-                        this.mailbox = (Mailbox) input.readObject();
-                        System.out.println(this.mailbox.toString());
+                        if (request.equals("delete_single")) {
+                            this.mailbox = (Mailbox) input.readObject();
+                            System.out.println(this.mailbox.toString());
+                        }
                         result = true;
                     }
                 } finally {

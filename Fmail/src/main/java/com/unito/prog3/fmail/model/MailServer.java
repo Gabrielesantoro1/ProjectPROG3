@@ -90,7 +90,6 @@ public class MailServer{
                 this.mailboxes.get(getIndexByName(email_to_write.getFrom())).setMailSent(email_to_write);
                 this.mailboxes.get(getIndexByName(single_recipient)).setMailRcvd(email_to_write);
                 saved = true;
-                System.out.println("The e-mail "+ email_to_write.getId() +" was successfully saved in memory and in local");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,7 +167,7 @@ public class MailServer{
         System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
-    public synchronized void clearDelEmail(String account_name){
+    public void clearDelEmail(String account_name){
         String path = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted";
         File file = new File(path);
         for(File emails : file.listFiles()){
@@ -176,20 +175,21 @@ public class MailServer{
         }
     }
 
-    public synchronized void deleteEmail_rcvd(String account_name, int id) throws IOException {
+    public void deleteEmail_rcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         File rcvd = new File(path_rcvd);
         File del = new File(path_del);
-        Files.move(rcvd.toPath(),del.toPath());
+        rcvd.renameTo(del);
     }
 
-    public synchronized void deleteEmail_sent(String account_name, int id) throws IOException {
+    public void deleteEmail_sent(String account_name, int id) throws IOException {
         String path_sent = Support.PATH_NAME_DIR + "\\" + account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
-        File rcvd = new File(path_sent);
+        File sent = new File(path_sent);
         File del = new File(path_del);
-        Files.move(rcvd.toPath(),del.toPath());
+        sent.renameTo(del);
+
     }
 
     private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}
