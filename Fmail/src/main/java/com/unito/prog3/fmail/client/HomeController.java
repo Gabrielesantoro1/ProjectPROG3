@@ -161,7 +161,7 @@ public class HomeController implements Initializable {
     }
 
     /**
-     *If the server is offline, a popup is sent. Otherwise the deleteMails() function is called.
+     *If the server is offline, a popup is sent. Otherwise, the deleteMails() function is called.
      */
     @FXML
     private void deleteButton(ActionEvent event) {
@@ -181,12 +181,12 @@ public class HomeController implements Initializable {
         timer_update.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    if (client.updateAction()) {
-                        changeView();
-                    }
+            Platform.runLater(() -> {
+                if (client.updateAction()) {
+                    changeView();
+                }
 
-                });
+            });
             }
         }, 0, 5000);
     }
@@ -203,7 +203,7 @@ public class HomeController implements Initializable {
                     email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
                 }
 
-            }else if(new_size < email_rcvd.size()) {
+            }else if(new_size < email_rcvd.size() && new_size > 0) {
                 for (int i = email_rcvd.size(); i > new_size; i--) {
                     email_rcvd.remove(i - 1);
                 }
@@ -221,9 +221,9 @@ public class HomeController implements Initializable {
                     email_sent.add(client.getMailbox().getAllMailSent().get(i));
                 }
 
-            }else if(new_size < email_sent.size()){
+            }else if(new_size < email_sent.size() && new_size > 0){
                 for(int i = email_sent.size(); i > new_size; i--){
-                    email_sent.remove(i-1);
+                    email_sent.remove(i - 1);
                 }
             }else if(new_size == 0){
                 email_sent.clear();
