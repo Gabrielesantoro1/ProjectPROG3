@@ -216,6 +216,7 @@ public class HomeController implements Initializable {
             }else if(new_size < email_rcvd.size() && new_size > 0) {
                 for (int i = email_rcvd.size(); i > new_size; i--) {
                     email_rcvd.remove(i - 1);
+                    ListView_rcvd.refresh();
                 }
 
             }else if(new_size == 0){
@@ -234,6 +235,7 @@ public class HomeController implements Initializable {
             }else if(new_size < email_sent.size() && new_size > 0){
                 for(int i = email_sent.size(); i > new_size; i--){
                     email_sent.remove(i - 1);
+                    ListView_sent.refresh();
                 }
 
             }else if(new_size == 0){
