@@ -90,7 +90,7 @@ public class MailServer{
 
             if(rcvd.createNewFile() && sent.createNewFile()){
                 SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                String content =  email.getId()+"\n"+email.getFrom()+"\n"+email.getTo()+"\n"+email.getObject()+"\n"+email.getText()+"\n"+ DateFor.format(email.getDate());
+                String content =  email.getId()+"\n"+email.getFrom()+"\n"+email.getTo()+"\n"+email.getObject()+"\n"+email.getText().replaceAll("\n"," ")+"\n"+ DateFor.format(email.getDate());
 
                 BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
                 buffer.write(content);
