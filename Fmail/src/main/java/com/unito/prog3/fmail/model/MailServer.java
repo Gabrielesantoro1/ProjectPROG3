@@ -90,7 +90,7 @@ public class MailServer{
 
             if(rcvd.createNewFile() && sent.createNewFile()){
                 SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                String content =  email.getId()+"\n"+email.getFrom()+"\n"+email.getTo()+"\n"+email.getObject()+"\n"+email.getText().replaceAll("\n"," ")+"\n"+ DateFor.format(email.getDate());
+                String content =  email.getId()+"\n"+email.getFrom()+"\n"+email.getTo()+"\n"+email.getObject()+"\n"+email.getText().replaceAll("\n","@#%")+"\n"+ DateFor.format(email.getDate());
 
                 BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
                 buffer.write(content);
@@ -142,7 +142,7 @@ public class MailServer{
                                 email_string_array.add(line);
                                 line = reader.readLine();
                             }
-                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4).replaceAll("@#%","\n"), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                             this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMail_del(email_to_load);
                             reader.close();
                         }
@@ -158,7 +158,7 @@ public class MailServer{
                                 email_string_array.add(line);
                                 line = reader.readLine();
                             }
-                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4).replaceAll("@#%","\n"), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                             this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMailRcvd(email_to_load);
                             reader.close();
                         }
@@ -174,7 +174,7 @@ public class MailServer{
                                 email_string_array.add(line);
                                 line = reader.readLine();
                             }
-                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4).replaceAll("@#%", "\n"), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
                             this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMailSent(email_to_load);
                             reader.close();
                         }

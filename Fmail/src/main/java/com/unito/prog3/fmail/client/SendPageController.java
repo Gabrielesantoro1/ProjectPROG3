@@ -41,7 +41,7 @@ public class SendPageController implements Initializable {
         area_sendpage.setText("\nOriginal message:`\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
         recipient_sendpage.setText(email.getFrom() + email.get_to_except(client.getMailbox().getAccount_name()));
-        //recipient_sendpage.setEditable(false);
+        recipient_sendpage.setEditable(false);
     }
 
     public void initModel_Email_forward(MailClient client, Email email){
