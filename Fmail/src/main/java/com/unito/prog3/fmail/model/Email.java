@@ -65,6 +65,10 @@ public class Email implements Serializable {
         return date;
     }
 
+    public String get_to_except(String account_toremove){
+        return to.replace(account_toremove,"");
+    }
+
     @Override
     public String toString() {
         return "\n              Email{" +

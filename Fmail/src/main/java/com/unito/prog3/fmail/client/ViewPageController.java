@@ -40,15 +40,25 @@ public class ViewPageController {
     }
 
     public void ReplyButton(ActionEvent event) throws IOException {
-        FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
-        Parent root = sendloader.load();
-        SendPageController sendPageController = sendloader.getController();
-        sendPageController.initModel_Email(client,email);
-        Stage window = (Stage) email_text.getScene().getWindow();
-        window.setScene(new Scene(root));
+        if(client.isConnect()) {
+            FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
+            Parent root = sendloader.load();
+            SendPageController sendPageController = sendloader.getController();
+            sendPageController.initModel_Email(client, email);
+            Stage window = (Stage) email_text.getScene().getWindow();
+            window.setScene(new Scene(root));
+        }
     }
 
-    public void ReplyAllBUtton(ActionEvent event) {
+    public void ReplyAllBUtton(ActionEvent event) throws IOException {
+        if(client.isConnect()) {
+            FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
+            Parent root = sendloader.load();
+            SendPageController sendPageController = sendloader.getController();
+            sendPageController.initModel_Email_replyall(client, email);
+            Stage window = (Stage) email_text.getScene().getWindow();
+            window.setScene(new Scene(root));
+        }
     }
 
     public void ForwardButton(ActionEvent event) throws IOException {
