@@ -40,9 +40,10 @@ public class ViewPageController {
     }
 
     public void ReplyButton(ActionEvent event) {
+
     }
 
-    public void ReplyAllButton(ActionEvent event) {
+    public void ReplyAllBUtton(ActionEvent event) {
     }
 
     public void ForwardButton(ActionEvent event) throws IOException {
@@ -66,6 +67,4 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyAllBUtton(ActionEvent event) {
-    }
 }

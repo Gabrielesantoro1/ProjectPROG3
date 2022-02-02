@@ -34,11 +34,9 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     //new client asked for connection
                     if (in instanceof String name) { //First connection Case
                         clientConnectionCase(output, name);
-
                     //new email sent
                     } else if (in instanceof Email email) {
                         sendMailCase(output, email);
-
                     //a client sent a request (update, delete_all/delete_single, close connection)
                     } else if (in instanceof ArrayList request) {
                         requestCase(output, request);
@@ -125,18 +123,15 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         for (String s : recipients) {
             if (!server.saveEmail(email, s)) {
                 fails.add(s);
+                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + f + " because the recipient doesn't exists"));
+            }else {
+                Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s + " sent successfully"));
             }
-            Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s + " sent successfully"));
-        }
-        if (fails.isEmpty()) {
+        }if(fails.isEmpty()) {
             Objects.requireNonNull(output).writeObject("true");
-
-        } else {
+        }else{
             Objects.requireNonNull(output).writeObject("false");
             Objects.requireNonNull(output).writeObject(fails);
-            for (String f : fails) {
-                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + f + " because the recipient doesn't exists"));
-            }
         }
     }
 
