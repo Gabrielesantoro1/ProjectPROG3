@@ -52,67 +52,70 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         }
     }
 
-    private void requestCase(ObjectOutputStream output, ArrayList request) throws IOException {
+    private void requestCase(ObjectOutputStream output, ArrayList<String> request) throws IOException {
         //update case
-        String client_name = (String) request.get(0);
-        if (request.get(1).equals("update")) {
-            if (server.existAccount(client_name)) {
-                Objects.requireNonNull(output).writeObject("true");
-                Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
-            } else {
-                output.writeObject("false");
-            }
-
-        //delete all case
-        } else if (request.get(1).equals("delete_all")) {
-            if (server.existAccount(client_name)) {
-                server.getMailboxes().get(server.getIndexByName(client_name)).clearMailDel();
-                server.clearDelEmail(client_name);
-                Objects.requireNonNull(output).writeObject("true");
-                Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
-            } else {
-                output.writeObject("false");
-            }
-
-        //delete single case
-        } else if (request.get(1).equals("delete_single")) {
-            if (server.existAccount(client_name)) {
-                int id = Integer.parseInt((String) request.get(2));
-
-                if (request.get(3).equals("rcvd")) {
-                    Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
+        String client_name = request.get(0);
+        switch (request.get(1)) {
+            case "update":
+                if (server.existAccount(client_name)) {
                     Objects.requireNonNull(output).writeObject("true");
-
-                    mailbox.delete_email_rcvd(id);
-                    server.deleteEmailRcvd(client_name, id);
                     Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
-
-                    Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
-
-                } else if (request.get(3).equals("sent")) {
-                    Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
-                    Objects.requireNonNull(output).writeObject("true");
-
-                    mailbox.delete_email_sent(id);
-                    server.deleteEmailSent(client_name, id);
-                    Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
-
-                    Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
+                } else {
+                    output.writeObject("false");
                 }
-            } else {
-                output.writeObject("false");
-            }
+                break;
 
-        //close connection case
-        } else if (request.get(1).equals("close_connection")) {
-            if (server.existAccount(client_name)) {
-                Objects.requireNonNull(output).writeObject("true");
-                Platform.runLater(() -> server.addLog(new Date() + ": Client " + client_name + " closed the connection with the server"));
-            } else {
+            case "delete_all":
+                if (server.existAccount(client_name)) {
+                    server.getMailboxes().get(server.getIndexByName(client_name)).clearMailDel();
+                    server.clearDelEmail(client_name);
+                    Objects.requireNonNull(output).writeObject("true");
+                    Platform.runLater(() -> server.addLog(new Date() + ": Deleted mails of client " + client_name + " successfully cleared"));
+                } else {
+                    output.writeObject("false");
+                }
+                break;
+
+            case "delete_single":
+                if (server.existAccount(client_name)) {
+                    int id = Integer.parseInt(request.get(2));
+
+                    if (request.get(3).equals("rcvd")) {
+                        Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
+                        Objects.requireNonNull(output).writeObject("true");
+
+                        mailbox.delete_email_rcvd(id);
+                        server.deleteEmailRcvd(client_name, id);
+                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
+
+                        Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
+
+                    }else if (request.get(3).equals("sent")){
+                        Mailbox mailbox = server.getMailboxes().get(server.getIndexByName(client_name));
+                        Objects.requireNonNull(output).writeObject("true");
+
+                        mailbox.delete_email_sent(id);
+                        server.deleteEmailSent(client_name, id);
+                        Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(client_name)));
+
+                        Platform.runLater(() -> server.addLog(new Date() + ": Email " + id + " from client " + client_name + " was successfully deleted"));
+                    }
+                }else{
+                    output.writeObject("false");
+                }
+                break;
+
+            case "close_connection":
+                if (server.existAccount(client_name)) {
+                    Objects.requireNonNull(output).writeObject("true");
+                    Platform.runLater(() -> server.addLog(new Date() + ": Client " + client_name + " closed the connection with the server"));
+                } else {
+                    output.writeObject("false");
+                }
+                break;
+            default:
                 output.writeObject("false");
-            }
-        } else {
-            output.writeObject("false");
+                break;
         }
     }
 
@@ -120,10 +123,10 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         String recipients_text = email.getTo();
         String[] recipients = recipients_text.split(" ");
         ArrayList<String> fails = new ArrayList<>();
-        for(int i = 0 ; i<recipients.length; i++){
-            if(!server.existAccount(recipients[i])){
-                fails.add(recipients[i]);
-                recipients_text = recipients_text.replace(recipients[i],"");
+        for (String recipient : recipients) {
+            if (!server.existAccount(recipient)) {
+                fails.add(recipient);
+                recipients_text = recipients_text.replace(recipient, "");
                 System.out.println(recipients_text);
             }
         }

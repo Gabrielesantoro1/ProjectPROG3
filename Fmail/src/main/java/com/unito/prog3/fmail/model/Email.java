@@ -1,9 +1,6 @@
 package com.unito.prog3.fmail.model;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Email implements Serializable {
@@ -70,7 +67,7 @@ public class Email implements Serializable {
     }
 
     public String get_to_except(String account_toremove){
-        return to.replace(account_toremove,"");
+        return to.replace(account_toremove +" ","");
     }
 
     @Override

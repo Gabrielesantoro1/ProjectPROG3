@@ -11,14 +11,13 @@ import java.text.ParseException;
 import java.util.ResourceBundle;
 
 public class MailServerController implements Initializable{
-    private static MailServer server;
 
     @FXML
     ListView<String> logs;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
-        server = new MailServer();
+        MailServer server = new MailServer();
         server.addMailBox(Support.daniele);
         server.addMailBox(Support.danieleSer);
         server.addMailBox(Support.gabriele);
@@ -29,7 +28,7 @@ public class MailServerController implements Initializable{
             server.create_dirs();
             server.loadEmailFromLocal();
         } catch (IOException | ParseException e) {e.printStackTrace();}
-        System.out.println(server.toString());
+        System.out.println(server);
             Thread start_connection = new Thread(new StartConnectionHandle(server));
             start_connection.start();
     }

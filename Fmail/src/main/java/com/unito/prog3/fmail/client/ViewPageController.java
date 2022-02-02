@@ -39,7 +39,7 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyButton(ActionEvent event) throws IOException {
+    public void ReplyButton() throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -50,7 +50,7 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyAllBUtton(ActionEvent event) throws IOException {
+    public void ReplyAllBUtton() throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -61,7 +61,7 @@ public class ViewPageController {
         }
     }
 
-    public void ForwardButton(ActionEvent event) throws IOException {
+    public void ForwardButton() throws IOException {
         FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
         Parent root = sendloader.load();
         SendPageController sendPageController = sendloader.getController();

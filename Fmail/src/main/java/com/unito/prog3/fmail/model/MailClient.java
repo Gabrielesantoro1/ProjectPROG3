@@ -167,14 +167,17 @@ public class MailClient {
                 try {
                     Socket client_socket = new Socket(this.local, Support.port);
                     ObjectOutputStream output = null;
-                    ObjectInputStream input = null;
                     try {
                         output = new ObjectOutputStream(client_socket.getOutputStream());
                         output.writeObject(666);
                         this.setConnect(true);
                         System.out.println("Still connected");
                         Thread.sleep(3000);
-                    }finally {output.close(); client_socket.close();}
+                    }finally {
+                        assert output != null;
+                        output.close();
+                        client_socket.close();
+                    }
                 }catch(IOException | InterruptedException e){
                     System.out.println("Server offline");
                     this.setConnect(false);
@@ -214,24 +217,24 @@ public class MailClient {
     public int checkChangeMail(char list) {
         int new_size = 0;
         switch (list) {
-            case 'r':
+            case 'r' -> {
                 new_size = mailbox.getAllMailRcvd().size();
-                if(new_size > 0) {
+                if (new_size > 0) {
                     return new_size;
                 }
-                break;
-            case 's':
+            }
+            case 's' -> {
                 new_size = mailbox.getAllMailSent().size();
-                if(new_size > 0) {
+                if (new_size > 0) {
                     return new_size;
                 }
-                break;
-            case 'd':
+            }
+            case 'd' -> {
                 new_size = mailbox.getAllMailDel().size();
-                if(new_size > 0) {
+                if (new_size > 0) {
                     return new_size;
                 }
-                break;
+            }
         }
         return new_size;
     }
@@ -239,9 +242,7 @@ public class MailClient {
 
     public Mailbox getMailbox() {return mailbox;}
 
-    public InetAddress getLocal() {return local;}
-
-    public synchronized boolean isConnect() {return Connect;}
+    public boolean isConnect() {return Connect;}
 
     public void setConnect(boolean connect) {Connect = connect;}
 

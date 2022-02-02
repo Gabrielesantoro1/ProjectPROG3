@@ -20,9 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MailServer{
     private static AtomicInteger emailId_count;
-    private List<Mailbox> mailboxes;
-    private ListProperty<String> logs;
-    private ObservableList<String> logs_content;
+    private final List<Mailbox> mailboxes;
+    private final ListProperty<String> logs;
+    private final ObservableList<String> logs_content;
 
     /**
      *   {@code MailServer} Constructor
@@ -193,30 +193,22 @@ public class MailServer{
     public void clearDelEmail(String account_name){
         String path = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted";
         File file = new File(path);
-        for(File email : file.listFiles()){
+        for(File email : Objects.requireNonNull(file.listFiles())){
             email.delete();
         }
     }
 
-
     /**
-     * @param account_name
-     * @param id
-     * @throws IOException;
+     * Move an Email from rcvd/sent to deleted.
      */
     public void deleteEmailRcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         Path rcvd = Paths.get(path_rcvd);
         Path del = Paths.get(path_del);
-        System.out.println(Files.move(rcvd,del));
+        Files.move(rcvd,del);
     }
 
-    /**
-     * @param account_name
-     * @param id
-     * @throws IOException;
-     */
     public void deleteEmailSent(String account_name, int id) throws IOException {
         String path_sent = Support.PATH_NAME_DIR +"\\"+ account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
@@ -225,16 +217,10 @@ public class MailServer{
         Files.move(sent, del);
     }
 
-    /**
-     * @param i
-     * @return
-     */
-    private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}
+    private String getNameByIndex(Integer i){
+        return mailboxes.get(i).getAccount_name();
+    }
 
-    /**
-     * @param account
-     * @return
-     */
     public int getIndexByName(String account){
         for (int i = 0; i < mailboxes.size(); i++){
             if(account.equals(mailboxes.get(i).getAccount_name())){
@@ -244,17 +230,24 @@ public class MailServer{
         return -1;
     }
 
-    public void addMailBox(Mailbox mailbox){this.mailboxes.add(mailbox);}
+    public void addMailBox(Mailbox mailbox){
+        this.mailboxes.add(mailbox);
+    }
 
-    public List<Mailbox> getMailboxes() {return mailboxes;}
+    public List<Mailbox> getMailboxes() {
+        return mailboxes;
+    }
 
-    public ListProperty<String> logsProperty(){return logs;}
+    public ListProperty<String> logsProperty(){
+        return logs;
+    }
 
     public Boolean existAccount(String account_name){
         boolean exist = false;
-        for(int i = 0; !exist && i < mailboxes.size(); i++){
-            if (mailboxes.get(i).getAccount_name().equals(account_name)) {
+        for (Mailbox mailbox : this.mailboxes) {
+            if (mailbox.getAccount_name().equals(account_name)) {
                 exist = true;
+                break;
             }
         }
         return exist;

@@ -19,7 +19,6 @@ import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class SendPageController implements Initializable {
     private MailClient client;
-    private Email email;
 
     @FXML
     private TextArea area_sendpage;
@@ -31,29 +30,29 @@ public class SendPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {}
 
+    /**
+     *The different initModels are due to the different way the SendPageController can be called, in particular it can be called due to a normal writing of a mail, from a forwarding request, single response, multiple response
+     */
     public void initModel(MailClient client) {
         this.client = client;
     }
 
     public void initModel_Email_replyall(MailClient client, Email email){
         this.client = client;
-        this.email = email;
         area_sendpage.setText("\nOriginal message:`\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
-        recipient_sendpage.setText(email.getFrom() + email.get_to_except(client.getMailbox().getAccount_name()));
+        recipient_sendpage.setText(email.getFrom()+ " " + email.get_to_except(client.getMailbox().getAccount_name()));
         recipient_sendpage.setEditable(false);
     }
 
     public void initModel_Email_forward(MailClient client, Email email){
         this.client = client;
-        this.email = email;
         area_sendpage.setText(email.getText());
         object_sendpage.setText("FW:"+email.getObject());
     }
 
     public void initModel_Email(MailClient client, Email email){
         this.client = client;
-        this.email = email;
         area_sendpage.setText("\nOriginal message:`\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
         recipient_sendpage.setText(email.getFrom());
@@ -82,9 +81,9 @@ public class SendPageController implements Initializable {
             if (recipients_corrects){
                 ArrayList<String> fails = client.sendEmail(new Email(client.getMailbox().getAccount_name(), recipient, object, text));
                 if(!fails.isEmpty()){
-                    String recipients_failed_string = "";
+                    StringBuilder recipients_failed_string = new StringBuilder();
                     for (String s : fails) {
-                        recipients_failed_string += s + "\n";
+                        recipients_failed_string.append(s).append("\n");
                     }
                     alertMethod("Mail to the following recipients: " + recipients_failed_string + " have not been sent");
                     recipient_sendpage.clear();
