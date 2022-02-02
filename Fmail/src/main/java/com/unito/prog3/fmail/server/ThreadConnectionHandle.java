@@ -120,12 +120,20 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         String recipients_text = email.getTo();
         String[] recipients = recipients_text.split(" ");
         ArrayList<String> fails = new ArrayList<>();
-        for (String s : recipients) {
-            if (!server.saveEmail(email, s)) {
-                fails.add(s);
-                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + s + " because the recipient doesn't exists"));
+        for(int i = 0 ; i<recipients.length; i++){
+            if(!server.existAccount(recipients[i])){
+                fails.add(recipients[i]);
+                recipients_text = recipients_text.replace(recipients[i],"");
+                System.out.println(recipients_text);
+            }
+        }
+        email.setTo(recipients_text);
+        System.out.println(email.getTo());
+        for (String s2 : recipients) {
+            if (!server.saveEmail(email, s2)) {
+                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + s2 + " because the recipient doesn't exists"));
             }else {
-                Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s + " sent successfully"));
+                Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s2 + " sent successfully"));
             }
         }if(fails.isEmpty()) {
             Objects.requireNonNull(output).writeObject("true");
