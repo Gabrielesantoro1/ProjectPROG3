@@ -226,6 +226,7 @@ public class HomeController implements Initializable {
                 for(int i = email_sent.size(); i > new_size; i--){
                     email_sent.remove(i - 1);
                 }
+
             }else if(new_size == 0){
                 email_sent.clear();
             }

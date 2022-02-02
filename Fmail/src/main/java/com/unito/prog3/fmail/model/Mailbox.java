@@ -74,15 +74,11 @@ public class Mailbox implements Serializable{
                 '}';
     }
 
-    public void setMailRcvd(Email mail_rcvd) {
-        this.mail_rcvd.add(mail_rcvd);
-    }
+    public void setMailRcvd(Email mail_rcvd) {this.mail_rcvd.add(mail_rcvd);}
 
     public void setMailSent(Email mail_sent) {this.mail_sent.add(mail_sent);}
 
-    public void setMail_del(Email mail_del) {
-        this.mail_del.add(mail_del);
-    }
+    public void setMail_del(Email mail_del) {this.mail_del.add(mail_del);}
 
     public List<Email> getAllMailRcvd(){return this.mail_rcvd;}
 

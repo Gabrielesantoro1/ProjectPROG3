@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static javax.swing.UIManager.get;
-
 public class MailServer{
     private static AtomicInteger emailId_count;
     private List<Mailbox> mailboxes;
@@ -37,6 +35,11 @@ public class MailServer{
         this.logs.set(logs_content);
     }
 
+
+    /**It's called when the server is launched; it creates the directories for the mailboxes
+     * of all the mail clients that are in the MailBoxes list.
+     * @throws IOException;
+     */
     public void create_dirs() throws IOException {
         for (int i = 0; i < this.getMailboxes().size(); i++) {
             String dir_name = this.getNameByIndex(i);
@@ -62,123 +65,146 @@ public class MailServer{
     }
 
     /**
-     * The function automatically extracts the sender and the recipient information
+     * The function extracts the sender and the recipient information
      * and save the email in the right directory of each one. It also updates the value of the id_counter.
-     * @param email_to_write Object Email to write
+     * @param email email to save
+     * @param single_recipient recipient of the email (only for the email sent to only one person).
+     * @throws IOException;
+     * @return true if the call to the method ended correctly, false otherwise.
      */
-    public boolean saveEmail(Email email_to_write, String single_recipient) throws IOException {
+    public boolean saveEmail(Email email, String single_recipient) throws IOException {
         boolean saved = false;
-        email_to_write.setId(emailId_count.getAndIncrement());
+        email.setId(emailId_count.getAndIncrement());
 
         File id = new File(Support.PATH_NAME_DIR+"\\id_count.txt");
         FileOutputStream fos = new FileOutputStream(id,false);
         fos.write(emailId_count.toString().getBytes());
+        fos.close();
 
-        String path_sender = Support.PATH_NAME_DIR + "\\" + email_to_write.getFrom() +"\\sent";
+        String path_sender = Support.PATH_NAME_DIR + "\\" + email.getFrom() +"\\sent";
         String path_recipient = Support.PATH_NAME_DIR + "\\" + single_recipient + "\\received";
+
         try{
-            File rcvd = new File(path_recipient + "\\" +  email_to_write.getId() + ".txt");
-            File sent = new File(path_sender + "\\" +  email_to_write.getId() + ".txt");
+            File rcvd = new File(path_recipient + "\\" +  email.getId() + ".txt");
+            File sent = new File(path_sender + "\\" +  email.getId() + ".txt");
+
             if(rcvd.createNewFile() && sent.createNewFile()){
                 SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                String what_write =  email_to_write.getId()+"\n"+email_to_write.getFrom()+"\n"+email_to_write.getTo()+"\n"+email_to_write.getObject()+"\n"+email_to_write.getText()+"\n"+ DateFor.format(email_to_write.getDate()).toString();
-                BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
-                buffer.write(what_write);
-                buffer.flush();
+                String content =  email.getId()+"\n"+email.getFrom()+"\n"+email.getTo()+"\n"+email.getObject()+"\n"+email.getText()+"\n"+ DateFor.format(email.getDate());
 
-                buffer = new BufferedWriter(new FileWriter(sent));
-                buffer.write(what_write);
+                BufferedWriter buffer = new BufferedWriter(new FileWriter(rcvd));
+                buffer.write(content);
                 buffer.flush();
                 buffer.close();
 
-                this.mailboxes.get(getIndexByName(email_to_write.getFrom())).setMailSent(email_to_write);
-                this.mailboxes.get(getIndexByName(single_recipient)).setMailRcvd(email_to_write);
+                buffer = new BufferedWriter(new FileWriter(sent));
+                buffer.write(content);
+                buffer.flush();
+                buffer.close();
+
+                this.mailboxes.get(getIndexByName(email.getFrom())).setMailSent(email);
+                this.mailboxes.get(getIndexByName(single_recipient)).setMailRcvd(email);
                 saved = true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {e.printStackTrace();}
+
         return saved;
     }
 
     /**
-     * The function scrolls through all the folders of each account saved locally and for each account
+     * It scrolls through all the folders of each account saved locally and for each account
      * and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding
-     * to each account. Forward also loads the current value of the id_count
+     * to each account. Forward also loads the current value of the id_count.
+     * @throws IOException;
+     * @throws ParseException;
      */
     public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
-        for (File account : Objects.requireNonNull(file.listFiles())){
-            if(account.getName().equals("id_count.txt")){
-                BufferedReader reader = new BufferedReader(new FileReader(account.getAbsolutePath()));
+        for (File main_dir : Objects.requireNonNull(file.listFiles())){
+            System.out.println(main_dir);
+            if(main_dir.getName().equals("id_count.txt")){
+                BufferedReader reader = new BufferedReader(new FileReader(main_dir.getAbsolutePath()));
                 String id_value = reader.readLine();
                 emailId_count.set(Integer.parseInt(id_value));
-                return;
+                reader.close();
+                break;
             }
-            for(File lists : Objects.requireNonNull(account.listFiles())){
-                switch (lists.getName()){
-                    case "deleted":
-                        for (File email: Objects.requireNonNull(lists.listFiles())){
-                            if(!email.isDirectory()){
-                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
-                                String line = reader.readLine();
-                                ArrayList<String> email_string_array = new ArrayList<>();
-                                while(line != null){
-                                    email_string_array.add(line);
-                                    line = reader.readLine();
-                                }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getIndexByName(account.getName())).setMail_del(email_to_load);
-                                reader.close();
+            for(File list : Objects.requireNonNull(main_dir.listFiles())){
+                System.out.println(list);
+                switch (list.getName()){
+                case "deleted":
+                    for (File email: Objects.requireNonNull(list.listFiles())){
+                        if(!email.isDirectory()){
+                            BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                            String line = reader.readLine();
+                            ArrayList<String> email_string_array = new ArrayList<>();
+                            while(line != null){
+                                email_string_array.add(line);
+                                line = reader.readLine();
                             }
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMail_del(email_to_load);
+                            reader.close();
                         }
-                    case "sent":
-                        for (File email: Objects.requireNonNull(lists.listFiles())){
-                            if(!email.isDirectory()){
-                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
-                                String line = reader.readLine();
-                                ArrayList<String> email_string_array = new ArrayList<>();
-                                while(line != null){
-                                    email_string_array.add(line);
-                                    line = reader.readLine();
-                                }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getIndexByName(account.getName())).setMailSent(email_to_load);
-                                reader.close();
+                    }
+                    break;
+                case "received":
+                    for (File email: Objects.requireNonNull(list.listFiles())){
+                        if(!email.isDirectory()){
+                            BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                            String line = reader.readLine();
+                            ArrayList<String> email_string_array = new ArrayList<>();
+                            while(line != null){
+                                email_string_array.add(line);
+                                line = reader.readLine();
                             }
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMailRcvd(email_to_load);
+                            reader.close();
                         }
-                    case "received":
-                        for (File email: Objects.requireNonNull(lists.listFiles())){
-                            if(!email.isDirectory()){
-                                BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
-                                String line = reader.readLine();
-                                ArrayList<String> email_string_array = new ArrayList<>();
-                                while(line != null){
-                                    email_string_array.add(line);
-                                    line = reader.readLine();
-                                }
-                                Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
-                                this.mailboxes.get(this.getIndexByName(account.getName())).setMailRcvd(email_to_load);
-                                reader.close();
+                    }
+                    break;
+                case "sent":
+                    for (File email: Objects.requireNonNull(list.listFiles())){
+                        if(!email.isDirectory()){
+                            BufferedReader reader = new BufferedReader(new FileReader(email.getAbsolutePath()));
+                            String line = reader.readLine();
+                            ArrayList<String> email_string_array = new ArrayList<>();
+                            while(line != null) {
+                                email_string_array.add(line);
+                                line = reader.readLine();
                             }
+                            Email email_to_load = new Email(Integer.parseInt(email_string_array.get(0)), email_string_array.get(1), email_string_array.get(2), email_string_array.get(3), email_string_array.get(4), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(email_string_array.get(5)));
+                            this.mailboxes.get(this.getIndexByName(main_dir.getName())).setMailSent(email_to_load);
+                            reader.close();
                         }
-                    default:
-                        break;
+                    }
+                    break;
                 }
             }
         }
         System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
+
+    /**It's called when we want to delete all the email in the deleted mail list of the account.
+     * @param account_name the account name of the mail client
+     */
     public void clearDelEmail(String account_name){
         String path = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted";
         File file = new File(path);
-        for(File emails : file.listFiles()){
-            emails.delete();
+        for(File email : file.listFiles()){
+            email.delete();
         }
     }
 
-    public void deleteEmail_rcvd(String account_name, int id) throws IOException {
+
+    /**
+     * @param account_name
+     * @param id
+     * @throws IOException;
+     */
+    public void deleteEmailRcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         Path rcvd = Paths.get(path_rcvd);
@@ -186,7 +212,12 @@ public class MailServer{
         System.out.println(Files.move(rcvd,del));
     }
 
-    public void deleteEmail_sent(String account_name, int id) throws IOException {
+    /**
+     * @param account_name
+     * @param id
+     * @throws IOException;
+     */
+    public void deleteEmailSent(String account_name, int id) throws IOException {
         String path_sent = Support.PATH_NAME_DIR +"\\"+ account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
         Path sent = Paths.get(path_sent);
@@ -194,8 +225,16 @@ public class MailServer{
         Files.move(sent, del);
     }
 
+    /**
+     * @param i
+     * @return
+     */
     private String getNameByIndex(Integer i){return mailboxes.get(i).getAccount_name();}
 
+    /**
+     * @param account
+     * @return
+     */
     public int getIndexByName(String account){
         for (int i = 0; i < mailboxes.size(); i++){
             if(account.equals(mailboxes.get(i).getAccount_name())){
@@ -213,12 +252,12 @@ public class MailServer{
 
     public Boolean existAccount(String account_name){
         boolean exist = false;
-        for(int i = 0; i < mailboxes.size() && !exist; i++){
-            if(mailboxes.get(i).getAccount_name().equals(account_name)){
+        for(int i = 0; !exist && i < mailboxes.size(); i++){
+            if (mailboxes.get(i).getAccount_name().equals(account_name)) {
                 exist = true;
             }
         }
-        return  exist;
+        return exist;
     }
 
     public void addLog(String log){

@@ -21,7 +21,7 @@
                </items>
             </MenuButton>
             <Button minWidth="38.0" mnemonicParsing="false" onAction="#ForwardButton" prefHeight="25.0" text="Inoltra" />
-            <Button minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButton_rcvd" prefHeight="25.0" text="Elimina" />
+            <Button minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButtonRcvd" prefHeight="25.0" text="Elimina" />
         </buttons>
       </ButtonBar>
       <Text fx:id="from_text" layoutX="32.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.rightAnchor="291.0" />

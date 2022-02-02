@@ -54,7 +54,7 @@ public class ViewPageController {
         window.setScene(new Scene(root));
     }
 
-    public void DeleteButton_rcvd(ActionEvent event) {
+    public void DeleteButtonRcvd(ActionEvent event) {
         if(client.isConnect()){
             if(client.deleteAction("delete_single", Integer.toString(email.getId()),"rcvd")){
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
