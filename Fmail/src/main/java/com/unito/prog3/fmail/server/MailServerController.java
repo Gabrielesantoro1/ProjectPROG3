@@ -28,9 +28,7 @@ public class MailServerController implements Initializable{
         try {
             server.create_dirs();
             server.loadEmailFromLocal();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ParseException e) {e.printStackTrace();}
         System.out.println(server.toString());
             Thread start_connection = new Thread(new StartConnectionHandle(server));
             start_connection.start();
