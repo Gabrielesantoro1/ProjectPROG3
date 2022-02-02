@@ -35,11 +35,20 @@ public class SendPageController implements Initializable {
         this.client = client;
     }
 
-    public void initModel_Email(MailClient client, Email email){
+    public void initModel_Email_forward(MailClient client, Email email){
         this.client = client;
         this.email = email;
         area_sendpage.setText(email.getText());
+        object_sendpage.setText("FW:"+email.getObject());
+    }
+
+    public void initModel_Email(MailClient client, Email email){
+        this.client = client;
+        this.email = email;
+        area_sendpage.setText("\nOriginal message:`\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
+        recipient_sendpage.setText(email.getFrom());
+        recipient_sendpage.setEditable(false);
     }
 
     /**

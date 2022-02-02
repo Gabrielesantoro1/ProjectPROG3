@@ -17,7 +17,7 @@
             <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Rispondi">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#ReplyButton" text="Rispondi" />
-                  <MenuItem mnemonicParsing="false" onAction="#ReplyAllBUtton" text="Rispondi a Tutti" />
+                  <MenuItem  mnemonicParsing="false" onAction="#ReplyAllBUtton" text="Rispondi a Tutti" />
                </items>
             </MenuButton>
             <Button minWidth="38.0" mnemonicParsing="false" onAction="#ForwardButton" prefHeight="25.0" text="Inoltra" />

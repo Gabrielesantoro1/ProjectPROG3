@@ -123,7 +123,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         for (String s : recipients) {
             if (!server.saveEmail(email, s)) {
                 fails.add(s);
-                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + f + " because the recipient doesn't exists"));
+                Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + s + " because the recipient doesn't exists"));
             }else {
                 Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s + " sent successfully"));
             }
