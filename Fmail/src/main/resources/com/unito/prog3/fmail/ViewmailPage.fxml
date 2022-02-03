@@ -4,11 +4,10 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.TextArea?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.ViewPageController">
    <children>
       <TextArea fx:id="email_text" editable="false" layoutX="113.0" layoutY="130.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
@@ -17,18 +16,18 @@
             <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Rispondi">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#ReplyButton" text="Rispondi" />
-                  <MenuItem  mnemonicParsing="false" onAction="#ReplyAllBUtton" text="Rispondi a Tutti" />
+                  <MenuItem mnemonicParsing="false" onAction="#ReplyAllBUtton" text="Rispondi a Tutti" />
                </items>
             </MenuButton>
             <Button minWidth="38.0" mnemonicParsing="false" onAction="#ForwardButton" prefHeight="25.0" text="Inoltra" />
             <Button minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButtonRcvd" prefHeight="25.0" text="Elimina" />
         </buttons>
       </ButtonBar>
-      <Text fx:id="from_text" layoutX="32.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.rightAnchor="291.0" />
-      <Text fx:id="to_text" layoutX="22.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="287.0" AnchorPane.bottomAnchor="357.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="26.0" />
-      <Text fx:id="object_text" layoutX="47.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="257.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="44.0" />
-      <Text layoutX="-1.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" />
-      <Text layoutX="6.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="26.0" />
-      <Text layoutX="5.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object:" wrappingWidth="47.494140625" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="44.0" />
+      <Text fx:id="from_text" layoutX="67.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.rightAnchor="325.0" />
+      <Text fx:id="to_text" layoutX="39.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="179.0" AnchorPane.bottomAnchor="357.0" AnchorPane.rightAnchor="382.0" AnchorPane.topAnchor="26.0" />
+      <Text fx:id="object_text" layoutX="56.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.rightAnchor="336.0" AnchorPane.topAnchor="44.0" />
+      <Text layoutX="9.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="561.0" />
+      <Text layoutX="6.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="578.080078125" AnchorPane.topAnchor="25.0" />
+      <Text layoutX="9.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object:" wrappingWidth="47.494140625" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="543.505859375" AnchorPane.topAnchor="44.0" />
    </children>
 </AnchorPane>

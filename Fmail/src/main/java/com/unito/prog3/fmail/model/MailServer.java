@@ -2,6 +2,7 @@ package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ public class MailServer{
     private final List<Mailbox> mailboxes;
     private final ListProperty<String> logs;
     private final ObservableList<String> logs_content;
+    private SimpleIntegerProperty NUM_CLIENT;
 
     /**
      *   {@code MailServer} Constructor
@@ -33,8 +35,15 @@ public class MailServer{
         this.logs_content = FXCollections.observableList(new LinkedList<>());
         this.logs = new SimpleListProperty<>();
         this.logs.set(logs_content);
+        NUM_CLIENT = new SimpleIntegerProperty();
+        NUM_CLIENT.set(0);
     }
 
+    public int getNUM_CLIENT() {return NUM_CLIENT.get();}
+
+    public void setNUM_CLIENT(int NUM_CLIENT) {this.NUM_CLIENT.set(Integer.parseInt(String.valueOf(NUM_CLIENT)));}
+
+    public SimpleIntegerProperty NUM_CLIENT(){return this.NUM_CLIENT;}
 
     /**It's called when the server is launched; it creates the directories for the mailboxes
      * of all the mail clients that are in the MailBoxes list.

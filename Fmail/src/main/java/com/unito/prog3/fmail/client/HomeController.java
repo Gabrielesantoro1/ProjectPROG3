@@ -7,17 +7,20 @@ import com.unito.prog3.fmail.support.Support;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxListCell;
+import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,6 +31,7 @@ import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class HomeController implements Initializable {
     private MailClient client;
+    public Email tmp;
 
     private ObservableList<Email> email_rcvd;
     private ObservableList<Email> email_sent;
@@ -36,11 +40,11 @@ public class HomeController implements Initializable {
     @FXML
     private TextField account_name_text;
     @FXML
-    private ListView<Email> ListView_rcvd;
+    private ListView<Email> ListView_rcvd = new ListView<>();
     @FXML
-    private ListView<Email> ListView_sent;
+    private ListView<Email> ListView_sent = new ListView<>();
     @FXML
-    private ListView<Email> ListView_del;
+    private ListView<Email> ListView_del = new ListView<>();
 
     @FXML
     private Tab receivedTab;
@@ -57,12 +61,14 @@ public class HomeController implements Initializable {
         //Setting for the received mail list view
         ListView_rcvd.setOrientation(Orientation.VERTICAL);
         ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        ListView_rcvd.setEditable(true);
         ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
             FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
             Parent root;
             try {
                 root = viewLoader.load();
                 ViewPageController viewPageController= viewLoader.getController();
+                this.tmp = t1;
                 viewPageController.initModel(client, t1);
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
@@ -70,11 +76,17 @@ public class HomeController implements Initializable {
                 stage.show();
             } catch (IOException e) {e.printStackTrace();}
         });
+        ListView_rcvd.setOnEditCommit(new EventHandler<ListView.EditEvent<Email>>() {
+            @Override
+            public void handle(ListView.EditEvent<Email> emailEditEvent) {
+                ListView_rcvd.getSelectionModel().getSelectedItem().toString();
+            }
+        });
         ListView_rcvd.setCellFactory(emailrcvdView -> new Support.cellVisual());
 
         //Setting for the sent mail list view
         ListView_sent.setOrientation(Orientation.VERTICAL);
-        ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListView_sent.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
             FXMLLoader viewSentLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
             Parent root;
@@ -92,7 +104,7 @@ public class HomeController implements Initializable {
 
         //Setting for the deleted mail list view
         ListView_del.setOrientation(Orientation.VERTICAL);
-        ListView_del.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListView_del.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListView_del.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
         FXMLLoader viewDelLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
         Parent root;
@@ -117,6 +129,7 @@ public class HomeController implements Initializable {
         this.client = client;
         account_name_text.setText(client.getMailbox().getAccount_name());
 
+
         email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
         ListView_rcvd.setItems(email_rcvd);
         email_sent = FXCollections.observableList(client.getMailbox().getAllMailSent());
@@ -124,7 +137,7 @@ public class HomeController implements Initializable {
         email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
         ListView_del.setItems(email_del);
 
-        automaticUpdate();
+        //automaticUpdate();
     }
 
     /**
@@ -171,6 +184,8 @@ public class HomeController implements Initializable {
     private void deleteButton() {
         if(client.isConnect()) {
             if (client.deleteAction("delete_all","","")) {
+                email_del.clear();
+                ListView_del.refresh();
                 alertMethod("Mails deleted have been completely erased");
             } else {
                 alertMethod("An error occurred while deleting the emails");
@@ -204,7 +219,6 @@ public class HomeController implements Initializable {
     private void changeView(){
         int new_size;
 
-        if(receivedTab.isSelected()){
             new_size = client.checkChangeMail('r');
             System.out.println(new_size);
 
@@ -212,18 +226,15 @@ public class HomeController implements Initializable {
                 for(int i = email_rcvd.size(); i < new_size; i++){
                     email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
                 }
-
             }else if(new_size < email_rcvd.size() && new_size > 0) {
                 for (int i = email_rcvd.size(); i > new_size; i--) {
-                    email_rcvd.remove(i - 1);
-                    ListView_rcvd.refresh();
+                    email_rcvd.remove(tmp);
                 }
 
             }else if(new_size == 0){
                 email_rcvd.clear();
             }
 
-        }else if(sentTab.isSelected()){
             new_size = client.checkChangeMail('s');
             System.out.println(new_size);
 
@@ -231,18 +242,15 @@ public class HomeController implements Initializable {
                 for(int i = email_sent.size(); i < new_size; i++){
                     email_sent.add(client.getMailbox().getAllMailSent().get(i));
                 }
-
             }else if(new_size < email_sent.size() && new_size > 0){
                 for(int i = email_sent.size(); i > new_size; i--){
                     email_sent.remove(i - 1);
-                    ListView_sent.refresh();
                 }
-
             }else if(new_size == 0){
                 email_sent.clear();
             }
 
-        }else if(delTab.isSelected()){
+
             new_size = client.checkChangeMail( 'd');
 
             if(new_size > email_del.size()){
@@ -251,5 +259,5 @@ public class HomeController implements Initializable {
                 }
             }
         }
-    }
+
 }

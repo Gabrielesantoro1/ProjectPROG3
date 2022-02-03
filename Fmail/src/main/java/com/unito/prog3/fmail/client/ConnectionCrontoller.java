@@ -48,7 +48,6 @@ public class ConnectionCrontoller{
 
                     //Close Windows EventHandler
                     window.setOnCloseRequest(windowEvent -> {
-                        //TODO: ser il server è offline da errore
                         if(client.closeAction()) {
                             window.close();
                             System.exit(0);
