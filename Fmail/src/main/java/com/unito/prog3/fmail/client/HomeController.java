@@ -33,11 +33,13 @@ public class HomeController implements Initializable {
     private ObservableList<Email> email_rcvd_content;
     private ObservableList<Email> email_sent_content;
     private ObservableList<Email> email_del_content;
+    private ListProperty<Email> email_rcvd_prop;
+    private ListProperty<Email> email_sent_prop;
+    private ListProperty<Email> email_del_prop;
+
 
 
     private Email selectedEmail;
-    private Email emptyEmail;
-
     @FXML
     private TextField account_name_text;
     @FXML
@@ -55,17 +57,17 @@ public class HomeController implements Initializable {
         MailClient client = new MailClient();
 
         this.email_rcvd_content = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
-        ListProperty<Email> email_rcvd_prop = new SimpleListProperty<>();
+        email_rcvd_prop = new SimpleListProperty<>();
         email_rcvd_prop.set(email_rcvd_content);
         ListView_rcvd.itemsProperty().bind(email_rcvd_prop);
 
         this.email_sent_content = FXCollections.observableList(client.getMailbox().getAllMailSent());
-        ListProperty<Email> email_sent_prop = new SimpleListProperty<>();
+        email_sent_prop = new SimpleListProperty<>();
         email_sent_prop.set(email_sent_content);
         ListView_sent.itemsProperty().bind(email_sent_prop);
 
         this.email_del_content = FXCollections.observableList(client.getMailbox().getAllMailDel());
-        ListProperty<Email> email_del_prop = new SimpleListProperty<>();
+        email_del_prop = new SimpleListProperty<>();
         email_del_prop.set(email_del_content);
         ListView_del.itemsProperty().bind(email_del_prop);
 
@@ -73,9 +75,12 @@ public class HomeController implements Initializable {
         ListView_sent.setOnMouseClicked(this::showselectedEmail_sent);
         ListView_del.setOnMouseClicked(this::showselectedEmail_del);
 
+        /*
         ListView_rcvd.setCellFactory(emailListView -> new Support.cellVisual());
         ListView_sent.setCellFactory(emailListView -> new Support.cellVisual());
         ListView_del.setCellFactory(emailListView -> new Support.cellVisual());
+
+         */
 
     }
 
@@ -252,7 +257,7 @@ public class HomeController implements Initializable {
                 }
             }else if(new_size < email_rcvd_content.size() && new_size > 0) {
                 email_rcvd_content.remove(selectedEmail);
-                selectedEmail = null;
+                email_rcvd_content.sorted();
             }else if(new_size == 0){
                 email_rcvd_content.clear();
             }
@@ -266,7 +271,6 @@ public class HomeController implements Initializable {
                 }
             }else if(new_size < email_sent_content.size() && new_size > 0){
                 email_sent_content.remove(selectedEmail);
-                selectedEmail = null;
             }else if(new_size == 0){
                 email_sent_content.clear();
             }
@@ -279,5 +283,4 @@ public class HomeController implements Initializable {
                 }
             }
         }
-
 }

@@ -13,8 +13,6 @@ public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
     private boolean Connect = false;
-    public ArrayList<String> emailDel = new ArrayList<>();
-    
     /**
      * {@code MailClient} Constructor
      */

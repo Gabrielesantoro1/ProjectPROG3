@@ -5,13 +5,14 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Mailbox implements Serializable{
     private String account_name;
-    private final List<Email> mail_rcvd;
-    private final List<Email> mail_sent;
-    private final List<Email> mail_del;
+    private final LinkedList<Email> mail_rcvd;
+    private final LinkedList<Email> mail_sent;
+    private final LinkedList<Email> mail_del;
 
     public Mailbox(String account_name) {
         if(Support.match_account(account_name)){
@@ -19,15 +20,15 @@ public class Mailbox implements Serializable{
         }else{
             System.out.println("The account name does not follow the right pattern. Example: example@gmail.com");
         }
-        mail_rcvd = new ArrayList<>();
-        mail_sent = new ArrayList<>();
-        mail_del = new ArrayList<>();
+        mail_rcvd = new LinkedList<>();
+        mail_sent = new LinkedList<>();
+        mail_del = new LinkedList<>();
     }
 
     public Mailbox(){
-        mail_rcvd = new ArrayList<>();
-        mail_sent = new ArrayList<>();
-        mail_del = new ArrayList<>();
+        mail_rcvd = new LinkedList<>();
+        mail_sent = new LinkedList<>();
+        mail_del = new LinkedList<>();
     }
 
     public String getAccount_name() {return account_name;}
@@ -85,15 +86,12 @@ public class Mailbox implements Serializable{
     /**
      * Get a List of Email
      */
-    public List<Email> getAllMailRcvd(){return this.mail_rcvd;}
+    public LinkedList<Email> getAllMailRcvd(){return this.mail_rcvd;}
 
-    public List<Email> getAllMailSent(){return this.mail_sent;}
+    public LinkedList<Email> getAllMailSent(){return this.mail_sent;}
 
-    public List<Email> getAllMailDel(){return this.mail_del;}
+    public LinkedList<Email> getAllMailDel(){return this.mail_del;}
 
-    public void add_email(){
-        mail_rcvd.add(new Email(0,"daniele@gmail.com","oriva","asuduashd","äsdasd",new Date()));
-    }
     @Override
     public String toString() {
         return  "\n       account_name: " + account_name +

@@ -4,6 +4,7 @@ import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,12 +34,12 @@ public class ViewPageController {
     private Text object_text;
 
     public void initModel(MailClient client, Email email) {
-        this.client = client;
-        this.from_text.setText(email.getFrom());
         this.email = email;
-        this.email_text.setText(email.getText());
-        this.object_text.setText(email.getObject());
-        this.to_text.setText(email.getTo());
+        this.client = client;
+        this.from_text.setText(this.email.getFrom());
+        this.email_text.setText(this.email.getText());
+        this.object_text.setText(this.email.getObject());
+        this.to_text.setText(this.email.getTo());
     }
 
     public void ReplyButton() throws IOException {
