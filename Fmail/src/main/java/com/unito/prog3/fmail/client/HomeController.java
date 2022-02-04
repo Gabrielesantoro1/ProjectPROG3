@@ -15,14 +15,12 @@ import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxListCell;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +29,7 @@ import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class HomeController implements Initializable {
     private MailClient client;
-    public Email tmp;
+    private Email selectedEmail;
 
     private ObservableList<Email> email_rcvd;
     private ObservableList<Email> email_sent;
@@ -40,11 +38,11 @@ public class HomeController implements Initializable {
     @FXML
     private TextField account_name_text;
     @FXML
-    private ListView<Email> ListView_rcvd = new ListView<>();
+    private ListView<Email> ListView_rcvd;
     @FXML
-    private ListView<Email> ListView_sent = new ListView<>();
+    private ListView<Email> ListView_sent;
     @FXML
-    private ListView<Email> ListView_del = new ListView<>();
+    private ListView<Email> ListView_del;
 
     @FXML
     private Tab receivedTab;
@@ -63,17 +61,25 @@ public class HomeController implements Initializable {
         ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ListView_rcvd.setEditable(true);
         ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
+            this.selectedEmail = t1;
             FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
             Parent root;
             try {
                 root = viewLoader.load();
                 ViewPageController viewPageController= viewLoader.getController();
-                this.tmp = t1;
                 viewPageController.initModel(client, t1);
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        stage.close();
+                        ListView_rcvd.getSelectionModel().clearSelection();
+                    }
+                });
+                //System.out.println(t1.toString());
             } catch (IOException e) {e.printStackTrace();}
         });
         ListView_rcvd.setOnEditCommit(new EventHandler<ListView.EditEvent<Email>>() {
@@ -97,6 +103,13 @@ public class HomeController implements Initializable {
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        stage.close();
+                        ListView_rcvd.getSelectionModel().clearSelection();
+                    }
+                });
                 stage.show();
             } catch (IOException e) {e.printStackTrace();}
         });
@@ -115,6 +128,13 @@ public class HomeController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    stage.close();
+                    ListView_rcvd.getSelectionModel().clearSelection();
+                }
+            });
             stage.show();
         } catch (IOException e) {e.printStackTrace();}
     });
@@ -129,7 +149,6 @@ public class HomeController implements Initializable {
         this.client = client;
         account_name_text.setText(client.getMailbox().getAccount_name());
 
-
         email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
         ListView_rcvd.setItems(email_rcvd);
         email_sent = FXCollections.observableList(client.getMailbox().getAllMailSent());
@@ -137,7 +156,7 @@ public class HomeController implements Initializable {
         email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
         ListView_del.setItems(email_del);
 
-        //automaticUpdate();
+        automaticUpdate();
     }
 
     /**
@@ -207,7 +226,6 @@ public class HomeController implements Initializable {
                 if (client.updateAction()) {
                     changeView();
                 }
-
             });
             }
         }, 0, 5000);
@@ -227,10 +245,8 @@ public class HomeController implements Initializable {
                     email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
                 }
             }else if(new_size < email_rcvd.size() && new_size > 0) {
-                for (int i = email_rcvd.size(); i > new_size; i--) {
-                    email_rcvd.remove(tmp);
-                }
-
+                email_rcvd.remove(selectedEmail);
+                selectedEmail = null;
             }else if(new_size == 0){
                 email_rcvd.clear();
             }
@@ -243,13 +259,11 @@ public class HomeController implements Initializable {
                     email_sent.add(client.getMailbox().getAllMailSent().get(i));
                 }
             }else if(new_size < email_sent.size() && new_size > 0){
-                for(int i = email_sent.size(); i > new_size; i--){
-                    email_sent.remove(i - 1);
-                }
+                    email_sent.remove(selectedEmail);
+                    selectedEmail = null;
             }else if(new_size == 0){
                 email_sent.clear();
             }
-
 
             new_size = client.checkChangeMail( 'd');
 

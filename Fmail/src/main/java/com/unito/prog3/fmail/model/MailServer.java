@@ -243,9 +243,7 @@ public class MailServer{
         this.mailboxes.add(mailbox);
     }
 
-    public List<Mailbox> getMailboxes() {
-        return mailboxes;
-    }
+    public List<Mailbox> getMailboxes() {return mailboxes;}
 
     public ListProperty<String> logsProperty(){
         return logs;
