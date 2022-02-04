@@ -266,7 +266,7 @@ public class HomeController implements Initializable {
                 }
             }else if(new_size < email_sent_content.size() && new_size > 0){
                 email_sent_content.remove(selectedEmail);
-                    selectedEmail = null;
+                selectedEmail = null;
             }else if(new_size == 0){
                 email_sent_content.clear();
             }
