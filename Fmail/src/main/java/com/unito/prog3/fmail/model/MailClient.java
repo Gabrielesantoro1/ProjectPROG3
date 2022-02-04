@@ -25,7 +25,12 @@ public class MailClient {
         this.mailbox = mailbox;
     }
 
-    public MailClient(){}
+    public MailClient(){
+        this.mailbox = new Mailbox();
+        try{
+            local = InetAddress.getLocalHost();
+        }catch (UnknownHostException e){e.printStackTrace();}
+    }
 
     /**
      * The function tries to open a connection with the server, if it fails it means that the server is probably offline so it returns the String "SNC" to warn the controller. Otherwise it forwards its account name, if it receives a "true" result it means that the entered name is registered and then returns the String "CC" otherwise it returns the value "CNR"

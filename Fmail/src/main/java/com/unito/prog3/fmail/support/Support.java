@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Support {
-    public final static String PATH_NAME_DIR = "C:\\Users\\santo\\Documenti\\DirProjProg3";
+    public final static String PATH_NAME_DIR = "C:\\Users\\Daniele\\Desktop\\DirProjProg3";
     public final static Integer port = 8189;
 
     public final static Mailbox daniele = new Mailbox("daniele@gmail.com");
@@ -39,7 +39,7 @@ public class Support {
         protected void updateItem(Email item, boolean empty) {
             super.updateItem(item, empty);
             if(item != null) {
-                setText(item.getObject());
+                setText(item.getObject() + " " + item.getFrom() + " " + item.getDate());
                 setGraphic(new Box());
             }
         }

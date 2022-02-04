@@ -1,8 +1,10 @@
 package com.unito.prog3.fmail.model;
 import com.unito.prog3.fmail.support.Support;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Mailbox implements Serializable{
@@ -17,6 +19,12 @@ public class Mailbox implements Serializable{
         }else{
             System.out.println("The account name does not follow the right pattern. Example: example@gmail.com");
         }
+        mail_rcvd = new ArrayList<>();
+        mail_sent = new ArrayList<>();
+        mail_del = new ArrayList<>();
+    }
+
+    public Mailbox(){
         mail_rcvd = new ArrayList<>();
         mail_sent = new ArrayList<>();
         mail_del = new ArrayList<>();
@@ -83,6 +91,9 @@ public class Mailbox implements Serializable{
 
     public List<Email> getAllMailDel(){return this.mail_del;}
 
+    public void add_email(){
+        mail_rcvd.add(new Email(0,"daniele@gmail.com","oriva","asuduashd","äsdasd",new Date()));
+    }
     @Override
     public String toString() {
         return  "\n       account_name: " + account_name +

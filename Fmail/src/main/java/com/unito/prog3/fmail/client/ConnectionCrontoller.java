@@ -16,22 +16,15 @@ import java.io.IOException;
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class ConnectionCrontoller{
-    private MailClient client;
-
     @FXML
     private TextField account_name;
-
-    public void initModel(MailClient client){
-        this.client = client;
-    }
-
     /**
      * The function checks if the inserted email is of the correct format, calls the getConnection () function which returns a result of type String. If the result is "CC" then the client was able to connect successfully, then starts a backgroud thread that checks every 5000 milliseconds if the server is still connected and finally changes the scene. If the result is "CNR" it means that the email entered is not a registered email. Finally, if the result is "SNC" it means that we have not been able to establish a connection with the server because the server is probably offline.
      */
     @FXML
     public void getConnectionButton() throws IOException {
         if(Support.match_account(account_name.getText())){
-            client = new MailClient(new Mailbox(account_name.getText()));
+            MailClient client = new MailClient(new Mailbox(account_name.getText()));
             String result = client.getConnection();
             System.out.println(result);
             switch (result) {

@@ -14,15 +14,11 @@ import javafx.stage.WindowEvent;
 import java.util.Objects;
 
 public class ClientMain extends Application {
-    static MailClient client;
-
     @Override
     public void start(Stage stage) throws Exception {
-        client = new MailClient();
         FXMLLoader listLoader = new FXMLLoader(ClientMain.class.getResource("ConnectionClient.fxml"));
         Parent root = listLoader.load();
         ConnectionCrontoller connectionCrontoller = listLoader.getController();
-        connectionCrontoller.initModel(client);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

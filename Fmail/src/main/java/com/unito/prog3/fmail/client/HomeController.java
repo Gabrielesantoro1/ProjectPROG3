@@ -5,6 +5,8 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
 import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -15,25 +17,26 @@ import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
 public class HomeController implements Initializable {
     private MailClient client;
-    private Email selectedEmail;
 
-    private ObservableList<Email> email_rcvd;
-    private ObservableList<Email> email_sent;
-    private ObservableList<Email> email_del;
+    private ObservableList<Email> email_rcvd_content;
+    private ObservableList<Email> email_sent_content;
+    private ObservableList<Email> email_del_content;
+
+
+    private Email selectedEmail;
+    private Email emptyEmail;
 
     @FXML
     private TextField account_name_text;
@@ -44,90 +47,51 @@ public class HomeController implements Initializable {
     @FXML
     private ListView<Email> ListView_del;
 
-    @FXML
-    private Tab receivedTab;
-    @FXML
-    private Tab sentTab;
-    @FXML
-    private Tab delTab;
-
     /**
      * The initialize function sets everything we need to be able to view the email lists
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Setting for the received mail list view
-        ListView_rcvd.setOrientation(Orientation.VERTICAL);
-        ListView_rcvd.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        ListView_rcvd.setEditable(true);
-        ListView_rcvd.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
-            this.selectedEmail = t1;
-            FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
-            Parent root;
-            try {
-                root = viewLoader.load();
-                ViewPageController viewPageController= viewLoader.getController();
-                viewPageController.initModel(client, t1);
-                Stage stage = new Stage();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent windowEvent) {
-                        stage.close();
-                        ListView_rcvd.getSelectionModel().clearSelection();
-                    }
-                });
-                //System.out.println(t1.toString());
-            } catch (IOException e) {e.printStackTrace();}
-        });
-        ListView_rcvd.setOnEditCommit(new EventHandler<ListView.EditEvent<Email>>() {
-            @Override
-            public void handle(ListView.EditEvent<Email> emailEditEvent) {
-                ListView_rcvd.getSelectionModel().getSelectedItem().toString();
-            }
-        });
-        ListView_rcvd.setCellFactory(emailrcvdView -> new Support.cellVisual());
+        MailClient client = new MailClient();
 
-        //Setting for the sent mail list view
-        ListView_sent.setOrientation(Orientation.VERTICAL);
-        ListView_sent.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        ListView_sent.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
-            FXMLLoader viewSentLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
-            Parent root;
-            try {
-                root = viewSentLoader.load();
-                ViewPageSentController viewPageSentController = viewSentLoader.getController();
-                viewPageSentController.initModel(client, t1);
-                Stage stage = new Stage();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent windowEvent) {
-                        stage.close();
-                        ListView_rcvd.getSelectionModel().clearSelection();
-                    }
-                });
-                stage.show();
-            } catch (IOException e) {e.printStackTrace();}
-        });
-        ListView_sent.setCellFactory(emailsentView -> new Support.cellVisual());
+        this.email_rcvd_content = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
+        ListProperty<Email> email_rcvd_prop = new SimpleListProperty<>();
+        email_rcvd_prop.set(email_rcvd_content);
+        ListView_rcvd.itemsProperty().bind(email_rcvd_prop);
 
-        //Setting for the deleted mail list view
-        ListView_del.setOrientation(Orientation.VERTICAL);
-        ListView_del.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        ListView_del.getSelectionModel().selectedItemProperty().addListener((observableValue, email, t1) -> {
-        FXMLLoader viewDelLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
+        this.email_sent_content = FXCollections.observableList(client.getMailbox().getAllMailSent());
+        ListProperty<Email> email_sent_prop = new SimpleListProperty<>();
+        email_sent_prop.set(email_sent_content);
+        ListView_sent.itemsProperty().bind(email_sent_prop);
+
+        this.email_del_content = FXCollections.observableList(client.getMailbox().getAllMailDel());
+        ListProperty<Email> email_del_prop = new SimpleListProperty<>();
+        email_del_prop.set(email_del_content);
+        ListView_del.itemsProperty().bind(email_del_prop);
+
+        ListView_rcvd.setOnMouseClicked(this::showselectedEmail_rcvd);
+        ListView_sent.setOnMouseClicked(this::showselectedEmail_sent);
+        ListView_del.setOnMouseClicked(this::showselectedEmail_del);
+
+        ListView_rcvd.setCellFactory(emailListView -> new Support.cellVisual());
+        ListView_sent.setCellFactory(emailListView -> new Support.cellVisual());
+        ListView_del.setCellFactory(emailListView -> new Support.cellVisual());
+
+    }
+
+    private void showselectedEmail_del(MouseEvent mouseEvent) {
+        Email email = ListView_del.getSelectionModel().getSelectedItem();
+        selectedEmail = email;
         Parent root;
+        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
         try {
-            root = viewDelLoader.load();
-            ViewPageDelController viewPageDelController = viewDelLoader.getController();
-            viewPageDelController.initModel(t1);
+            root = viewLoader.load();
+            ViewPageDelController viewPageController= viewLoader.getController();
+            viewPageController.initModel(email);
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.show();
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent windowEvent) {
@@ -135,11 +99,63 @@ public class HomeController implements Initializable {
                     ListView_rcvd.getSelectionModel().clearSelection();
                 }
             });
-            stage.show();
-        } catch (IOException e) {e.printStackTrace();}
-    });
-        ListView_del.setCellFactory(emaildelView -> new Support.cellVisual());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void showselectedEmail_sent(MouseEvent mouseEvent) {
+        Email email = ListView_sent.getSelectionModel().getSelectedItem();
+        selectedEmail = email;
+        Parent root;
+        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
+        try {
+            root = viewLoader.load();
+            ViewPageSentController viewPageController= viewLoader.getController();
+            viewPageController.initModel(client, email);
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    stage.close();
+                    ListView_rcvd.getSelectionModel().clearSelection();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showselectedEmail_rcvd(MouseEvent mouseEvent){
+        Email email = ListView_rcvd.getSelectionModel().getSelectedItem();
+        selectedEmail = email;
+        Parent root;
+        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
+        try {
+            root = viewLoader.load();
+            ViewPageController viewPageController= viewLoader.getController();
+            viewPageController.initModel(client, email);
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    stage.close();
+                    ListView_rcvd.getSelectionModel().clearSelection();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 
     /**
      * Initialize the model within the controller and start the automatic update for the emails.
@@ -148,14 +164,6 @@ public class HomeController implements Initializable {
     public void initModel(MailClient client) {
         this.client = client;
         account_name_text.setText(client.getMailbox().getAccount_name());
-
-        email_rcvd = FXCollections.observableList(client.getMailbox().getAllMailRcvd());
-        ListView_rcvd.setItems(email_rcvd);
-        email_sent = FXCollections.observableList(client.getMailbox().getAllMailSent());
-        ListView_sent.setItems(email_sent);
-        email_del = FXCollections.observableList(client.getMailbox().getAllMailDel());
-        ListView_del.setItems(email_del);
-
         automaticUpdate();
     }
 
@@ -185,7 +193,6 @@ public class HomeController implements Initializable {
     private void updateButton() {
         if (client.isConnect()) {
             if (client.updateAction()) {
-                changeView();
                 alertMethod("Mailbox has been updated successfully");
                 System.out.println(client.getMailbox().toString());
             } else {
@@ -203,8 +210,7 @@ public class HomeController implements Initializable {
     private void deleteButton() {
         if(client.isConnect()) {
             if (client.deleteAction("delete_all","","")) {
-                email_del.clear();
-                ListView_del.refresh();
+                email_del_content.clear();
                 alertMethod("Mails deleted have been completely erased");
             } else {
                 alertMethod("An error occurred while deleting the emails");
@@ -223,7 +229,7 @@ public class HomeController implements Initializable {
             @Override
             public void run() {
             Platform.runLater(() -> {
-                if (client.updateAction()) {
+                if(client.updateAction()){
                     changeView();
                 }
             });
@@ -240,36 +246,36 @@ public class HomeController implements Initializable {
             new_size = client.checkChangeMail('r');
             System.out.println(new_size);
 
-            if(new_size > email_rcvd.size()){
-                for(int i = email_rcvd.size(); i < new_size; i++){
-                    email_rcvd.add(client.getMailbox().getAllMailRcvd().get(i));
+            if(new_size > email_rcvd_content.size()){
+                for(int i = email_rcvd_content.size(); i < new_size; i++){
+                    email_rcvd_content.add(client.getMailbox().getAllMailRcvd().get(i));
                 }
-            }else if(new_size < email_rcvd.size() && new_size > 0) {
-                email_rcvd.remove(selectedEmail);
+            }else if(new_size < email_rcvd_content.size() && new_size > 0) {
+                email_rcvd_content.remove(selectedEmail);
                 selectedEmail = null;
             }else if(new_size == 0){
-                email_rcvd.clear();
+                email_rcvd_content.clear();
             }
 
             new_size = client.checkChangeMail('s');
             System.out.println(new_size);
 
-            if(new_size > email_sent.size()){
-                for(int i = email_sent.size(); i < new_size; i++){
-                    email_sent.add(client.getMailbox().getAllMailSent().get(i));
+            if(new_size > email_sent_content.size()){
+                for(int i = email_sent_content.size(); i < new_size; i++){
+                    email_sent_content.add(client.getMailbox().getAllMailSent().get(i));
                 }
-            }else if(new_size < email_sent.size() && new_size > 0){
-                    email_sent.remove(selectedEmail);
+            }else if(new_size < email_sent_content.size() && new_size > 0){
+                email_sent_content.remove(selectedEmail);
                     selectedEmail = null;
             }else if(new_size == 0){
-                email_sent.clear();
+                email_sent_content.clear();
             }
 
             new_size = client.checkChangeMail( 'd');
 
-            if(new_size > email_del.size()){
-                for(int i = email_del.size(); i < new_size; i++){
-                    email_del.add(client.getMailbox().getAllMailDel().get(i));
+            if(new_size > email_del_content.size()){
+                for(int i = email_del_content.size(); i < new_size; i++){
+                    email_del_content.add(client.getMailbox().getAllMailDel().get(i));
                 }
             }
         }
