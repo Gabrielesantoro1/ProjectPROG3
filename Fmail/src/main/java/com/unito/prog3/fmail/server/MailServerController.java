@@ -11,7 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -20,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class MailServerController implements Initializable{
     @FXML
-    ListView<String> logs;
+    private ListView<String> logs;
     @FXML
     private Text clock;
     @FXML
@@ -36,6 +35,21 @@ public class MailServerController implements Initializable{
         logs.itemsProperty().bind(server.logsProperty());
         numClient.textProperty().bind(Bindings.convert((server.num_client())));
 
+        timerClock();
+
+        try {
+            server.create_dirs();
+            server.loadEmailFromLocal();
+        } catch (IOException | ParseException e) {e.printStackTrace();}
+            System.out.println(server);
+            Thread start_connection = new Thread(new StartConnectionHandle(server));
+            start_connection.start();
+    }
+
+    /**
+     * It is a real time clock that indicates the actual time.
+     */
+    private void timerClock() {
         Timeline timer = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             LocalTime currentTime = LocalTime.now();
             clock.setText(currentTime.getHour() + ":" + currentTime.getMinute() + ":" + currentTime.getSecond());
@@ -43,14 +57,6 @@ public class MailServerController implements Initializable{
         );
         timer.setCycleCount(Animation.INDEFINITE);
         timer.play();
-
-        try {
-            server.create_dirs();
-            server.loadEmailFromLocal();
-        } catch (IOException | ParseException e) {e.printStackTrace();}
-        System.out.println(server);
-            Thread start_connection = new Thread(new StartConnectionHandle(server));
-            start_connection.start();
     }
 
 }

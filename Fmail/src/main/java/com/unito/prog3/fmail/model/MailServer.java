@@ -136,7 +136,6 @@ public class MailServer{
     public void loadEmailFromLocal() throws IOException, ParseException {
         File file = new File(Support.PATH_NAME_DIR);
         for (File main_dir : Objects.requireNonNull(file.listFiles())){
-            System.out.println(main_dir);
             if(main_dir.getName().equals("id_count.txt")){
                 BufferedReader reader = new BufferedReader(new FileReader(main_dir.getAbsolutePath()));
                 String id_value = reader.readLine();
@@ -145,7 +144,6 @@ public class MailServer{
                 break;
             }
             for(File list : Objects.requireNonNull(main_dir.listFiles())){
-                System.out.println(list);
                 switch (list.getName()){
                 case "deleted":
                     for (File email: Objects.requireNonNull(list.listFiles())){

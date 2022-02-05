@@ -4,9 +4,7 @@ import com.unito.prog3.fmail.ClientMain;
 import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailClient;
 import com.unito.prog3.fmail.support.Support;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,9 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import javax.swing.text.html.ListView;
 import java.io.IOException;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
@@ -59,7 +55,7 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyAllBUtton() throws IOException {
+    public void ReplyAllButton() throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();

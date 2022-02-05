@@ -15,11 +15,16 @@ import java.io.IOException;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
 
-public class ConnectionCrontoller{
+public class ConnectionController {
     @FXML
     private TextField account_name;
+
     /**
-     * The function checks if the inserted email is of the correct format, calls the getConnection () function which returns a result of type String. If the result is "CC" then the client was able to connect successfully, then starts a backgroud thread that checks every 5000 milliseconds if the server is still connected and finally changes the scene. If the result is "CNR" it means that the email entered is not a registered email. Finally, if the result is "SNC" it means that we have not been able to establish a connection with the server because the server is probably offline.
+     * It checks if the account name inserted follows the correct format, then
+     * calls the getConnection() method which returns a string that indicates the state of the connection.
+     * If the result is "CC" then the client was able to connect successfully, so it calls startBeat() and finally changes the scene.
+     * If the result is "CNR" it means that the account name inserted is not registered.
+     * if the result is "SNC" it means that we have not been able to establish a connection with the server because is probably offline.
      */
     @FXML
     public void getConnectionButton() throws IOException {
@@ -31,15 +36,13 @@ public class ConnectionCrontoller{
                 //Client Connected
                 case "CC" -> {
                     client.startBeat();
-                    //Change scene
+
                     FXMLLoader homeloader = new FXMLLoader(ClientMain.class.getResource("Home.fxml"));
                     Parent root = homeloader.load();
                     HomeController homeController = homeloader.getController();
                     homeController.initModel(client);
                     Stage window = (Stage) account_name.getScene().getWindow();
                     window.setScene(new Scene(root));
-
-                    //Close Windows EventHandler
                     window.setOnCloseRequest(windowEvent -> {
                         client.closeAction();
                         window.close();
@@ -56,4 +59,5 @@ public class ConnectionCrontoller{
             alertMethod("Email account inserted does not respect the format requested");
         }
     }
+
 }

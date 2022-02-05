@@ -13,7 +13,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -30,6 +29,8 @@ import static com.unito.prog3.fmail.support.Support.alertMethod;
 public class HomeController implements Initializable {
     private MailClient client;
 
+    private Email selectedEmail;
+
     private ObservableList<Email> email_rcvd_content;
     private ObservableList<Email> email_sent_content;
     private ObservableList<Email> email_del_content;
@@ -39,7 +40,6 @@ public class HomeController implements Initializable {
 
 
 
-    private Email selectedEmail;
     @FXML
     private TextField account_name_text;
     @FXML
@@ -50,7 +50,7 @@ public class HomeController implements Initializable {
     private ListView<Email> ListView_del;
 
     /**
-     * The initialize function sets everything we need to be able to view the email lists
+     * It sets all the listview properties.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -71,10 +71,9 @@ public class HomeController implements Initializable {
         email_del_prop.set(email_del_content);
         ListView_del.itemsProperty().bind(email_del_prop);
 
-        ListView_rcvd.setOnMouseClicked(this::showselectedEmail_rcvd);
-        ListView_sent.setOnMouseClicked(this::showselectedEmail_sent);
-        ListView_del.setOnMouseClicked(this::showselectedEmail_del);
-
+        ListView_rcvd.setOnMouseClicked(this::showSelectedEmail_rcvd);
+        ListView_sent.setOnMouseClicked(this::showSelectedEmail_sent);
+        ListView_del.setOnMouseClicked(this::showSelectedEmail_del);
 
         ListView_rcvd.setCellFactory(emailListView -> new Support.cellVisual());
         ListView_sent.setCellFactory(emailListView -> new Support.cellVisual());
@@ -82,7 +81,7 @@ public class HomeController implements Initializable {
 
     }
 
-    private void showselectedEmail_del(MouseEvent mouseEvent) {
+    private void showSelectedEmail_del(MouseEvent mouseEvent) {
         Email email = ListView_del.getSelectionModel().getSelectedItem();
         selectedEmail = email;
         if(email != null) {
@@ -109,7 +108,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void showselectedEmail_sent(MouseEvent mouseEvent) {
+    private void showSelectedEmail_sent(MouseEvent mouseEvent) {
         Email email = ListView_sent.getSelectionModel().getSelectedItem();
         selectedEmail = email;
         if(email != null) {
@@ -136,7 +135,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void showselectedEmail_rcvd(MouseEvent mouseEvent){
+    private void showSelectedEmail_rcvd(MouseEvent mouseEvent){
         Email email = ListView_rcvd.getSelectionModel().getSelectedItem();
         selectedEmail = email;
         if(email != null) {
@@ -162,8 +161,7 @@ public class HomeController implements Initializable {
             }
         }
     }
-
-
+    
     /**
      * Initialize the model within the controller and start the automatic update for the emails.
      * @param client MODEL
@@ -176,6 +174,7 @@ public class HomeController implements Initializable {
 
     /**
      *If the server is offline, a popup is sent. Otherwise, the SendPage is opened.
+     * @throws IOException;
      */
     @FXML
     private void SendPageButton() throws IOException {
@@ -245,13 +244,12 @@ public class HomeController implements Initializable {
     }
 
     /**
-     * Refresh the listVIew that has received a new mail
+     * Refresh all the views, to check if there have been changing in the lists.
      */
     private void changeView(){
         int new_size;
 
             new_size = client.checkChangeMail('r');
-            System.out.println(new_size);
 
             if(new_size > email_rcvd_content.size()){
                 for(int i = email_rcvd_content.size(); i < new_size; i++){
@@ -264,7 +262,6 @@ public class HomeController implements Initializable {
             }
 
             new_size = client.checkChangeMail('s');
-            System.out.println(new_size);
 
             if(new_size > email_sent_content.size()){
                 for(int i = email_sent_content.size(); i < new_size; i++){

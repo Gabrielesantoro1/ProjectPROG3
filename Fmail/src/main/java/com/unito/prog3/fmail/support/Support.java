@@ -5,14 +5,15 @@ import com.unito.prog3.fmail.model.Mailbox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
-import javafx.scene.shape.Box;
 
-import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ *The Support class is a class that contains static variables and methods shared by the various class.
+ */
 public class Support {
-    public final static String PATH_NAME_DIR = "C:\\Users\\Daniele\\Desktop\\DirProjProg3";
+    public final static String PATH_NAME_DIR = "C:\\Users\\santo\\Documenti\\DirProjProg3";
     public final static Integer port = 8189;
 
     public final static Mailbox daniele = new Mailbox("daniele@gmail.com");
@@ -20,7 +21,7 @@ public class Support {
     public final static Mailbox danieleSer = new Mailbox("danieleSer@gmail.com");
 
     /**
-     * Create a new Alert pop-up
+     * Creates a new Alert pop-up.
      * @param alert_string string to show
      */
     public static void alertMethod(String alert_string){
@@ -28,6 +29,11 @@ public class Support {
         alert.showAndWait();
     }
 
+    /**
+     * It is called by the ConnectionController to check if the account written is legit.
+     * @param account_name the account name syntax that it has to check.
+     * @return true if the account respects the pattern; false otherwise.
+     */
     public static boolean match_account(String account_name){
         Pattern p = Pattern.compile("[a-zA-Z0-9]++@[a-zA-Z]++.com");
         Matcher m = p.matcher(account_name);

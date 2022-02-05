@@ -31,7 +31,8 @@ public class SendPageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {}
 
     /**
-     *The different initModels are due to the different way the SendPageController can be called, in particular it can be called due to a normal writing of a mail, from a forwarding request, single response, multiple response
+     * The default initModel that is called for when it is clicked the SendPageButton.
+     * @param client MODEL
      */
     public void initModel(MailClient client) {
         this.client = client;
