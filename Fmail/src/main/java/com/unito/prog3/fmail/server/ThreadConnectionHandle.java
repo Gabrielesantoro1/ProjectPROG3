@@ -151,7 +151,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         if (server.existAccount(name)) {
             Objects.requireNonNull(output).writeObject("true");
             Platform.runLater(() -> server.addLog(new Date() + ": Client " + name + " is now connected"));
-            Platform.runLater(() -> server.setNUM_CLIENT(server.getNUM_CLIENT()+1));
+            Platform.runLater(server::incrClient);
             Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(name)));
         } else {
             output.writeObject("false");

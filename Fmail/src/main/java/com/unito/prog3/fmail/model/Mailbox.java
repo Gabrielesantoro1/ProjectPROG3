@@ -1,12 +1,18 @@
 package com.unito.prog3.fmail.model;
-import com.unito.prog3.fmail.support.Support;
 
-import java.awt.image.AreaAveragingScaleFilter;
+import com.unito.prog3.fmail.support.Support;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
+
+/*
+ *The class Mailbox represents the actual unique mailbox that every mail account has.
+ *It contains the following variables:
+ *  - mail_rcvd: it is the list that contains the received mails.
+ *  - mail_sent: it is the list that contains the sent mails.
+ *  - mail_del: it is the list that contains the deleted mails.
+ *
+ *  - account_name: this string indicates the owner account of the mailbox.
+ */
 
 public class Mailbox implements Serializable{
     private String account_name;
@@ -14,6 +20,12 @@ public class Mailbox implements Serializable{
     private final LinkedList<Email> mail_sent;
     private final LinkedList<Email> mail_del;
 
+    /**
+     * Constructor of the class; takes the account name of the mailbox.
+     * It calls the method match_account() int the Support class,
+     * that check if the account name passed follows the right pattern.
+     * @param account_name of the mailbox
+     */
     public Mailbox(String account_name) {
         if(Support.match_account(account_name)){
             this.account_name = account_name;
@@ -25,39 +37,51 @@ public class Mailbox implements Serializable{
         mail_del = new LinkedList<>();
     }
 
+    /**
+     * Constructor of the class; only instantiate the list of the mailbox.
+     * It is used for the call of the MailClient() constructor in HomeController.java
+     */
     public Mailbox(){
         mail_rcvd = new LinkedList<>();
         mail_sent = new LinkedList<>();
         mail_del = new LinkedList<>();
     }
 
-    public String getAccount_name() {return account_name;}
-
+    /**
+     * It is called when client send a request of definitive deleting.
+     */
     public void clearMailDel(){this.mail_del.clear();}
 
-    /**Takes the id of the email that we want to delete
+    /**
+     * Takes the id of the email to delete
      * and first adds it to the mail_del list of the mailbox
      * then removes it from the mail_rcvd list.
-     * @param id of the email
+     * @param id of the email;
      */
     public synchronized void delete_email_rcvd(int id){
-        this.mail_del.add(this.mail_rcvd.get(getIndexbyID_rcvd(id)));
-        this.mail_rcvd.remove(getIndexbyID_rcvd(id));
-    }
-
-    public synchronized void delete_email_sent(int id){
-        this.mail_del.add(this.mail_sent.get(getIndexbyID_sent(id)));
-        this.mail_sent.remove(getIndexbyID_sent(id));
+        this.mail_del.add(this.mail_rcvd.get(getIndexByID_rcvd(id)));
+        this.mail_rcvd.remove(getIndexByID_rcvd(id));
     }
 
     /**
-     * Takes the ID of the email we want to delete and check on the mail list (rcvd in this case)
+     * Takes the id of the email to delete
+     * and first adds it to the mail_del list of the mailbox
+     * then removes it from the mail_sent list
+     * @param id of the email.
+     */
+    public synchronized void delete_email_sent(int id){
+        this.mail_del.add(this.mail_sent.get(getIndexByID_sent(id)));
+        this.mail_sent.remove(getIndexByID_sent(id));
+    }
+
+    /**
+     * Takes the ID of the email to delete and check on the mail list (rcvd in this case)
      * if there is such element. If it is, it returns the element position in the list.
      * @param ID of the email
-     * @return i index of the email-ID
+     * @return i position of the email in the list
      */
-    public int getIndexbyID_rcvd(int ID){
-        for(int i = 0; i<mail_rcvd.size();i++){
+    public int getIndexByID_rcvd(int ID){
+        for(int i = 0; i < mail_rcvd.size(); i++){
             if(mail_rcvd.get(i).getId() == ID){
                 return i;
             }
@@ -65,8 +89,14 @@ public class Mailbox implements Serializable{
         return -1;
     }
 
-    public int getIndexbyID_sent(int ID){
-        for(int i = 0; i<mail_sent.size();i++){
+    /**
+     * Takes the ID of the email to delete and check on the mail list (sent in this case)
+     * if there is such element. If it is, it returns the element position in the list.
+     * @param ID of the email
+     * @return i position of the email in the list
+     */
+    public int getIndexByID_sent(int ID){
+        for(int i = 0; i < mail_sent.size(); i++){
             if(mail_sent.get(i).getId() == ID){
                 return i;
             }
@@ -75,7 +105,7 @@ public class Mailbox implements Serializable{
     }
 
     /**
-     * Set an email
+     * Setter of MailBox
      */
     public void setMailRcvd(Email mail_rcvd) {this.mail_rcvd.add(mail_rcvd);}
 
@@ -84,13 +114,15 @@ public class Mailbox implements Serializable{
     public void setMail_del(Email mail_del) {this.mail_del.add(mail_del);}
 
     /**
-     * Get a List of Email
+     * Getter of MailBox
      */
     public LinkedList<Email> getAllMailRcvd(){return this.mail_rcvd;}
 
     public LinkedList<Email> getAllMailSent(){return this.mail_sent;}
 
     public LinkedList<Email> getAllMailDel(){return this.mail_del;}
+
+    public String getAccount_name() {return account_name;}
 
     @Override
     public String toString() {

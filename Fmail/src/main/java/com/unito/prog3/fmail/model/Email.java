@@ -3,6 +3,18 @@ package com.unito.prog3.fmail.model;
 import java.io.Serializable;
 import java.util.Date;
 
+
+/*
+ *The class email represents the prototype of the email that will be sent and received.
+ *It has the following instance variables:
+ *  - id: the unique id for the email.
+ *  - from: the sender of the email.
+ *  - to: the recipient of the email
+ *  - object: the object of the email.
+ *  - text: the message contained in the email.
+ *  - date: the date when the email was sent.
+ *
+ */
 public class Email implements Serializable {
     private int id;
     private String from;
@@ -64,8 +76,14 @@ public class Email implements Serializable {
         this.to = to;
     }
 
-    public String get_to_except(String account_toremove){
-        return to.replace(account_toremove +" ","");
+
+    /**
+     * ?
+     * @param account_to_remove
+     * @return
+     */
+    public String get_to_except(String account_to_remove){
+        return to.replace(account_to_remove +" ","");
     }
 
     @Override

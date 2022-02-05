@@ -34,8 +34,8 @@ public class ViewPageController {
     private Text object_text;
 
     public void initModel(MailClient client, Email email) {
-        this.email = email;
         this.client = client;
+        this.email = email;
         this.from_text.setText(this.email.getFrom());
         this.email_text.setText(this.email.getText());
         this.object_text.setText(this.email.getObject());

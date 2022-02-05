@@ -9,30 +9,51 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/*
+ *The class MailClient represents the single client that can start a connection with the server.
+ *It has the following variables:
+ *  - mailbox: the mailbox linked to the account
+ *  - local: the address of the client JVM (in our case is all on local).
+ *  - connect: a flag that shows the actual status of the connection with the server.
+ *
+ */
+
 public class MailClient {
     private Mailbox mailbox;
     private InetAddress local;
-    private boolean Connect = false;
+    private boolean connect = false;
+
+
     /**
-     * {@code MailClient} Constructor
+     * Constructor of the class;
+     * @param mailbox the mailbox of the client.
+     *
      */
     public MailClient(Mailbox mailbox){
-        try{
-            local = InetAddress.getLocalHost();
+        try{local = InetAddress.getLocalHost();
         }catch (UnknownHostException e){e.printStackTrace();}
+
         this.mailbox = mailbox;
     }
 
+    /**
+     *  Constructor of the class; It has no param because is called
+     *  in the initialize method of HomeController.java
+     */
     public MailClient(){
-        this.mailbox = new Mailbox();
-        try{
-            local = InetAddress.getLocalHost();
+        try{local = InetAddress.getLocalHost();
         }catch (UnknownHostException e){e.printStackTrace();}
+
+        this.mailbox = new Mailbox();
     }
 
     /**
-     * The function tries to open a connection with the server, if it fails it means that the server is probably offline so it returns the String "SNC" to warn the controller. Otherwise it forwards its account name, if it receives a "true" result it means that the entered name is registered and then returns the String "CC" otherwise it returns the value "CNR"
-     * @return A string that is able to make the controller understand what happened and therefore be able to proceed accordingly
+     * It tries to open a connection with the server; it sends to the server the name of the MailClient
+     * and waits for a "true" string. Then sets return_result to "CC" (Client Connected) and waits for the mailbox.
+     * Finally, set this.connect to true and ends.
+     * @return CC: is the client can connect;
+     * CNR: if the connection was accepted but the server did not recognise the client;
+     * SNC: if the server did not accept the connection because it could be offline;
      */
     public String getConnection() {
         ObjectOutputStream output;
@@ -49,7 +70,7 @@ public class MailClient {
                 if (in.equals("true")) {
                     return_result = "CC"; //Client Connected
                     this.mailbox = (Mailbox) input.readObject();
-                    Connect = true;
+                    connect = true;
                 }else{
                     return_result = "CNR"; //Client Not Registered
                 }
@@ -61,13 +82,15 @@ public class MailClient {
     }
 
     /**
-     *A connection with the server is created and the email is sent. Wait for a return value that indicates whether the email was sent successfully or not
+     * A connection with the server is created and the email is sent
+     * then waits for a string value from the server that indicates whether the email was sent successfully or not.
      * @param email email to send
-     * @return a Boolean value that indicates whether the email was sent successfully or not
+     * @return true if the email was sent successfully; false otherwise.
      */
     public ArrayList<String> sendEmail(Email email) {
         ObjectOutputStream output;
         ObjectInputStream input;
+        //TODO non dovremmo chiamare anche qui il metodo isConnect() ?
         ArrayList<String> fails = new ArrayList<>();
         try{
             Socket client_socket = new Socket(this.local, Support.port);
@@ -88,8 +111,9 @@ public class MailClient {
     }
 
     /**
-     * Send a request to update its emails.
-     * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
+     * Send a request to update the mailbox. If the server accepts the connection,
+     * the client gets the new mailbox.
+     * @return true if the update request went successfully; false otherwise.
      */
     public boolean updateAction(){
         boolean result = false;
@@ -120,8 +144,13 @@ public class MailClient {
     }
 
     /**
-     * Send a request to update its emails.
-     * @return a Boolean value that indicates whether the mailbox was refreshed successfully or not
+     * It sends to the server a request of deleting. The client can ask for the deleting of the single
+     * or the deleting of all the mail_del list. It waits for the accepting of the connection and then
+     * will get the new mailbox from the server.
+     * @param request type of the deleting request.
+     * @param id of the email to delete.
+     * @param position in which list the mail is.
+     * @return true if the delete request went successfully; false otherwise.
      */
     public boolean deleteAction(String request, String id, String position){
         boolean result = false;
@@ -150,20 +179,21 @@ public class MailClient {
                         }
                         result = true;
                     }
-                } finally {
-                    output.flush();
-                    input.close();
-                    output.close();
-                    client_socket.close();
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+                } finally {output.flush();input.close();output.close();client_socket.close();}
+            } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         }
         return result;
     }
 
 
+    /**
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     public void startBeat(){
         //HeartBeat to check every 5000ms if the server is still online
         Thread heartbeatThread = new Thread(() -> {
@@ -192,6 +222,14 @@ public class MailClient {
         heartbeatThread.start();
     }
 
+    /**
+     *
+     *
+     *
+     *
+     *
+     * @return true if the close
+     */
     public boolean closeAction(){
         boolean result = false;
             ObjectOutputStream output;
@@ -218,6 +256,16 @@ public class MailClient {
         return result;
     }
 
+
+    /**
+     *
+     *
+     *
+     *
+     *
+     * @param list
+     * @return
+     */
     public int checkChangeMail(char list) {
         int new_size = 0;
         switch (list) {
@@ -246,9 +294,9 @@ public class MailClient {
 
     public Mailbox getMailbox() {return mailbox;}
 
-    public boolean isConnect() {return Connect;}
+    public boolean isConnect() {return connect;}
 
-    public void setConnect(boolean connect) {Connect = connect;}
+    public void setConnect(boolean connect) {this.connect = connect;}
 
     @Override
     public String toString() {
