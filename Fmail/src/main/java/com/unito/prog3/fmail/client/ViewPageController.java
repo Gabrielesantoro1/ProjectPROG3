@@ -34,12 +34,14 @@ public class ViewPageController {
     private Text object_text;
 
     public void initModel(MailClient client, Email email) {
-        this.email = email;
-        this.client = client;
-        this.from_text.setText(this.email.getFrom());
-        this.email_text.setText(this.email.getText());
-        this.object_text.setText(this.email.getObject());
-        this.to_text.setText(this.email.getTo());
+        if(email != null) {
+            this.email = email;
+            this.client = client;
+            this.from_text.setText(this.email.getFrom());
+            this.email_text.setText(this.email.getText());
+            this.object_text.setText(this.email.getObject());
+            this.to_text.setText(this.email.getTo());
+        }
     }
 
     public void ReplyButton() throws IOException {

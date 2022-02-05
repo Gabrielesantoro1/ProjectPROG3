@@ -75,90 +75,92 @@ public class HomeController implements Initializable {
         ListView_sent.setOnMouseClicked(this::showselectedEmail_sent);
         ListView_del.setOnMouseClicked(this::showselectedEmail_del);
 
-        /*
+
         ListView_rcvd.setCellFactory(emailListView -> new Support.cellVisual());
         ListView_sent.setCellFactory(emailListView -> new Support.cellVisual());
         ListView_del.setCellFactory(emailListView -> new Support.cellVisual());
-
-         */
 
     }
 
     private void showselectedEmail_del(MouseEvent mouseEvent) {
         Email email = ListView_del.getSelectionModel().getSelectedItem();
         selectedEmail = email;
-        Parent root;
-        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
-        try {
-            root = viewLoader.load();
-            ViewPageDelController viewPageController= viewLoader.getController();
-            viewPageController.initModel(email);
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent windowEvent) {
-                    stage.close();
-                    ListView_rcvd.getSelectionModel().clearSelection();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(email != null) {
+            Parent root;
+            FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageDel.fxml"));
+            try {
+                root = viewLoader.load();
+                ViewPageDelController viewPageController = viewLoader.getController();
+                viewPageController.initModel(email);
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        stage.close();
+                        ListView_rcvd.getSelectionModel().clearSelection();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void showselectedEmail_sent(MouseEvent mouseEvent) {
         Email email = ListView_sent.getSelectionModel().getSelectedItem();
         selectedEmail = email;
-        Parent root;
-        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
-        try {
-            root = viewLoader.load();
-            ViewPageSentController viewPageController= viewLoader.getController();
-            viewPageController.initModel(client, email);
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent windowEvent) {
-                    stage.close();
-                    ListView_rcvd.getSelectionModel().clearSelection();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(email != null) {
+            Parent root;
+            FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPageSent.fxml"));
+            try {
+                root = viewLoader.load();
+                ViewPageSentController viewPageController = viewLoader.getController();
+                viewPageController.initModel(client, email);
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        stage.close();
+                        ListView_rcvd.getSelectionModel().clearSelection();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void showselectedEmail_rcvd(MouseEvent mouseEvent){
         Email email = ListView_rcvd.getSelectionModel().getSelectedItem();
         selectedEmail = email;
-        Parent root;
-        FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
-        try {
-            root = viewLoader.load();
-            ViewPageController viewPageController= viewLoader.getController();
-            viewPageController.initModel(client, email);
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent windowEvent) {
-                    stage.close();
-                    ListView_rcvd.getSelectionModel().clearSelection();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(email != null) {
+            Parent root;
+            FXMLLoader viewLoader = new FXMLLoader(ClientMain.class.getResource("ViewmailPage.fxml"));
+            try {
+                root = viewLoader.load();
+                ViewPageController viewPageController = viewLoader.getController();
+                viewPageController.initModel(client, email);
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        stage.close();
+                        ListView_rcvd.getSelectionModel().clearSelection();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-
     }
 
 
@@ -226,7 +228,7 @@ public class HomeController implements Initializable {
     }
 
     /**
-     * It triggers a timer that updates the mailing lists every 5000ms
+     * It triggers a timer that updates the mailing lists every 2000ms
      */
     private void automaticUpdate() {
         Timer timer_update = new Timer();
@@ -239,7 +241,7 @@ public class HomeController implements Initializable {
                 }
             });
             }
-        }, 0, 5000);
+        }, 0, 2000);
     }
 
     /**
@@ -257,7 +259,6 @@ public class HomeController implements Initializable {
                 }
             }else if(new_size < email_rcvd_content.size() && new_size > 0) {
                 email_rcvd_content.remove(selectedEmail);
-                email_rcvd_content.sorted();
             }else if(new_size == 0){
                 email_rcvd_content.clear();
             }

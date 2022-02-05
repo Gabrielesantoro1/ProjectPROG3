@@ -165,7 +165,7 @@ public class MailClient {
 
 
     public void startBeat(){
-        //HeartBeat to check every 5000ms if the server is still online
+        //HeartBeat to check every 2000ms if the server is still online
         Thread heartbeatThread = new Thread(() -> {
             while (true) {
                 try {
@@ -176,7 +176,7 @@ public class MailClient {
                         output.writeObject(666);
                         this.setConnect(true);
                         System.out.println("Still connected");
-                        Thread.sleep(3000);
+                        Thread.sleep(2000);
                     }finally {
                         assert output != null;
                         output.close();
