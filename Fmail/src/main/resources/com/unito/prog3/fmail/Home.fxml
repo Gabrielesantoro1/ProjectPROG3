@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.HomeController" >
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unito.prog3.fmail.client.HomeController">
   <tabs>
     <Tab fx:id="receivedTab" text="Posta in Arrivo">
       <content>
@@ -37,7 +37,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="0.0">
+                  <ButtonBar prefHeight="33.0" prefWidth="600.0" AnchorPane.rightAnchor="5.0" >
                      <buttons>
                         <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
                         <Button mnemonicParsing="false" onAction="#deleteButton" text="Elimina definitivamente" />
