@@ -238,6 +238,7 @@ public class MailServer{
         }
         return -1;
     }
+    public synchronized void incrClient(){this.setNUM_CLIENT(this.getNUM_CLIENT()+1);}
 
     public void addMailBox(Mailbox mailbox){
         this.mailboxes.add(mailbox);
