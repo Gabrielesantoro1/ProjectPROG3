@@ -185,17 +185,13 @@ public class MailClient {
         return result;
     }
 
-
     /**
-     *
-     *
-     *
-     *
-     *
-     *
+     * It is called by the client when the connection starts.
+     * It is used to check every 2 seconds if the server is still online.
+     * If the heartbeat sent catch an exception, it sets the connection flag to false
+     * and the connection after 2 seconds
      */
     public void startBeat(){
-        //HeartBeat to check every 2000ms if the server is still online
         Thread heartbeatThread = new Thread(() -> {
             while (true) {
                 try {
@@ -256,13 +252,10 @@ public class MailClient {
 
 
     /**
-     *
-     *
-     *
-     *
-     *
-     * @param list
-     * @return
+     * It is called by the client when an updating request is called.
+     * It checks if the list of the mailbox had a changing in the size.
+     * @param list a char that represents the list to check.
+     * @return new_size of the list mail that client asked for.
      */
     public int checkChangeMail(char list) {
         int new_size = 0;
