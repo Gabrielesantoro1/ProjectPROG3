@@ -15,7 +15,6 @@ import java.util.Objects;
  *  - mailbox: the mailbox linked to the account
  *  - local: the address of the client JVM (in our case is all on local).
  *  - connect: a flag that shows the actual status of the connection with the server.
- *
  */
 
 public class MailClient {
@@ -23,11 +22,9 @@ public class MailClient {
     private InetAddress local;
     private boolean connect = false;
 
-
     /**
      * Constructor of the class;
      * @param mailbox the mailbox of the client.
-     *
      */
     public MailClient(Mailbox mailbox){
         try{local = InetAddress.getLocalHost();
@@ -281,7 +278,6 @@ public class MailClient {
         }
         return new_size;
     }
-
 
     public Mailbox getMailbox() {return mailbox;}
 

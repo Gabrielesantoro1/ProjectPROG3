@@ -109,7 +109,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                 if (server.existAccount(client_name)) {
                     Objects.requireNonNull(output).writeObject("true");
                     Platform.runLater(() -> server.addLog(new Date() + ": Client " + client_name + " closed the connection with the server"));
-                    Platform.runLater(() -> server.setNUM_CLIENT(server.getNUM_CLIENT()-1));
+                    Platform.runLater(server::decrClient);
                 } else {
                     output.writeObject("false");
                 }

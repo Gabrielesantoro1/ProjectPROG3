@@ -19,33 +19,40 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/*
+ *The class MailServer represents our server to which the clients can create the connection.
+ *It has the following variables:
+ *  - EMAIL_ID_COUNT: the unique value that every email has.
+ *  - mailboxes: the list of mailbox that the server have registered to itself.
+ *  - logs: the list property on which we do the binding for the log show file.
+ *  - logs_content: the observable list that we fill with the log action.
+ *  - NUM_CLIENT: the value that indicates how mani clients are connected actually to the server.
+ */
+
 public class MailServer{
-    private static AtomicInteger emailId_count;
+    private static AtomicInteger EMAIL_ID_COUNT;
     private final List<Mailbox> mailboxes;
     private final ListProperty<String> logs;
     private final ObservableList<String> logs_content;
-    private SimpleIntegerProperty NUM_CLIENT;
+    private final SimpleIntegerProperty num_client;
 
     /**
-     *   {@code MailServer} Constructor
+     *Constructor of the class;
      **/
     public MailServer() {
         this.mailboxes = new ArrayList<>();
-        emailId_count = new AtomicInteger();
+        EMAIL_ID_COUNT = new AtomicInteger();
+
         this.logs_content = FXCollections.observableList(new LinkedList<>());
         this.logs = new SimpleListProperty<>();
         this.logs.set(logs_content);
-        NUM_CLIENT = new SimpleIntegerProperty();
-        NUM_CLIENT.set(0);
+
+        this.num_client = new SimpleIntegerProperty();
+        this.num_client.set(0);
     }
 
-    public int getNUM_CLIENT() {return NUM_CLIENT.get();}
-
-    public void setNUM_CLIENT(int NUM_CLIENT) {this.NUM_CLIENT.set(Integer.parseInt(String.valueOf(NUM_CLIENT)));}
-
-    public SimpleIntegerProperty NUM_CLIENT(){return this.NUM_CLIENT;}
-
-    /**It's called when the server is launched; it creates the directories for the mailboxes
+    /**
+     * It's called when the server is launched; it creates the directories for the mailboxes
      * of all the mail clients that are in the MailBoxes list.
      * @throws IOException;
      */
@@ -75,19 +82,19 @@ public class MailServer{
 
     /**
      * The function extracts the sender and the recipient information
-     * and save the email in the right directory of each one. It also updates the value of the id_counter.
+     * and save the email in the right directory of each one. It also updates the value of the EMAIL_ID_COUNT.
      * @param email email to save
      * @param single_recipient recipient of the email (only for the email sent to only one person).
      * @throws IOException;
-     * @return true if the call to the method ended correctly, false otherwise.
+     * @return true if the call to the method ended correctly; false otherwise.
      */
     public boolean saveEmail(Email email, String single_recipient) throws IOException {
         boolean saved = false;
-        email.setId(emailId_count.getAndIncrement());
+        email.setId(EMAIL_ID_COUNT.getAndIncrement());
 
         File id = new File(Support.PATH_NAME_DIR+"\\id_count.txt");
         FileOutputStream fos = new FileOutputStream(id,false);
-        fos.write(emailId_count.toString().getBytes());
+        fos.write(EMAIL_ID_COUNT.toString().getBytes());
         fos.close();
 
         String path_sender = Support.PATH_NAME_DIR + "\\" + email.getFrom() +"\\sent";
@@ -116,13 +123,12 @@ public class MailServer{
                 saved = true;
             }
         } catch (IOException e) {e.printStackTrace();}
-
         return saved;
     }
 
     /**
      * It scrolls through all the folders of each account saved locally and for each account
-     * and for each folder of the emails received, sent and deleted, loads the emails in the list corresponding
+     * and for each folder of the emails received, sent and deleted, loads the emails in the mailbox corresponding
      * to each account. Forward also loads the current value of the id_count.
      * @throws IOException;
      * @throws ParseException;
@@ -134,7 +140,7 @@ public class MailServer{
             if(main_dir.getName().equals("id_count.txt")){
                 BufferedReader reader = new BufferedReader(new FileReader(main_dir.getAbsolutePath()));
                 String id_value = reader.readLine();
-                emailId_count.set(Integer.parseInt(id_value));
+                EMAIL_ID_COUNT.set(Integer.parseInt(id_value));
                 reader.close();
                 break;
             }
@@ -195,8 +201,8 @@ public class MailServer{
         System.out.println("All the mailboxes were loaded successfully from local directory");
     }
 
-
-    /**It's called when we want to delete all the email in the deleted mail list of the account.
+    /**
+     * It's called when to delete all the email in the deleted mails list of the account.
      * @param account_name the account name of the mail client
      */
     public void clearDelEmail(String account_name){
@@ -208,7 +214,9 @@ public class MailServer{
     }
 
     /**
-     * Move an Email from rcvd/sent to deleted.
+     * Moves an Email from rcvd to deleted list.
+     * @param account_name the account name of the mailbox
+     * @param id the id of the email handled
      */
     public void deleteEmailRcvd(String account_name, int id) throws IOException {
         String path_rcvd = Support.PATH_NAME_DIR + "\\" + account_name +"\\received\\" + id + ".txt";
@@ -218,6 +226,11 @@ public class MailServer{
         Files.move(rcvd,del);
     }
 
+    /**
+     * Moves an Email from sent to deleted list.
+     * @param account_name the account name of the mailbox
+     * @param id the id of the email handled
+     */
     public void deleteEmailSent(String account_name, int id) throws IOException {
         String path_sent = Support.PATH_NAME_DIR +"\\"+ account_name +"\\sent\\" + id + ".txt";
         String path_del = Support.PATH_NAME_DIR + "\\" + account_name +"\\deleted\\" + id + ".txt";
@@ -226,10 +239,20 @@ public class MailServer{
         Files.move(sent, del);
     }
 
+    /**
+     * It is called to find the account name in a certain position.
+     * @param i the position of the account name in the mailboxes list.
+     * @return the account if found in the list of the mailboxes list.
+     */
     private String getNameByIndex(Integer i){
         return mailboxes.get(i).getAccount_name();
     }
 
+    /**
+     * It is called to find the position a certain account name.
+     * @param account the account name to look for
+     * @return the position of the account name in the mailboxes list if found; -1 otherwise
+     */
     public int getIndexByName(String account){
         for (int i = 0; i < mailboxes.size(); i++){
             if(account.equals(mailboxes.get(i).getAccount_name())){
@@ -239,32 +262,47 @@ public class MailServer{
         return -1;
     }
 
-    public synchronized void incrClient(){this.setNUM_CLIENT(this.getNUM_CLIENT()+1);}
+    /**
+     * It is called by the server to increment synchronously the NUM_CLIENT.
+     * It is called by one thread at a time.
+     */
+    public synchronized void incrClient(){this.setNumClient(this.getNumClient()+1);}
 
-    public void addMailBox(Mailbox mailbox){
-        this.mailboxes.add(mailbox);
-    }
+    /**
+     * It is called by the server to decrement synchronously the NUM_CLIENT.
+     * It is called by one thread at a time.
+     */
+    public synchronized void decrClient(){this.setNumClient(this.getNumClient()-1);}
 
-    public List<Mailbox> getMailboxes() {return mailboxes;}
 
-    public ListProperty<String> logsProperty(){
-        return logs;
-    }
-
+    /**
+     * It is called to check if a certain account exist.
+     * @param account_name the account name to which check the existence
+     * @return true if the account exist in the mailboxes list; false otherwise.
+     */
     public Boolean existAccount(String account_name){
         boolean exist = false;
-        for (Mailbox mailbox : this.mailboxes) {
-            if (mailbox.getAccount_name().equals(account_name)) {
+        for (int i = 0; i < mailboxes.size() && !exist; i++) {
+            if (mailboxes.get(i).getAccount_name().equals(account_name)) {
                 exist = true;
-                break;
             }
         }
         return exist;
     }
 
-    public void addLog(String log){
-        this.logs_content.add(log);
-    }
+    public void addMailBox(Mailbox mailbox){this.mailboxes.add(mailbox);}
+
+    public void addLog(String log){this.logs_content.add(log);}
+
+    private void setNumClient(int num_client) {this.num_client.set(Integer.parseInt(String.valueOf(num_client)));}
+
+    public int getNumClient() {return num_client.get();}
+
+    public List<Mailbox> getMailboxes() {return mailboxes;}
+
+    public ListProperty<String> logsProperty(){return logs;}
+
+    public SimpleIntegerProperty num_client(){return this.num_client;}
 
     @Override
     public String toString() {

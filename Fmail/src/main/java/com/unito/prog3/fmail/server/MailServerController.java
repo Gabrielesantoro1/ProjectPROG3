@@ -5,18 +5,15 @@ import com.unito.prog3.fmail.support.Support;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.Annotation;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -37,7 +34,7 @@ public class MailServerController implements Initializable{
         server.addMailBox(Support.gabriele);
 
         logs.itemsProperty().bind(server.logsProperty());
-        numClient.textProperty().bind(Bindings.convert((server.NUM_CLIENT())));
+        numClient.textProperty().bind(Bindings.convert((server.num_client())));
 
         Timeline timer = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             LocalTime currentTime = LocalTime.now();
