@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
+/*
+ *The ThreadConnectionHandle is a runnable that is used to handle the requests of the client.
+ *It has to sort three different requests:
+ *  - new account asked for the connection for the first time. -> clientConnectionCase()
+ *  - a client wants to send an email. -> sendMailCase()
+ *  - a client wants to delete/close connection/update. -> requestCase()
+ */
 public record ThreadConnectionHandle(MailServer server, Socket socket) implements Runnable {
-
-    /**
-     * The thread running this runnable is because it has received a request or any other interaction from the client. Then it reads the value it received and has several options available:
-     * 1) The client may want to connect so it sent its name, in this case the server checks that the name is of a registered account and, if necessary, sends the client a value of confirmation and its mailbox.
-     * 2) The client may have sent an email to want to send. In this case the server checks that the recipient to whom you want to send the email is from an existing account and then saves the email in files and in its memory, returning the confirmation value to the client or not.
-     * 3) The client may want to perform a request which can be: updating their emails or permanently deleting their deleted emails. In both cases the server proceeds with the request and sends the client a confirmation value.
-     */
     @Override
     public void run() {
         synchronized (server) {
@@ -30,9 +30,8 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                 output = new ObjectOutputStream(socket.getOutputStream());
                 try {
                     in = input.readObject();
-
                     //new client asked for connection
-                    if (in instanceof String name) { //First connection Case
+                    if (in instanceof String name) {
                         clientConnectionCase(output, name);
                     //new email sent
                     } else if (in instanceof Email email) {
@@ -41,17 +40,18 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     } else if (in instanceof ArrayList request) {
                         requestCase(output, request);
                     }
-                } finally {
-                    output.flush();
-                    input.close();
-                    output.close();
-                    input.close();
-                    socket.close();
-                }
+                } finally {output.flush();input.close();output.close();input.close();socket.close();}
             } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
         }
     }
 
+    /**
+     * It has to handle the request of the client that depends on the buttons clicked or the events occurred.
+     * It can have an update request, a delete_all request, a delete_single request, a connection close request.
+     * @param output the output stream built from the socket
+     * @param request the array tha contains the string requests + some additional data.
+     * @throws IOException;
+     */
     private void requestCase(ObjectOutputStream output, ArrayList<String> request) throws IOException {
         //update case
         String client_name = request.get(0);
@@ -65,6 +65,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                 }
                 break;
 
+        //delete_all case
             case "delete_all":
                 if (server.existAccount(client_name)) {
                     server.getMailboxes().get(server.getIndexByName(client_name)).clearMailDel();
@@ -75,7 +76,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     output.writeObject("false");
                 }
                 break;
-
+        //delete_single case
             case "delete_single":
                 if (server.existAccount(client_name)) {
                     int id = Integer.parseInt(request.get(2));
@@ -104,7 +105,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                     output.writeObject("false");
                 }
                 break;
-
+        //close_connection case
             case "close_connection":
                 if (server.existAccount(client_name)) {
                     Objects.requireNonNull(output).writeObject("true");
@@ -120,33 +121,47 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         }
     }
 
+    /**
+     * It is called when the user clicked on the send button for an email.
+     * It has to look find all the recipients and check for their existence.
+     * Finally, it has to save locally the new mail sent.
+     * @param output the output stream built from the socket.
+     * @param email the email the clients wants to send.
+     * @throws IOException;
+     */
     private void sendMailCase(ObjectOutputStream output, Email email) throws IOException {
         String recipients_text = email.getTo();
         String[] recipients = recipients_text.split(" ");
-        ArrayList<String> fails = new ArrayList<>();
+        ArrayList<String> NaNAccounts = new ArrayList<>();
+        //TODO non possiamo mettere insieme queste due parti ?
         for (String recipient : recipients) {
             if (!server.existAccount(recipient)) {
-                fails.add(recipient);
+                NaNAccounts.add(recipient);
                 recipients_text = recipients_text.replace(recipient, "");
-                System.out.println(recipients_text);
             }
         }
         email.setTo(recipients_text);
-        System.out.println(email.getTo());
         for (String s2 : recipients) {
             if (!server.saveEmail(email, s2)) {
                 Platform.runLater(() -> server.addLog(new Date() + ": Error occurred on saving email" + email.getId() + " from " + email.getFrom() + " to " + s2 + " because the recipient doesn't exists"));
             }else {
                 Platform.runLater(() -> server.addLog(new Date() + ": Email from " + email.getFrom() + " to " + s2 + " sent successfully"));
             }
-        }if(fails.isEmpty()) {
+        }if(NaNAccounts.isEmpty()) {
             Objects.requireNonNull(output).writeObject("true");
         }else{
             Objects.requireNonNull(output).writeObject("false");
-            Objects.requireNonNull(output).writeObject(fails);
+            Objects.requireNonNull(output).writeObject(NaNAccounts);
         }
     }
 
+    /**
+     * It is called when the user wants to close the GUI;
+     * The server writes on the log show file this event.
+     * @param output the output stream built from the socket.
+     * @param name the account name of the client that sent the closing request.
+     * @throws IOException;
+     */
     private void clientConnectionCase(ObjectOutputStream output, String name) throws IOException {
         if (server.existAccount(name)) {
             Objects.requireNonNull(output).writeObject("true");
@@ -155,7 +170,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
             Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(name)));
         } else {
             output.writeObject("false");
-            Platform.runLater(() -> server.addLog(new Date() + ":Unknown client " + name + " tried to connect unsuccessfully"));
+            Platform.runLater(() -> server.addLog(new Date() + ":Unknown client " + name + " asked for a closing request"));
         }
     }
 

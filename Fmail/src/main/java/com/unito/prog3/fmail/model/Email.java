@@ -72,10 +72,7 @@ public class Email implements Serializable {
         return date;
     }
 
-    public void setTo(String to) {
-        this.to = to;
-    }
-
+    public void setTo(String to) {this.to = to;}
 
     /**
      * ?
