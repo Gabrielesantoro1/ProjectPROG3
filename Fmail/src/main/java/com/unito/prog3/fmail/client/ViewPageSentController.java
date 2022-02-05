@@ -10,6 +10,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import static com.unito.prog3.fmail.support.Support.alertMethod;
+
 public class ViewPageSentController {
     private MailClient client;
     private Email email;
@@ -41,6 +43,8 @@ public class ViewPageSentController {
             }else{
                 Support.alertMethod("An error occurred, try later.");
             }
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 }
