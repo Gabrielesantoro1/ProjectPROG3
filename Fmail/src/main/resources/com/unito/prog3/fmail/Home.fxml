@@ -9,13 +9,13 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <ButtonBar layoutY="-5.0" prefHeight="38.0" prefWidth="163.0" AnchorPane.rightAnchor="5.0">
+                  <ButtonBar layoutY="-5.0" prefHeight="38.0" prefWidth="163.0" AnchorPane.rightAnchor="5.0" >
                     <buttons>
                       <Button mnemonicParsing="false" onAction="#SendPageButton" text="Scrivi" />
                         <Button mnemonicParsing="false" onAction="#updateButton" text="Aggiorna" />
                     </buttons>
                   </ButtonBar>
-                   <TextField fx:id="account_name_text" editable="false" layoutY="4.0" AnchorPane.leftAnchor="6.0" />
+                   <TextField fx:id="account_name_text" editable="false" layoutY="4.0" AnchorPane.leftAnchor="6.0"/>
                   <ListView fx:id="ListView_rcvd" layoutX="8.0" layoutY="86.0" minHeight="400.0" minWidth="400.0" prefHeight="200.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
                </children></AnchorPane>
       </content>
