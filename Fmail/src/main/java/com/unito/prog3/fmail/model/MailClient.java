@@ -219,15 +219,14 @@ public class MailClient {
     }
 
     /**
-     *
-     *
-     *
-     *
-     *
-     * @return true if the close
+     * It notifies the server of a close request. It waits for the accepting of the server,
+     * and then set the result flag to true. If the server does not accept the connection
+     * the client closes the connection anyway
+     * @return true if the close request went successfully; false otherwise.
      */
     public boolean closeAction(){
         boolean result = false;
+        if(isConnect()) {
             ObjectOutputStream output;
             ObjectInputStream input;
             try {
@@ -246,9 +245,8 @@ public class MailClient {
                         System.out.println("Request for connection closing was received");
                     }
                 } finally {output.flush();input.close();output.close();client_socket.close();}
-            } catch (IOException | ClassNotFoundException e) {
-
-            }
+            } catch (IOException | ClassNotFoundException e){e.printStackTrace();}
+        }
         return result;
     }
 
