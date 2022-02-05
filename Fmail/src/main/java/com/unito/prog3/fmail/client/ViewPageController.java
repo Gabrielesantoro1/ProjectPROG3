@@ -20,6 +20,8 @@ import javafx.stage.WindowEvent;
 import javax.swing.text.html.ListView;
 import java.io.IOException;
 
+import static com.unito.prog3.fmail.support.Support.alertMethod;
+
 public class ViewPageController {
     private MailClient client;
     private Email email;
@@ -52,6 +54,8 @@ public class ViewPageController {
             sendPageController.initModel_Email(client, email);
             Stage window = (Stage) email_text.getScene().getWindow();
             window.setScene(new Scene(root));
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 
@@ -63,16 +67,22 @@ public class ViewPageController {
             sendPageController.initModel_Email_replyall(client, email);
             Stage window = (Stage) email_text.getScene().getWindow();
             window.setScene(new Scene(root));
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 
     public void ForwardButton() throws IOException {
-        FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
-        Parent root = sendloader.load();
-        SendPageController sendPageController = sendloader.getController();
-        sendPageController.initModel_Email_forward(client, email);
-        Stage window = (Stage) email_text.getScene().getWindow();
-        window.setScene(new Scene(root));
+        if(client.isConnect()) {
+            FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
+            Parent root = sendloader.load();
+            SendPageController sendPageController = sendloader.getController();
+            sendPageController.initModel_Email_forward(client, email);
+            Stage window = (Stage) email_text.getScene().getWindow();
+            window.setScene(new Scene(root));
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
+        }
     }
 
     public void DeleteButtonRcvd(ActionEvent event) {
@@ -84,6 +94,8 @@ public class ViewPageController {
             }else{
                 Support.alertMethod("An error occurred, try later.");
             }
+        }else{
+            alertMethod("The server is momentarily offline, please try again in a while");
         }
     }
 

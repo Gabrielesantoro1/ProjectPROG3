@@ -41,10 +41,9 @@ public class ConnectionCrontoller{
 
                     //Close Windows EventHandler
                     window.setOnCloseRequest(windowEvent -> {
-                        if(client.closeAction()) {
-                            window.close();
-                            System.exit(0);
-                        }
+                        client.closeAction();
+                        window.close();
+                        System.exit(0);
                     });
                 }
                 //Client Not Registered

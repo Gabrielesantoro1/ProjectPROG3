@@ -251,7 +251,7 @@ public class MailClient {
                     }
                 } finally {output.flush();input.close();output.close();client_socket.close();}
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+
             }
         return result;
     }
