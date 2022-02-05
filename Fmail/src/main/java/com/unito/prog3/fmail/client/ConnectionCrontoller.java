@@ -44,6 +44,9 @@ public class ConnectionCrontoller{
                         if(client.closeAction()) {
                             window.close();
                             System.exit(0);
+                        }else{
+                            window.close();
+                            System.exit(0);
                         }
                     });
                 }
