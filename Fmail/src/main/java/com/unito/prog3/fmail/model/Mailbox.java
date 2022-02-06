@@ -19,6 +19,7 @@ public class Mailbox implements Serializable{
     private final LinkedList<Email> mail_rcvd;
     private final LinkedList<Email> mail_sent;
     private final LinkedList<Email> mail_del;
+    private boolean connected;
 
     /**
      * Constructor of the class; takes the account name of the mailbox.
@@ -35,6 +36,7 @@ public class Mailbox implements Serializable{
         mail_rcvd = new LinkedList<>();
         mail_sent = new LinkedList<>();
         mail_del = new LinkedList<>();
+        connected = false;
     }
 
     /**
@@ -45,6 +47,15 @@ public class Mailbox implements Serializable{
         mail_rcvd = new LinkedList<>();
         mail_sent = new LinkedList<>();
         mail_del = new LinkedList<>();
+        connected = false;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     /**

@@ -2,11 +2,9 @@ package com.unito.prog3.fmail.model;
 
 import com.unito.prog3.fmail.support.Support;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,8 +32,6 @@ public class MailServer{
     private final List<Mailbox> mailboxes;
     private final ListProperty<String> logs;
     private final ObservableList<String> logs_content;
-    private final SimpleIntegerProperty num_client;
-
     /**
      *Constructor of the class;
      **/
@@ -47,8 +43,6 @@ public class MailServer{
         this.logs = new SimpleListProperty<>();
         this.logs.set(logs_content);
 
-        this.num_client = new SimpleIntegerProperty();
-        this.num_client.set(0);
     }
 
     /**
@@ -261,19 +255,6 @@ public class MailServer{
     }
 
     /**
-     * It is called by the server to increment synchronously the NUM_CLIENT.
-     * It is called by one thread at a time.
-     */
-    public synchronized void incrClient(){this.setNumClient(this.getNumClient()+1);}
-
-    /**
-     * It is called by the server to decrement synchronously the NUM_CLIENT.
-     * It is called by one thread at a time.
-     */
-    public synchronized void decrClient(){this.setNumClient(this.getNumClient()-1);}
-
-
-    /**
      * It is called to check if a certain account exist.
      * @param account_name the account name to which check the existence
      * @return true if the account exist in the mailboxes list; false otherwise.
@@ -292,15 +273,9 @@ public class MailServer{
 
     public void addLog(String log){this.logs_content.add(log);}
 
-    private void setNumClient(int num_client) {this.num_client.set(Integer.parseInt(String.valueOf(num_client)));}
-
-    public int getNumClient() {return num_client.get();}
-
     public List<Mailbox> getMailboxes() {return mailboxes;}
 
     public ListProperty<String> logsProperty(){return logs;}
-
-    public SimpleIntegerProperty num_client(){return this.num_client;}
 
     @Override
     public String toString() {

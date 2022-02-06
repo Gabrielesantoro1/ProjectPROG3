@@ -110,7 +110,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
                 if (server.existAccount(client_name)) {
                     Objects.requireNonNull(output).writeObject("true");
                     Platform.runLater(() -> server.addLog(new Date() + ": Client " + client_name + " closed the connection with the server"));
-                    Platform.runLater(server::decrClient);
                 } else {
                     output.writeObject("false");
                 }
@@ -164,10 +163,12 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
      */
     private void clientConnectionCase(ObjectOutputStream output, String name) throws IOException {
         if (server.existAccount(name)) {
-            Objects.requireNonNull(output).writeObject("true");
-            Platform.runLater(() -> server.addLog(new Date() + ": Client " + name + " is now connected"));
-            Platform.runLater(server::incrClient);
-            Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(name)));
+            if(!server.getMailboxes().get(server.getIndexByName(name)).isConnected()) {
+                Objects.requireNonNull(output).writeObject("true");
+                server.getMailboxes().get(server.getIndexByName(name)).setConnected(true);
+                Platform.runLater(() -> server.addLog(new Date() + ": Client " + name + " is now connected"));
+                Objects.requireNonNull(output).writeObject(server.getMailboxes().get(server.getIndexByName(name)));
+            }
         } else {
             output.writeObject("false");
             Platform.runLater(() -> server.addLog(new Date() + ":Unknown client " + name + " asked for a closing request"));

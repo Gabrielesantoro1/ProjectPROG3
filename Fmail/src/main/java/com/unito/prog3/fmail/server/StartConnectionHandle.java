@@ -24,8 +24,7 @@ public record StartConnectionHandle(MailServer server) implements Runnable {
         try {
             ServerSocket server_socket = new ServerSocket(Support.port);
             server.addLog(new Date() + " : Server connected.");
-            while(true) {
-                //TODO è giusto dare lo stesso server senza rendere i suoi metodi synchronized ?
+            while(true){
                 Socket incoming = server_socket.accept();
                 Runnable connectionHandle = new ThreadConnectionHandle(server,incoming);
                 exc.execute(connectionHandle);

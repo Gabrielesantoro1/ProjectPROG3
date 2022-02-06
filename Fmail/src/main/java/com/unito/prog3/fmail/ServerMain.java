@@ -22,8 +22,7 @@ public class ServerMain extends Application {
             }
         });
         stage.show();
-        //ho trovato il modo di non far rimpicciolire la schermata ma facendo così non si può nemmeno mettere a schermo intero.
-        //stage.setResizable(false);
+        stage.setResizable(false);
     }
 
     public static void main(String[] args){

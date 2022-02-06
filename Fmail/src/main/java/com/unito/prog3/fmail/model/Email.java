@@ -80,7 +80,11 @@ public class Email implements Serializable {
      * @return
      */
     public String get_to_except(String account_to_remove){
-        return to.replace(account_to_remove +" ","");
+        String string_return = to.replace(account_to_remove +" ","");
+        if(string_return.contains(account_to_remove)) {
+            string_return = to.replace(account_to_remove, "");
+        }
+        return  string_return;
     }
 
     @Override

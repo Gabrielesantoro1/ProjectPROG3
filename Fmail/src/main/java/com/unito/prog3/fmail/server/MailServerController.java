@@ -22,9 +22,6 @@ public class MailServerController implements Initializable{
     private ListView<String> logs;
     @FXML
     private Text clock;
-    @FXML
-    private Text numClient;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
         MailServer server = new MailServer();
@@ -33,7 +30,6 @@ public class MailServerController implements Initializable{
         server.addMailBox(Support.gabriele);
 
         logs.itemsProperty().bind(server.logsProperty());
-        numClient.textProperty().bind(Bindings.convert((server.num_client())));
 
         timerClock();
 

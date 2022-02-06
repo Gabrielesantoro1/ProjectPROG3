@@ -23,9 +23,9 @@
             <Button minWidth="38.0" mnemonicParsing="false" onAction="#DeleteButtonRcvd" prefHeight="25.0" text="Elimina" />
         </buttons>
       </ButtonBar>
-      <Text fx:id="from_text" layoutX="67.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.rightAnchor="325.0" />
-      <Text fx:id="to_text" layoutX="39.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="179.0" AnchorPane.bottomAnchor="357.0" AnchorPane.rightAnchor="382.0" AnchorPane.topAnchor="26.0" />
-      <Text fx:id="object_text" layoutX="56.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.rightAnchor="336.0" AnchorPane.topAnchor="44.0" />
+      <Text fx:id="from_text" layoutX="46.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.bottomAnchor="377.0" AnchorPane.topAnchor="6.0" />
+      <Text fx:id="to_text" layoutX="31.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="280.0" AnchorPane.bottomAnchor="357.0" AnchorPane.topAnchor="26.0" />
+      <Text fx:id="object_text" layoutX="56.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="208.0" AnchorPane.bottomAnchor="340.0" AnchorPane.topAnchor="43.0" />
       <Text layoutX="9.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="561.0" />
       <Text layoutX="6.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="578.080078125" AnchorPane.topAnchor="25.0" />
       <Text layoutX="9.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object:" wrappingWidth="47.494140625" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="543.505859375" AnchorPane.topAnchor="44.0" />

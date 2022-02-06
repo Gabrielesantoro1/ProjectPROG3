@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *The Support class is a class that contains static variables and methods shared by the various class.
  */
 public class Support {
-    public final static String PATH_NAME_DIR = "C:\\Users\\santo\\Documenti\\DirProjProg3";
+    public final static String PATH_NAME_DIR = "C:\\Users\\Daniele\\Desktop\\DirProjProg3";
     public final static Integer port = 8189;
 
     public final static Mailbox daniele = new Mailbox("daniele@gmail.com");

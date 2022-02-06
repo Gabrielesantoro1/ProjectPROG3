@@ -131,7 +131,6 @@ public class MailClient {
                     String in = (String) input.readObject();
                     if (in.equals("true")) {
                         this.mailbox = (Mailbox) input.readObject();
-                        System.out.println("Emails Updated");
                         result = true;
                     }
                 } finally {output.flush();input.close();output.close();client_socket.close();}
@@ -196,9 +195,8 @@ public class MailClient {
                     ObjectOutputStream output = null;
                     try {
                         output = new ObjectOutputStream(client_socket.getOutputStream());
-                        output.writeObject(666);
+                        output.writeObject(this.mailbox.getAccount_name());
                         this.setConnect(true);
-                        System.out.println("Still connected");
                         Thread.sleep(2000);
                     }finally {
                         assert output != null;
@@ -239,10 +237,11 @@ public class MailClient {
                     String in = (String) input.readObject();
                     if (in.equals("true")) {
                         result = true;
-                        System.out.println("Request for connection closing was received");
                     }
                 } finally {output.flush();input.close();output.close();client_socket.close();}
-            } catch (IOException | ClassNotFoundException e){e.printStackTrace();}
+            } catch (IOException | ClassNotFoundException e){
+                System.out.println("Server offline");
+            }
         }
         return result;
     }
