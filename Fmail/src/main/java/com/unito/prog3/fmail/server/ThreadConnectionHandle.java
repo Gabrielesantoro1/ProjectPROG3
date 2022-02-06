@@ -4,7 +4,6 @@ import com.unito.prog3.fmail.model.Email;
 import com.unito.prog3.fmail.model.MailServer;
 import com.unito.prog3.fmail.model.Mailbox;
 import javafx.application.Platform;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -133,7 +132,6 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
         String recipients_text = email.getTo();
         String[] recipients = recipients_text.split(" ");
         ArrayList<String> NaNAccounts = new ArrayList<>();
-        //TODO non possiamo mettere insieme queste due parti ?
         for (String recipient : recipients) {
             if (!server.existAccount(recipient)) {
                 NaNAccounts.add(recipient);
@@ -164,7 +162,7 @@ public record ThreadConnectionHandle(MailServer server, Socket socket) implement
      */
     private void clientConnectionCase(ObjectOutputStream output, String name) throws IOException {
         if (server.existAccount(name)) {
-            if(!server.getMailboxes().get(server.getIndexByName(name)).isConnected()) {
+            if(!server.getMailboxes().get(server.getIndexByName(name)).isConnected()){
                 Objects.requireNonNull(output).writeObject("true");
                 server.getMailboxes().get(server.getIndexByName(name)).setConnected(true);
                 Platform.runLater(() -> server.addLog(new Date() + ": Client " + name + " is now connected"));

@@ -40,7 +40,7 @@ public class SendPageController implements Initializable {
 
     public void initModel_Email_replyall(MailClient client, Email email){
         this.client = client;
-        area_sendpage.setText("\nOriginal message:`\n" + email.getText());
+        area_sendpage.setText("\nOriginal message:\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
         recipient_sendpage.setText(email.getFrom()+ " " + email.get_to_except(client.getMailbox().getAccount_name()));
         recipient_sendpage.setEditable(false);
@@ -50,11 +50,12 @@ public class SendPageController implements Initializable {
         this.client = client;
         area_sendpage.setText(email.getText());
         object_sendpage.setText("FW:"+email.getObject());
+        area_sendpage.setEditable(false);
     }
 
     public void initModel_Email(MailClient client, Email email){
         this.client = client;
-        area_sendpage.setText("\nOriginal message:`\n" + email.getText());
+        area_sendpage.setText("\nOriginal message:\n" + email.getText());
         object_sendpage.setText("RE:"+email.getObject());
         recipient_sendpage.setText(email.getFrom());
         recipient_sendpage.setEditable(false);

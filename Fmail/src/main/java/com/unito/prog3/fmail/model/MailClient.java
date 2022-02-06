@@ -87,7 +87,6 @@ public class MailClient {
     public ArrayList<String> sendEmail(Email email) {
         ObjectOutputStream output;
         ObjectInputStream input;
-        //TODO non dovremmo chiamare anche qui il metodo isConnect() ?
         ArrayList<String> fails = new ArrayList<>();
         try{
             Socket client_socket = new Socket(this.local, Support.port);
@@ -173,7 +172,6 @@ public class MailClient {
                     if (in.equals("true")) {
                         if (request.equals("delete_single")) {
                             this.mailbox = (Mailbox) input.readObject();
-                            System.out.println(this.mailbox.toString());
                         }
                         result = true;
                     }
@@ -258,24 +256,9 @@ public class MailClient {
     public int checkChangeMail(char list) {
         int new_size = 0;
         switch (list) {
-            case 'r' -> {
-                new_size = mailbox.getAllMailRcvd().size();
-                if (new_size > 0) {
-                    return new_size;
-                }
-            }
-            case 's' -> {
-                new_size = mailbox.getAllMailSent().size();
-                if (new_size > 0) {
-                    return new_size;
-                }
-            }
-            case 'd' -> {
-                new_size = mailbox.getAllMailDel().size();
-                if (new_size > 0) {
-                    return new_size;
-                }
-            }
+            case 'r' -> new_size = mailbox.getAllMailRcvd().size();
+            case 's' -> new_size = mailbox.getAllMailSent().size();
+            case 'd' -> new_size = mailbox.getAllMailDel().size();
         }
         return new_size;
     }

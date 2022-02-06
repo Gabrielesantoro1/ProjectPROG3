@@ -5,15 +5,14 @@ import java.util.Date;
 
 
 /*
- *The class email represents the prototype of the email that will be sent and received.
- *It has the following instance variables:
+ *  The class email represents the prototype of the email that will be sent and received.
+ *  It has the following instance variables:
  *  - id: the unique id for the email.
  *  - from: the sender of the email.
  *  - to: the recipient of the email
  *  - object: the object of the email.
  *  - text: the message contained in the email.
  *  - date: the date when the email was sent.
- *
  */
 public class Email implements Serializable {
     private int id;
