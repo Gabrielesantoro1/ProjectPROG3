@@ -38,8 +38,6 @@ public class HomeController implements Initializable {
     private ListProperty<Email> email_sent_prop;
     private ListProperty<Email> email_del_prop;
 
-
-
     @FXML
     private TextField account_name_text;
     @FXML

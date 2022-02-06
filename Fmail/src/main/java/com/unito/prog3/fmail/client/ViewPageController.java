@@ -14,6 +14,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
 
 import static com.unito.prog3.fmail.support.Support.alertMethod;
@@ -42,7 +43,8 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyButton() throws IOException {
+    @FXML
+    public void ReplyButton(ActionEvent event) throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -55,7 +57,8 @@ public class ViewPageController {
         }
     }
 
-    public void ReplyAllButton() throws IOException {
+    @FXML
+    public void ReplyAllButton(ActionEvent event) throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -68,7 +71,8 @@ public class ViewPageController {
         }
     }
 
-    public void ForwardButton() throws IOException {
+    @FXML
+    public void ForwardButton(ActionEvent event) throws IOException {
         if(client.isConnect()) {
             FXMLLoader sendloader = new FXMLLoader(ClientMain.class.getResource("SendmailPage.fxml"));
             Parent root = sendloader.load();
@@ -81,6 +85,7 @@ public class ViewPageController {
         }
     }
 
+    @FXML
     public void DeleteButtonRcvd(ActionEvent event) {
         if(client.isConnect()){
             if(client.deleteAction("delete_single", Integer.toString(email.getId()),"rcvd")){
