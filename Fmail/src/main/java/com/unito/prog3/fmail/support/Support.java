@@ -26,7 +26,7 @@ public class Support {
      */
     public static void alertMethod(String alert_string){
         Alert alert = new Alert(Alert.AlertType.NONE,alert_string, ButtonType.OK);
-        alert.showAndWait();
+        alert.show();
     }
 
     /**

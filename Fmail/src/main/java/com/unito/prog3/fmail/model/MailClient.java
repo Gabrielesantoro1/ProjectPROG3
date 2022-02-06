@@ -134,7 +134,9 @@ public class MailClient {
                         result = true;
                     }
                 } finally {output.flush();input.close();output.close();client_socket.close();}
-            } catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Server offline");
+            }
         }
         return result;
     }
