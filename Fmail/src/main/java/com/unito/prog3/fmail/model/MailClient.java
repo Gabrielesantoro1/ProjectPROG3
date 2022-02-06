@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /*
- *The class MailClient represents the single client that can start a connection with the server.
- *It has the following variables:
+ * The class MailClient represents the single client that can start a connection with the server.
+ * It has the following variables:
  *  - mailbox: the mailbox linked to the account
  *  - local: the address of the client JVM (in our case is all on local).
  *  - connect: a flag that shows the actual status of the connection with the server.

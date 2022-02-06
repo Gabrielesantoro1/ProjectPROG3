@@ -5,15 +5,13 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 /*
- *The class Mailbox represents the actual unique mailbox that every mail account has.
- *It contains the following variables:
+ * The class Mailbox represents the actual unique mailbox that every mail account has.
+ * It contains the following variables:
  *  - mail_rcvd: it is the list that contains the received mails.
  *  - mail_sent: it is the list that contains the sent mails.
  *  - mail_del: it is the list that contains the deleted mails.
- *
  *  - account_name: this string indicates the owner account of the mailbox.
  */
-
 public class Mailbox implements Serializable{
     private String account_name;
     private final LinkedList<Email> mail_rcvd;

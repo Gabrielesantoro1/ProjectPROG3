@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  *  - logs_content: the observable list that we fill with the log action.
  *  - NUM_CLIENT: the value that indicates how mani clients are connected actually to the server.
  */
-
 public class MailServer{
     private static AtomicInteger EMAIL_ID_COUNT;
     private final List<Mailbox> mailboxes;

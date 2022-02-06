@@ -3,10 +3,9 @@ package com.unito.prog3.fmail.model;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /*
- *  The class email represents the prototype of the email that will be sent and received.
- *  It has the following instance variables:
+ * The class email represents the prototype of the email that will be sent and received.
+ * It has the following instance variables:
  *  - id: the unique id for the email.
  *  - from: the sender of the email.
  *  - to: the recipient of the email
@@ -45,6 +44,20 @@ public class Email implements Serializable {
         this.date = date;
     }
 
+    /**
+     * It is used when the user click on the reply_all button.
+     * It deletes its name from the recipients list.
+     * @param account_to_remove the account to remove from the list.
+     * @return the string with the new recipients list.
+     */
+    public String get_to_except(String account_to_remove){
+        String string_return = to.replace(account_to_remove +" ","");
+        if(string_return.contains(account_to_remove)) {
+            string_return = to.replace(account_to_remove, "");
+        }
+        return  string_return;
+    }
+
     public int getId() {
         return id;
     }
@@ -72,19 +85,6 @@ public class Email implements Serializable {
     }
 
     public void setTo(String to) {this.to = to;}
-
-    /**
-     * ?
-     * @param account_to_remove
-     * @return
-     */
-    public String get_to_except(String account_to_remove){
-        String string_return = to.replace(account_to_remove +" ","");
-        if(string_return.contains(account_to_remove)) {
-            string_return = to.replace(account_to_remove, "");
-        }
-        return  string_return;
-    }
 
     @Override
     public String toString() {
